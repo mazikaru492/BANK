@@ -533,6 +533,60 @@
       .brand-title { font-size: 1.35rem; }
       .brand-lockup { gap: 11px; }
     }
+
+    .home-card-section { margin-top: 46px; }
+    .card-entry-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px; }
+    .card-entry { display: flex; align-items: center; gap: 18px; padding: 26px; border: 1px solid #d5e0d2; border-radius: 12px; background: #fff; text-decoration: none; }
+    .card-entry:hover { background: #f7faef; border-color: #78946a; }
+    .card-entry > span:last-child { margin-left: auto; color: #385e3e; }
+    .card-entry-symbol { display: grid; place-items: center; width: 48px; height: 60px; flex-shrink: 0; background: #e9f0df; border-radius: 9px; color: #28563e; font-size: 2rem; }
+    .card-entry h3 { margin: 5px 0; color: #214d38; font-size: 1.05rem; }
+    .card-entry p { margin: 0; color: #6a7867; font-size: .77rem; }
+    .cards-view { max-width: 1000px; margin: 28px auto 48px; }
+    .cards-view h1 { margin: 0; font-size: clamp(1.3rem,3vw,1.8rem); color: var(--brand); }
+    .card-kind-nav { display: flex; gap: 8px; margin: 24px 0; }
+    .card-kind-nav a { flex: 1; padding: 13px; text-align: center; border: 1px solid #c8d5c2; border-radius: 6px; background: #fff; color: var(--brand); text-decoration: none; font-size: .9rem; font-weight: 700; }
+    .card-kind-nav a[aria-current="page"] { background: var(--brand); color: #fff; }
+    .card-progress { display: flex; justify-content: center; gap: 28px; padding: 0; margin: 28px 0; list-style: none; color: #808a7b; font-size: .8rem; }
+    .card-progress li { display: flex; align-items: center; gap: 8px; }
+    .card-progress span { display: grid; place-items: center; width: 25px; height: 25px; border-radius: 50%; background: #e3e9dd; }
+    .card-progress [aria-current="step"] { color: var(--brand); font-weight: 700; }
+    .card-progress [aria-current="step"] span { background: var(--brand); color: #fff; }
+    .card-creation-grid { display: grid; grid-template-columns: minmax(0,.95fr) minmax(0,1.05fr); border: 1px solid #dfe6d8; border-radius: 14px; overflow: hidden; background: #fff; }
+    .card-preview-pane { padding: 40px 28px; background: #e9efdf; }
+    .new-card { position: relative; overflow: hidden; width: 100%; max-width: 350px; aspect-ratio: 1.586; margin: 24px auto; padding: 22px; display: flex; flex-direction: column; justify-content: space-between; border-radius: 15px; color: #fff; background: linear-gradient(130deg,#376c4e,#103d2c); box-shadow: 0 15px 30px #12372122; isolation: isolate; }
+    .new-card::after { position: absolute; z-index: -1; content: ""; width: 180px; height: 180px; right: -75px; top: -40px; border: 25px solid currentColor; border-radius: 50%; opacity: .06; }
+    .new-card[data-tone="night"] { background: linear-gradient(130deg,#404958,#141c29); }
+    .new-card[data-tone="ivory"] { background: linear-gradient(130deg,#f7f2e2,#d9d2b7); color: #3d4538; }
+    .new-card-top { display: flex; justify-content: space-between; gap: 8px; align-items: center; }
+    .new-card-top strong { font-size: .75rem; letter-spacing: .1em; }.new-card-top > span { font-size: .55rem; letter-spacing: .08em; }
+    .new-card-number { font-size: clamp(.75rem,1.7vw,.98rem); letter-spacing: .09em; margin: 14px 0 0; white-space: nowrap; }
+    #new-card-name { margin: 8px 0; font-size: .72rem; letter-spacing: .07em; overflow-wrap: anywhere; }
+    .new-card-bottom { display: flex; justify-content: space-between; gap: 6px; font-size: .5rem; letter-spacing: .04em; }.new-card-bottom > span:first-child { font-weight: 800; }
+    .new-card-chip { width: 30px; height: 22px; margin-top: 8px; border: 1px solid #cfba84; border-radius: 4px; background: linear-gradient(135deg,#d5bf7d,#ebe1b5); }
+    .card-preview-caption, .card-sample-note { text-align: center; color: #67735f; font-size: .77rem; }
+    .card-sample-note { margin-top: 18px; font-size: .68rem; }
+    .card-workspace { min-width: 0; padding: 34px 28px; }
+    .card-workspace h2 { margin: 0 0 12px; color: var(--brand); font-size: 1.25rem; }
+    .card-intro { margin: 0 0 24px; color: var(--muted); font-size: .83rem; line-height: 1.8; }
+    .card-colors { margin: 0 0 24px; padding: 0; border: 0; }
+    .card-colors legend { margin-bottom: 12px; font-size: .86rem; font-weight: 700; }
+    .card-colors label { display: flex; align-items: center; gap: 10px; min-height: 44px; font-size: .83rem; cursor: pointer; }
+    .card-colors input { accent-color: var(--brand); width: 17px; height: 17px; }
+    .tone-dot { width: 22px; height: 22px; border-radius: 50%; border: 1px solid #0002; }.tone-forest { background: #24573e; }.tone-night { background: #263040; }.tone-ivory { background: #e8e1c9; }
+    .field-help { margin: 8px 0 0; color: var(--muted); font-size: .73rem; }
+    .card-error { color: #b42318; font-size: .83rem; }
+    .card-action-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-top: 24px; }
+    .card-action-row .receipt-launch { margin: 0; }
+    .card-done-icon { display: grid; place-items: center; width: 50px; height: 50px; border-radius: 50%; background: #e9f1df; color: var(--brand); margin-bottom: 20px; font-size: 1.5rem; }
+    @media (max-width: 800px) { .card-entry { padding: 18px; gap: 12px; }.card-creation-grid { grid-template-columns: 1fr; }.card-preview-pane { padding: 28px; }.new-card-number { font-size: .9rem; } }
+    @media (max-width: 620px) {
+      .card-entry-grid { grid-template-columns: 1fr; }.home-card-section { margin-top: 32px; }.card-entry { padding: 20px; }
+      .card-kind-nav a { padding: 12px 4px; font-size: .78rem; }.card-progress { gap: 12px; font-size: .72rem; }.card-progress li { gap: 5px; }
+      .card-preview-pane { padding: 24px 18px; }.card-workspace { padding: 28px 20px; }.new-card { padding: 18px; }.new-card-top strong { font-size: .65rem; }
+      .new-card-number { font-size: .76rem; }.new-card-chip { height: 18px; flex-shrink: 0; }.card-action-row > * { width: 100%; text-align: center; justify-content: center; }
+    }
+
   </style>
 </head>
 <body>
@@ -562,6 +616,7 @@
         <a href="#deposit" data-tab-target="deposit">入金</a>
         <a href="#withdraw" data-tab-target="withdraw">出金</a>
         <a href="#transfer" data-tab-target="transfer">振込</a>
+        <a href="#virtual-card" data-card-route="virtual-card">カード</a>
       </div>
       <span class="secure-label">インターネットバンキング</span>
     </div>
@@ -595,6 +650,15 @@
           <a class="home-service" href="#deposit" data-tab-target="deposit"><span class="home-service-icon" aria-hidden="true">＋</span><h3>入金</h3><p>金額を指定して<br>口座に入金する</p><span class="home-service-arrow" aria-hidden="true">↗</span></a>
           <a class="home-service" href="#withdraw" data-tab-target="withdraw"><span class="home-service-icon" aria-hidden="true">−</span><h3>出金</h3><p>残高を確認しながら<br>口座から出金する</p><span class="home-service-arrow" aria-hidden="true">↗</span></a>
           <a class="home-service" href="#transfer" data-tab-target="transfer"><span class="home-service-icon" aria-hidden="true">↗</span><h3>振込</h3><p>振込先と金額を指定して<br>お取引を進める</p><span class="home-service-arrow" aria-hidden="true">↗</span></a>
+        </div>
+      </section>
+
+
+      <section class="home-card-section" aria-labelledby="home-card-title">
+        <div class="home-section-heading"><div><p class="home-kicker">MANABI CARDS</p><h2 id="home-card-title">あなたに合う、一枚を。</h2></div><p>2つのカードから選べます。</p></div>
+        <div class="card-entry-grid">
+          <a class="card-entry" href="#virtual-card" data-card-route="virtual-card"><span class="card-entry-symbol" aria-hidden="true">▱</span><div><span class="home-kicker">VIRTUAL</span><h3>バーチャルカード</h3><p>画面上で使うカードのデザインを作成。</p></div><span aria-hidden="true">↗</span></a>
+          <a class="card-entry" href="#physical-card" data-card-route="physical-card"><span class="card-entry-symbol" aria-hidden="true">▣</span><div><span class="home-kicker">PHYSICAL</span><h3>リアルカード</h3><p>手に持つ一枚をイメージして作成。</p></div><span aria-hidden="true">↗</span></a>
         </div>
       </section>
 
@@ -714,6 +778,43 @@
     </section>
     <button type="button" class="receipt-launch" id="receipt-launch" hidden>直前のお取引レシートを表示</button>
     </section>
+
+    <section id="cards-view" class="cards-view" hidden aria-labelledby="cards-title">
+      <a class="view-back" href="#home" data-home-link>← ホームへ戻る</a>
+      <div class="page-heading"><p>MANABI CARDS</p><h1 id="cards-title" tabindex="-1">バーチャルカード発行</h1></div>
+      <nav class="card-kind-nav" aria-label="カードの種類"><a href="#virtual-card" data-card-route="virtual-card">バーチャルカード</a><a href="#physical-card" data-card-route="physical-card">リアルカード</a></nav>
+      <ol class="card-progress" aria-label="カード作成の手順"><li data-card-step="edit"><span>1</span>内容を入力</li><li data-card-step="confirm"><span>2</span>確認</li><li data-card-step="done"><span>3</span>完了</li></ol>
+      <div class="card-creation-grid">
+        <aside class="card-preview-pane" aria-label="カードのプレビュー">
+          <p class="home-kicker">YOUR MANABI CARD</p>
+          <div class="new-card" id="new-card" data-tone="forest">
+            <div class="new-card-top"><strong>MANABI BANK</strong><span id="new-card-kind">VIRTUAL</span></div>
+            <div class="new-card-chip" id="new-card-chip" hidden aria-hidden="true"></div>
+            <p class="new-card-number">•••• &nbsp; •••• &nbsp; •••• &nbsp; DEMO</p>
+            <p id="new-card-name">MANABI TARO</p>
+            <div class="new-card-bottom"><span>SAMPLE</span><span>NOT VALID FOR PAYMENT</span></div>
+          </div>
+          <p class="card-preview-caption" id="card-preview-caption">バーチャルカードの完成イメージ</p>
+          <p class="card-sample-note">サンプルカード · 決済・配送なし</p>
+        </aside>
+        <div class="card-workspace">
+          <form id="card-create-form" novalidate>
+            <h2>カードをデザインする</h2><p class="card-intro">お好みのカラーと、カードに表示する名前を設定してください。</p>
+            <fieldset class="card-colors"><legend>カードカラー</legend>
+              <label><input type="radio" name="card-tone" value="forest" checked><span class="tone-dot tone-forest"></span>フォレスト</label>
+              <label><input type="radio" name="card-tone" value="night"><span class="tone-dot tone-night"></span>ナイト</label>
+              <label><input type="radio" name="card-tone" value="ivory"><span class="tone-dot tone-ivory"></span>アイボリー</label>
+            </fieldset>
+            <div class="field"><label for="card-holder">カード名義（表示用）</label><input id="card-holder" type="text" value="MANABI TARO" maxlength="26" autocomplete="off" spellcheck="false" aria-describedby="card-holder-help card-error"><p class="field-help" id="card-holder-help">半角英字・スペース・ハイフン、26文字まで。架空の名前で作成できます。</p></div>
+            <p id="card-error" class="card-error" role="alert" hidden></p>
+            <button class="primary-button" type="submit">入力内容を確認する →</button>
+          </form>
+          <section id="card-confirm" hidden aria-labelledby="card-confirm-title"><h2 id="card-confirm-title" tabindex="-1">作成内容の確認</h2><p class="card-intro">カードの種類・カラー・名義をご確認ください。</p><dl id="card-confirm-details" class="receipt-details"></dl><div class="card-action-row"><button type="button" class="primary-button" id="card-finish">サンプルカードを作成</button><button type="button" class="receipt-launch" id="card-edit">修正する</button></div></section>
+          <section id="card-done" hidden aria-labelledby="card-done-title"><span class="card-done-icon" aria-hidden="true">✓</span><h2 id="card-done-title" tabindex="-1">カードを作成しました</h2><p class="card-intro" id="card-done-text"></p><dl id="card-done-details" class="receipt-details"></dl><div class="card-action-row"><a class="home-primary" href="#home" data-home-link>ホームへ戻る</a><button type="button" class="receipt-launch" id="card-new">別のデザインを作成</button></div></section>
+        </div>
+      </div>
+    </section>
+
     <p class="footer-note" id="support">© 2026 まなび銀行</p>
   </main>
 
@@ -795,28 +896,116 @@
       const isValidAmount = (value) => Number.isSafeInteger(value) && value >= 1;
 
 
-      // Home and transaction screens share in-memory account state.
+
+      const cardStates = {
+        "virtual-card": { name: "MANABI TARO", tone: "forest", stage: "edit", created: "" },
+        "physical-card": { name: "MANABI TARO", tone: "forest", stage: "edit", created: "" }
+      };
+      const cardToneNames = { forest: "フォレスト", night: "ナイト", ivory: "アイボリー" };
+      let currentCardRoute = "virtual-card";
+      const cardLabel = (route) => route === "virtual-card" ? "バーチャルカード" : "リアルカード";
+      const cardForm = document.querySelector("#card-create-form");
+      const cardHolder = document.querySelector("#card-holder");
+      const fillCardDetails = (selector, rows) => {
+        const container = document.querySelector(selector);
+        container.replaceChildren();
+        rows.forEach(([label, value]) => {
+          const row = document.createElement("div");
+          row.className = "receipt-row";
+          const term = document.createElement("dt"), detail = document.createElement("dd");
+          term.textContent = label; detail.textContent = value;
+          row.append(term, detail); container.append(row);
+        });
+      };
+      const renderCard = (route, focus = false) => {
+        currentCardRoute = route;
+        const state = cardStates[route], label = cardLabel(route);
+        document.querySelector("#cards-title").textContent = label + "発行";
+        document.querySelector("#new-card").dataset.tone = state.tone;
+        document.querySelector("#new-card-kind").textContent = route === "virtual-card" ? "VIRTUAL" : "PHYSICAL";
+        document.querySelector("#new-card-chip").hidden = route !== "physical-card";
+        document.querySelector("#new-card-name").textContent = state.name.toUpperCase() || "YOUR NAME";
+        document.querySelector("#card-preview-caption").textContent = label + "の完成イメージ";
+        cardHolder.value = state.name;
+        cardForm.querySelectorAll('[name="card-tone"]').forEach(input => input.checked = input.value === state.tone);
+        cardForm.hidden = state.stage !== "edit";
+        document.querySelector("#card-confirm").hidden = state.stage !== "confirm";
+        document.querySelector("#card-done").hidden = state.stage !== "done";
+        document.querySelector("#card-error").hidden = true;
+        document.querySelectorAll(".card-kind-nav a").forEach(link => {
+          if (link.dataset.cardRoute === route) link.setAttribute("aria-current", "page");
+          else link.removeAttribute("aria-current");
+        });
+        document.querySelectorAll("[data-card-step]").forEach(item => {
+          if (item.dataset.cardStep === state.stage) item.setAttribute("aria-current", "step");
+          else item.removeAttribute("aria-current");
+        });
+        const rows = [["カードの種類", label], ["カードカラー", cardToneNames[state.tone]], ["カード名義", state.name], ["用途", "サンプル（決済・配送なし）"]];
+        if (state.stage === "confirm") fillCardDetails("#card-confirm-details", rows);
+        if (state.stage === "done") {
+          document.querySelector("#card-done-text").textContent = label + "のサンプルが完成しました。画面を移動しても、再読み込みまではここで確認できます。";
+          fillCardDetails("#card-done-details", [...rows, ["作成日時", state.created]]);
+        }
+        if (focus) document.querySelector(state.stage === "edit" ? "#card-holder" : state.stage === "confirm" ? "#card-confirm-title" : "#card-done-title").focus({ preventScroll: true });
+      };
+      cardHolder.addEventListener("input", () => {
+        cardStates[currentCardRoute].name = cardHolder.value;
+        document.querySelector("#new-card-name").textContent = cardHolder.value.toUpperCase() || "YOUR NAME";
+        document.querySelector("#card-error").hidden = true;
+        cardHolder.removeAttribute("aria-invalid");
+      });
+      cardForm.querySelectorAll('[name="card-tone"]').forEach(input => input.addEventListener("change", () => {
+        cardStates[currentCardRoute].tone = input.value;
+        document.querySelector("#new-card").dataset.tone = input.value;
+      }));
+      cardForm.addEventListener("submit", event => {
+        event.preventDefault();
+        const state = cardStates[currentCardRoute];
+        if (state.stage !== "edit") return;
+        const name = cardHolder.value.trim().replace(/ +/g, " ").toUpperCase();
+        if (!/^[A-Z][A-Z -]{0,25}$/.test(name)) {
+          const error = document.querySelector("#card-error");
+          error.textContent = "名義を半角英字から始まる26文字以内で入力してください。";
+          error.hidden = false; cardHolder.setAttribute("aria-invalid", "true"); cardHolder.focus(); return;
+        }
+        cardHolder.removeAttribute("aria-invalid");
+        state.name = name; state.stage = "confirm"; renderCard(currentCardRoute, true);
+      });
+      document.querySelector("#card-edit").addEventListener("click", () => { cardStates[currentCardRoute].stage = "edit"; renderCard(currentCardRoute, true); });
+      document.querySelector("#card-finish").addEventListener("click", () => {
+        const state = cardStates[currentCardRoute];
+        if (state.stage !== "confirm") return;
+        state.stage = "done";
+        state.created = new Intl.DateTimeFormat("ja-JP", { timeZone: "Asia/Tokyo", dateStyle: "medium", timeStyle: "short" }).format(new Date()) + "（日本時間）";
+        renderCard(currentCardRoute, true);
+      });
+      document.querySelector("#card-new").addEventListener("click", () => { cardStates[currentCardRoute].stage = "edit"; renderCard(currentCardRoute, true); });
+
+
+      // Home, transactions and card screens share in-memory state.
       const tabs = [...document.querySelectorAll(".tab")];
       const panels = [...document.querySelectorAll(".panel")];
       const homeView = document.querySelector("#home-view");
       const transactionView = document.querySelector("#practice");
-      const routeNames = ["home", "balance", "deposit", "withdraw", "transfer"];
+      const routeNames = ["home", "balance", "deposit", "withdraw", "transfer", "virtual-card", "physical-card"];
       let activeView = "home";
-      const viewScroll = { home: 0, transaction: 0 };
+      const viewScroll = { home: 0, transaction: 0, cards: 0 };
       const routeFromHash = () => {
         const hash = location.hash.slice(1);
         return routeNames.includes(hash) ? hash : hash === "practice" ? "balance" : "home";
       };
       const navigate = (route, push = false, restoreScroll = true) => {
         if (!routeNames.includes(route)) route = "home";
-        const nextView = route === "home" ? "home" : "transaction";
+        const nextView = route === "home" ? "home" : route.endsWith("-card") ? "cards" : "transaction";
         const changedView = activeView !== nextView;
         if (changedView) viewScroll[activeView] = window.scrollY;
         homeView.hidden = nextView !== "home";
         transactionView.hidden = nextView !== "transaction";
         document.querySelector("#header-account").hidden = nextView === "home";
         document.querySelector("#header-home-note").hidden = nextView !== "home";
-        if (route !== "home") {
+        document.querySelector("#cards-view").hidden = nextView !== "cards";
+        if (nextView === "cards") renderCard(route);
+        if (nextView === "transaction") {
           tabs.forEach((tab) => {
             const selected = tab.id === "tab-" + route;
             tab.setAttribute("aria-selected", String(selected));
@@ -829,26 +1018,26 @@
           });
         }
         document.querySelectorAll(".global-nav a").forEach((link) => {
-          const current = link.hash === "#" + route;
+          const current = link.hash === "#" + route || (nextView === "cards" && link.hasAttribute("data-card-route"));
           if (current) link.setAttribute("aria-current", "page");
           else link.removeAttribute("aria-current");
         });
-        const label = route === "home" ? "ホーム" : document.querySelector("#tab-" + route).textContent;
+        const label = route === "home" ? "ホーム" : nextView === "cards" ? cardLabel(route) + "発行" : document.querySelector("#tab-" + route).textContent;
         document.title = label + " | まなび銀行";
         activeView = nextView;
         if (push && location.hash !== "#" + route) history.pushState(null, "", "#" + route);
         if (changedView && restoreScroll) {
-          const heading = document.querySelector(nextView === "home" ? "#home-title" : "#practice-title");
+          const heading = document.querySelector(nextView === "home" ? "#home-title" : nextView === "cards" ? "#cards-title" : "#practice-title");
           heading.focus({ preventScroll: true });
           window.scrollTo({ top: viewScroll[nextView], behavior: "instant" });
         }
       };
       tabs.forEach((tab) => tab.addEventListener("click", () => navigate(tab.id.slice(4), true)));
-      document.querySelectorAll("[data-tab-target], [data-home-link]").forEach((link) => {
+      document.querySelectorAll("[data-tab-target], [data-home-link], [data-card-route]").forEach((link) => {
         link.addEventListener("click", (event) => {
           if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey || event.button > 0) return;
           event.preventDefault();
-          navigate(link.hasAttribute("data-home-link") ? "home" : link.dataset.tabTarget, true);
+          navigate(link.hasAttribute("data-home-link") ? "home" : link.dataset.cardRoute || link.dataset.tabTarget, true);
         });
       });
       window.addEventListener("popstate", () => navigate(routeFromHash()));
