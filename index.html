@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2048%2048%22%20fill%3D%22none%22%3E%3Cpath%20class%3D%22mark-main%22%20d%3D%22M4%2011%2022%2021v22L4%2033V11Z%22%20fill%3D%22%23164B35%22%2F%3E%3Cpath%20class%3D%22mark-secondary%22%20d%3D%22m26%2021%2018-10v22L26%2043V21Z%22%20fill%3D%22%2342775A%22%2F%3E%3Cpath%20class%3D%22mark-accent%22%20d%3D%22m24%204%208%204.5-8%204.5-8-4.5L24%204Z%22%20fill%3D%22%23B49B5D%22%2F%3E%3C%2Fsvg%3E">
   <title>まなび銀行 | インターネットバンキング</title>
   <style>
     :root {
@@ -514,13 +515,32 @@
       .practice-section .page-heading h1 { font-size: 1.4rem; }
     }
 
+
+    /* Manabi: an open-book monogram with a small gold accent. */
+    .brand-mark { display: block; flex: 0 0 46px; width: 46px; height: 46px; border-radius: 0; background: transparent; text-decoration: none; }
+    .brand-mark svg { display: block; width: 100%; height: 100%; }
+    .brand-lockup { gap: 14px; }
+    .brand-title { font-size: 1.5rem; font-weight: 700; letter-spacing: .08em; line-height: 1.4; }
+    .brand-subtitle { font-size: .61rem; letter-spacing: .2em; }
+    .receipt-brand { display: flex; align-items: center; gap: 10px; }
+    .receipt-brand svg { width: 30px; height: 30px; flex-shrink: 0; }
+    .art-card-brand { display: flex; align-items: center; gap: 9px; font-size: .72rem; letter-spacing: .13em; }
+    .art-card-brand svg { width: 26px; height: 26px; flex-shrink: 0; }
+    .art-card-brand .mark-main { fill: #fff; }
+    .art-card-brand .mark-secondary { fill: #c9dbc9; }
+    .art-card-brand .mark-accent { fill: #dfc58a; }
+    @media (max-width: 620px) {
+      .brand-mark { flex-basis: 40px; width: 40px; height: 40px; }
+      .brand-title { font-size: 1.35rem; }
+      .brand-lockup { gap: 11px; }
+    }
   </style>
 </head>
 <body>
   <header class="site-header">
     <div class="header-inner">
       <div class="brand-lockup">
-        <span class="brand-mark" aria-hidden="true">M</span>
+        <a class="brand-mark" href="#home" data-home-link aria-label="まなび銀行 ホーム"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" aria-hidden="true" focusable="false"><path class="mark-main" d="M4 11 22 21v22L4 33V11Z" fill="#164B35"/><path class="mark-secondary" d="m26 21 18-10v22L26 43V21Z" fill="#42775A"/><path class="mark-accent" d="m24 4 8 4.5-8 4.5-8-4.5L24 4Z" fill="#B49B5D"/></svg></a>
         <div>
           <p class="brand-title"><a class="brand-home" href="#home" data-home-link>まなび銀行</a></p>
           <p class="brand-subtitle">ONLINE BANKING</p>
@@ -561,7 +581,7 @@
         </div>
         <div class="home-art" aria-hidden="true">
           <div class="art-orbit"></div>
-          <div class="art-card"><span class="art-card-brand">M / MANABI</span><span class="art-chip"></span><span class="art-card-dots">•••• &nbsp; •••• &nbsp; ••••</span><span class="art-card-bottom">EVERYDAY, SIMPLY.</span></div>
+          <div class="art-card"><span class="art-card-brand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" aria-hidden="true" focusable="false"><path class="mark-main" d="M4 11 22 21v22L4 33V11Z" fill="#164B35"/><path class="mark-secondary" d="m26 21 18-10v22L26 43V21Z" fill="#42775A"/><path class="mark-accent" d="m24 4 8 4.5-8 4.5-8-4.5L24 4Z" fill="#B49B5D"/></svg><span>MANABI BANK</span></span><span class="art-chip"></span><span class="art-card-dots">•••• &nbsp; •••• &nbsp; ••••</span><span class="art-card-bottom">EVERYDAY, SIMPLY.</span></div>
           <div class="art-caption"><span class="art-caption-icon">↗</span><div>暮らしのそばに。<small>YOUR EVERYDAY BANKING</small></div></div>
           <span class="art-spark art-spark-one">＋</span><span class="art-spark art-spark-two">＋</span>
         </div>
@@ -701,7 +721,7 @@
 
   <dialog class="receipt-dialog" id="receipt-dialog" aria-labelledby="receipt-title" aria-describedby="receipt-disclaimer">
     <article class="receipt-paper">
-      <p class="receipt-brand">まなび銀行</p>
+      <p class="receipt-brand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" aria-hidden="true" focusable="false"><path class="mark-main" d="M4 11 22 21v22L4 33V11Z" fill="#164B35"/><path class="mark-secondary" d="m26 21 18-10v22L26 43V21Z" fill="#42775A"/><path class="mark-accent" d="m24 4 8 4.5-8 4.5-8-4.5L24 4Z" fill="#B49B5D"/></svg><span>まなび銀行</span></p>
       <span class="receipt-badge">サンプル / SAMPLE</span>
       <h2 id="receipt-title">お取引レシート</h2>
       <div class="receipt-amount"><span id="receipt-amount-label">取引金額</span><strong id="receipt-amount"></strong></div>
