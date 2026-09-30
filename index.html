@@ -218,7 +218,7 @@
     .updates ul { margin: 0; padding: 0; list-style: none; }
     .updates li { padding: 10px 0; border-top: 1px solid #e8eeea; color: #526259; font-size: 0.85rem; }
     .updates time { display: inline-block; min-width: 100px; color: var(--brand); font-weight: 700; }
-    .practice-section { max-width: 800px; margin: 0 auto; scroll-margin-top: 170px; }
+    .practice-section { max-width: 800px; margin: 24px auto 36px; scroll-margin-top: 170px; }
 
     .page-heading { margin-bottom: 22px; }
     .page-heading p { margin: 0 0 4px; color: var(--brand); font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; }
@@ -396,62 +396,26 @@
     <div class="global-nav-inner">
       <div>
         <a href="#main-menu">ホーム</a>
-        <a href="#services">サービス</a>
-        <a href="#updates">お知らせ</a>
-        <a href="#practice">取引の練習</a>
+        <a href="#practice" data-tab-target="balance">残高照会</a>
+        <a href="#practice" data-tab-target="deposit">入金</a>
+        <a href="#practice" data-tab-target="withdraw">出金</a>
+        <a href="#practice" data-tab-target="transfer">振込</a>
       </div>
       <span class="secure-label">デモ用・実際のお取引はできません</span>
     </div>
   </nav>
 
   <main id="main-menu">
-    <section class="hero" aria-label="サイトのご案内">
-      <div class="hero-main">
-        <div class="hero-content">
-          <p class="eyebrow">BANKING SECURITY PRACTICE</p>
-          <h1>銀行の操作を、<br>安心して練習しよう。</h1>
-          <p>残高照会から入出金まで、模擬口座で操作を体験できます。入力内容はこの画面内だけで処理されます。</p>
-          <div class="hero-actions">
-            <a class="hero-link" href="#practice">取引の練習を始める</a>
-            <a class="outline-link" href="#services">サービスを見る</a>
-          </div>
-        </div>
-      </div>
-      <div class="hero-side" aria-label="主なメニュー">
-        <a class="quick-link" href="#practice" data-tab-target="balance">残高照会を練習する</a>
-        <a class="quick-link" href="#practice" data-tab-target="deposit">入金・出金を練習する</a>
-        <a class="quick-link" href="#updates">安全に使うためのお知らせ</a>
-      </div>
-    </section>
-
-    <section class="service-section" id="services" aria-labelledby="services-title">
-      <h2 class="section-title" id="services-title">よく使うメニュー</h2>
-      <div class="service-grid">
-        <a class="service-tile" href="#practice" data-tab-target="balance"><span aria-hidden="true">▤</span>残高照会</a>
-        <a class="service-tile" href="#practice" data-tab-target="deposit"><span aria-hidden="true">＋</span>入金</a>
-        <a class="service-tile" href="#practice" data-tab-target="withdraw"><span aria-hidden="true">−</span>出金</a>
-        <a class="service-tile" href="#practice" data-tab-target="transfer"><span aria-hidden="true">↗</span>振込</a>
-      </div>
-    </section>
-
-    <section class="updates" id="updates" aria-labelledby="updates-title">
-      <h2 class="section-title" id="updates-title">お知らせ</h2>
-      <ul>
-        <li><time datetime="2026-09-30">2026年9月30日</time> このサイトはセキュリティ学習用の模擬画面です。</li>
-        <li><time datetime="2026-09-30">2026年9月30日</time> 実際の口座情報や暗証番号は入力しないでください。</li>
-      </ul>
-    </section>
-
     <section class="practice-section" id="practice" aria-labelledby="practice-title">
-      <div class="notice-board" id="notice-area" role="note">
-        <strong>練習用のお知らせ</strong>
-        <span>模擬口座の暗証番号は「9314」です。実際の暗証番号は入力しないでください。</span>
-      </div>
-
     <div class="page-heading">
       <p>DEMO TRANSACTIONS</p>
       <h2 id="practice-title">お取引メニュー</h2>
     </div>
+
+      <div class="notice-board" id="notice-area" role="note">
+        <strong>練習用のお知らせ</strong>
+        <span>模擬口座の暗証番号は「9314」です。実際の暗証番号は入力しないでください。</span>
+      </div>
 
     <section class="bank-card" aria-label="銀行操作パネル">
       <nav class="tabs" role="tablist" aria-label="取引メニュー">
@@ -550,6 +514,43 @@
       </div>
     </section>
     </section>
+    <section class="hero" aria-label="サイトのご案内">
+      <div class="hero-main">
+        <div class="hero-content">
+          <p class="eyebrow">BANKING SECURITY PRACTICE</p>
+          <h1>銀行の操作を、<br>安心して練習しよう。</h1>
+          <p>残高照会から入出金まで、模擬口座で操作を体験できます。入力内容はこの画面内だけで処理されます。</p>
+          <div class="hero-actions">
+            <a class="hero-link" href="#practice">取引の練習を始める</a>
+            <a class="outline-link" href="#services">サービスを見る</a>
+          </div>
+        </div>
+      </div>
+      <div class="hero-side" aria-label="主なメニュー">
+        <a class="quick-link" href="#practice" data-tab-target="balance">残高照会を練習する</a>
+        <a class="quick-link" href="#practice" data-tab-target="deposit">入金・出金を練習する</a>
+        <a class="quick-link" href="#updates">安全に使うためのお知らせ</a>
+      </div>
+    </section>
+
+    <section class="service-section" id="services" aria-labelledby="services-title">
+      <h2 class="section-title" id="services-title">よく使うメニュー</h2>
+      <div class="service-grid">
+        <a class="service-tile" href="#practice" data-tab-target="balance"><span aria-hidden="true">▤</span>残高照会</a>
+        <a class="service-tile" href="#practice" data-tab-target="deposit"><span aria-hidden="true">＋</span>入金</a>
+        <a class="service-tile" href="#practice" data-tab-target="withdraw"><span aria-hidden="true">−</span>出金</a>
+        <a class="service-tile" href="#practice" data-tab-target="transfer"><span aria-hidden="true">↗</span>振込</a>
+      </div>
+    </section>
+
+    <section class="updates" id="updates" aria-labelledby="updates-title">
+      <h2 class="section-title" id="updates-title">お知らせ</h2>
+      <ul>
+        <li><time datetime="2026-09-30">2026年9月30日</time> このサイトはセキュリティ学習用の模擬画面です。</li>
+        <li><time datetime="2026-09-30">2026年9月30日</time> 実際の口座情報や暗証番号は入力しないでください。</li>
+      </ul>
+    </section>
+
     <p class="footer-note" id="support">まなび銀行はセキュリティ学習用の架空のサイトです。実際の銀行サービスには接続していません。</p>
   </main>
 
