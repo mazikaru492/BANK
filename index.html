@@ -587,6 +587,25 @@
       .new-card-number { font-size: .76rem; }.new-card-chip { height: 18px; flex-shrink: 0; }.card-action-row > * { width: 100%; text-align: center; justify-content: center; }
     }
 
+
+    .auth-controls { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    #login-status { font-size: .7rem; color: #6a7867; }
+    .auth-controls button { min-height: 40px; padding: 8px 15px; border: 1px solid var(--brand); border-radius: 5px; font: inherit; font-size: .8rem; cursor: pointer; color: #fff; background: var(--brand); }
+    #logout-button { background: #fff; color: var(--brand); }
+    .login-view { max-width: 440px; margin: 48px auto; padding: 34px; border: 1px solid #dce5d7; border-radius: 14px; background: #fff; box-shadow: 0 12px 30px #164b3510; }
+    .login-view h1 { margin: 0 0 12px; color: var(--brand); font-size: 1.8rem; }
+    .login-intro { color: var(--muted); font-size: .86rem; margin-bottom: 28px; }
+    .login-view .primary-button { width: 100%; }
+    .login-back { margin-top: 24px; margin-bottom: 0; }
+    #login-pin { letter-spacing: .3em; font-size: 1.2rem; }
+    #login-pin::placeholder { letter-spacing: normal; font-size: .9rem; }
+    @media (max-width: 800px) { .header-inner { flex-wrap: wrap; }.header-home-note { display: none; } }
+    @media (max-width: 620px) {
+      .header-inner { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; }
+      #header-account { grid-column: 1 / -1; grid-row: 2; }
+      .auth-controls { gap: 0; }#login-status { display: none; }.auth-controls button { padding: 8px 10px; font-size: .72rem; }
+      .login-view { margin: 24px auto; padding: 26px 22px; }
+    }
   </style>
 </head>
 <body>
@@ -605,6 +624,7 @@
         <div><span>支店コード</span><strong>024</strong></div>
         <div><span>口座番号</span><strong>1017256</strong></div>
       </div>
+      <div class="auth-controls"><span id="login-status" role="status">未ログイン</span><button type="button" id="login-open">ログイン</button><button type="button" id="logout-button" hidden>ログアウト</button></div>
     </div>
   </header>
 
@@ -623,6 +643,17 @@
   </nav>
 
   <main id="main-menu">
+    <section id="login-view" class="login-view" hidden aria-labelledby="login-title">
+      <p class="home-kicker">MANABI / ACCOUNT ACCESS</p>
+      <h1 id="login-title" tabindex="-1">ログイン</h1>
+      <p class="login-intro">4桁の暗証番号を入力してください。</p>
+      <form id="login-form" novalidate>
+        <div class="field"><label for="login-pin">暗証番号</label><input id="login-pin" type="password" inputmode="numeric" maxlength="4" pattern="[0-9]{4}" autocomplete="off" aria-describedby="login-error" required placeholder="4桁の暗証番号"></div>
+        <p id="login-error" class="card-error" role="alert" hidden></p>
+        <button class="primary-button" type="submit">ログインする</button>
+      </form>
+      <a class="view-back login-back" href="#home" data-home-link>← ホームへ戻る</a>
+    </section>
 
     <div id="home-view">
       <section class="home-hero" aria-labelledby="home-title">
@@ -837,6 +868,8 @@
     (() => {
       const PIN = "9314";
       let balance = 0;
+      let loggedIn = false;
+      let afterLoginRoute = "balance";
 
       // 金額を日本円の表示形式に整える。
       const formatYen = (amount) => `${amount.toLocaleString("ja-JP")} 円`;
@@ -987,22 +1020,32 @@
       const panels = [...document.querySelectorAll(".panel")];
       const homeView = document.querySelector("#home-view");
       const transactionView = document.querySelector("#practice");
-      const routeNames = ["home", "balance", "deposit", "withdraw", "transfer", "virtual-card", "physical-card"];
+      const routeNames = ["home", "balance", "deposit", "withdraw", "transfer", "virtual-card", "physical-card", "login"];
       let activeView = "home";
-      const viewScroll = { home: 0, transaction: 0, cards: 0 };
+      const viewScroll = { home: 0, transaction: 0, cards: 0, login: 0 };
       const routeFromHash = () => {
         const hash = location.hash.slice(1);
         return routeNames.includes(hash) ? hash : hash === "practice" ? "balance" : "home";
       };
       const navigate = (route, push = false, restoreScroll = true) => {
         if (!routeNames.includes(route)) route = "home";
-        const nextView = route === "home" ? "home" : route.endsWith("-card") ? "cards" : "transaction";
+        if (!loggedIn && !["home", "login"].includes(route)) {
+          afterLoginRoute = route;
+          route = "login";
+          history.replaceState(null, "", "#login");
+        }
+        if (loggedIn && route === "login") route = "balance";
+        const nextView = route === "login" ? "login" : route === "home" ? "home" : route.endsWith("-card") ? "cards" : "transaction";
         const changedView = activeView !== nextView;
         if (changedView) viewScroll[activeView] = window.scrollY;
         homeView.hidden = nextView !== "home";
         transactionView.hidden = nextView !== "transaction";
-        document.querySelector("#header-account").hidden = nextView === "home";
+        document.querySelector("#header-account").hidden = !loggedIn || ["home", "login"].includes(nextView);
         document.querySelector("#header-home-note").hidden = nextView !== "home";
+        document.querySelector("#login-view").hidden = nextView !== "login";
+        document.querySelector("#login-open").hidden = loggedIn;
+        document.querySelector("#logout-button").hidden = !loggedIn;
+        document.querySelector("#login-status").textContent = loggedIn ? "ログイン中" : "未ログイン";
         document.querySelector("#cards-view").hidden = nextView !== "cards";
         if (nextView === "cards") renderCard(route);
         if (nextView === "transaction") {
@@ -1022,12 +1065,12 @@
           if (current) link.setAttribute("aria-current", "page");
           else link.removeAttribute("aria-current");
         });
-        const label = route === "home" ? "ホーム" : nextView === "cards" ? cardLabel(route) + "発行" : document.querySelector("#tab-" + route).textContent;
+        const label = route === "login" ? "ログイン" : route === "home" ? "ホーム" : nextView === "cards" ? cardLabel(route) + "発行" : document.querySelector("#tab-" + route).textContent;
         document.title = label + " | まなび銀行";
         activeView = nextView;
         if (push && location.hash !== "#" + route) history.pushState(null, "", "#" + route);
         if (changedView && restoreScroll) {
-          const heading = document.querySelector(nextView === "home" ? "#home-title" : nextView === "cards" ? "#cards-title" : "#practice-title");
+          const heading = document.querySelector(nextView === "login" ? "#login-title" : nextView === "home" ? "#home-title" : nextView === "cards" ? "#cards-title" : "#practice-title");
           heading.focus({ preventScroll: true });
           window.scrollTo({ top: viewScroll[nextView], behavior: "instant" });
         }
@@ -1040,6 +1083,54 @@
           navigate(link.hasAttribute("data-home-link") ? "home" : link.dataset.cardRoute || link.dataset.tabTarget, true);
         });
       });
+
+      document.querySelector("#login-open").addEventListener("click", () => {
+        afterLoginRoute = "balance";
+        navigate("login", true);
+        document.querySelector("#login-pin").focus({ preventScroll: true });
+      });
+      document.querySelector("#login-pin").addEventListener("input", event => {
+        event.target.removeAttribute("aria-invalid");
+        document.querySelector("#login-error").hidden = true;
+      });
+      document.querySelector("#login-form").addEventListener("submit", event => {
+        event.preventDefault();
+        const input = document.querySelector("#login-pin");
+        if (input.value !== PIN) {
+          const error = document.querySelector("#login-error");
+          error.textContent = "暗証番号が違います。4桁の番号を確認してください。";
+          error.hidden = false; input.setAttribute("aria-invalid", "true");
+          input.value = ""; input.focus(); return;
+        }
+        loggedIn = true; input.value = "";
+        document.querySelector("#login-error").hidden = true;
+        input.removeAttribute("aria-invalid");
+        navigate(afterLoginRoute, true);
+      });
+      document.querySelector("#logout-button").addEventListener("click", () => {
+        loggedIn = false; balance = 0; afterLoginRoute = "balance";
+        if (receiptDialog.open) receiptDialog.close();
+        receiptLaunch.hidden = true; receiptDetails.replaceChildren(); receiptSequence = 0;
+        document.querySelector("#receipt-amount").textContent = "";
+        document.querySelector("#receipt-title").textContent = "お取引レシート";
+        document.querySelector("#balance-value").textContent = "0 円";
+        document.querySelector("#balance-result").hidden = true;
+        document.querySelectorAll("#practice form, #login-form").forEach(form => form.reset());
+        document.querySelectorAll("#practice .notice").forEach(item => { item.textContent = ""; item.className = "notice"; });
+        Object.keys(cardStates).forEach(key => cardStates[key] = { name: "MANABI TARO", tone: "forest", stage: "edit", created: "" });
+        renderCard("virtual-card");
+        document.querySelector("#card-confirm-details").replaceChildren();
+        document.querySelector("#card-done-details").replaceChildren();
+        viewScroll.home = viewScroll.transaction = viewScroll.cards = viewScroll.login = 0;
+        history.replaceState(null, "", "#home");
+        navigate("home");
+      });
+      // Gate form actions as well as screen navigation in this local demo.
+      document.addEventListener("submit", event => {
+        if (!loggedIn && event.target.closest("#practice, #cards-view")) {
+          event.preventDefault(); event.stopImmediatePropagation(); navigate("login", true);
+        }
+      }, true);
       window.addEventListener("popstate", () => navigate(routeFromHash()));
       window.addEventListener("hashchange", () => navigate(routeFromHash()));
       navigate(routeFromHash(), false, false);
