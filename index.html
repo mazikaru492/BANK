@@ -391,6 +391,45 @@
       .panel { min-height: 320px; padding: 24px 18px; }
       .page-heading h2 { font-size: 1.4rem; }
     }
+
+    /* Original Manabi background and sample transaction receipts. */
+    body {
+      background-color: #edf3ee;
+      background-image: radial-gradient(ellipse at 5% 10%, rgba(171,199,107,.28), transparent 42%),
+        radial-gradient(ellipse at 95% 55%, rgba(38,115,77,.14), transparent 40%),
+        repeating-linear-gradient(135deg, transparent 0 42px, rgba(22,75,53,.025) 42px 43px);
+      background-attachment: fixed;
+    }
+    .hero-main { background: linear-gradient(125deg, #e5efcc, #f7faf0 58%, #d7e9df); }
+    .hero-main::before { content: ""; position: absolute; width: 240px; height: 240px; right: 35px; bottom: -170px; border: 30px solid rgba(38,115,77,.09); border-radius: 50%; }
+    .page-heading { padding: 14px 20px; background: rgba(255,255,255,.82); border-radius: 0 6px 6px 0; }
+    .receipt-launch { margin-top: 18px; padding: 10px 18px; background: #fff; color: var(--brand); border: 1px solid var(--brand); border-radius: 4px; font: inherit; cursor: pointer; }
+    .receipt-dialog { width: min(480px, calc(100% - 24px)); max-height: calc(100dvh - 32px); padding: 0; border: 0; border-radius: 12px; color: var(--text); box-shadow: 0 24px 80px #103c2a55; overflow: auto; }
+    .receipt-dialog::backdrop { background: rgba(13,34,24,.58); }
+    .receipt-paper { padding: 28px; background: #fff; }
+    .receipt-brand { margin: 0; color: var(--brand); font-weight: 700; font-size: 1.25rem; }
+    .receipt-badge { display: inline-block; margin: 10px 0; padding: 3px 12px; border: 2px solid var(--brand); border-radius: 4px; color: var(--brand); font-size: .85rem; font-weight: 700; letter-spacing: .15em; }
+    .receipt-paper h2 { margin: 6px 0 20px; font-size: 1.4rem; }
+    .receipt-amount { padding: 18px 0; border-top: 1px dashed #9dab9f; border-bottom: 1px dashed #9dab9f; }
+    .receipt-amount span { display: block; color: var(--muted); font-size: .8rem; }
+    .receipt-amount strong { display: block; color: var(--brand); font-size: 1.8rem; overflow-wrap: anywhere; }
+    .receipt-details { margin: 20px 0; font-size: .85rem; }
+    .receipt-row { display: grid; grid-template-columns: 100px minmax(0,1fr); gap: 12px; padding: 9px 0; border-bottom: 1px solid #edf0ea; }
+    .receipt-row dt { color: var(--muted); }
+    .receipt-row dd { margin: 0; text-align: right; overflow-wrap: anywhere; white-space: pre-wrap; }
+    .receipt-disclaimer { margin-bottom: 0; color: #59685f; font-size: .78rem; }
+    .receipt-actions { display: flex; flex-wrap: wrap; gap: 10px; padding: 18px 28px; background: #f2f5ed; }
+    .receipt-actions button { flex: 1; min-width: 130px; min-height: 44px; padding: 10px; border: 1px solid var(--brand); border-radius: 4px; color: var(--brand); background: #fff; font: inherit; cursor: pointer; }
+    .receipt-actions button:first-child { color: #fff; background: var(--brand); }
+    @media (max-width: 420px) { .receipt-paper { padding: 22px 18px; } .receipt-actions { padding: 16px 18px; } }
+    @media print {
+      body:has(.receipt-dialog[open]) { background: #fff; }
+      body:has(.receipt-dialog[open]) > :not(.receipt-dialog) { display: none !important; }
+      .receipt-dialog[open] { position: static; display: block; width: 100%; max-width: 480px; max-height: none; margin: 0 auto; overflow: visible; box-shadow: none; border: 1px solid #aaa; }
+      .receipt-dialog::backdrop, .receipt-actions { display: none !important; }
+      .receipt-paper { break-inside: avoid; }
+    }
+
   </style>
 </head>
 <body>
@@ -527,6 +566,7 @@
         <div class="notice" id="transfer-notice" role="status" aria-live="polite"></div>
       </div>
     </section>
+    <button type="button" class="receipt-launch" id="receipt-launch" hidden>直前のお取引レシートを表示</button>
     </section>
     <section class="hero" aria-label="サイトのご案内">
       <div class="hero-main">
@@ -568,6 +608,22 @@
     <p class="footer-note" id="support">© 2026 まなび銀行</p>
   </main>
 
+
+  <dialog class="receipt-dialog" id="receipt-dialog" aria-labelledby="receipt-title" aria-describedby="receipt-disclaimer">
+    <article class="receipt-paper">
+      <p class="receipt-brand">まなび銀行</p>
+      <span class="receipt-badge">サンプル / SAMPLE</span>
+      <h2 id="receipt-title">お取引レシート</h2>
+      <div class="receipt-amount"><span id="receipt-amount-label">取引金額</span><strong id="receipt-amount"></strong></div>
+      <dl class="receipt-details" id="receipt-details"></dl>
+      <p class="receipt-disclaimer" id="receipt-disclaimer">ブラウザ内のシミュレーション結果です。実際の入出金・振込は行われておらず、金融機関の取引証明には使用できません。</p>
+    </article>
+    <div class="receipt-actions">
+      <button type="button" id="receipt-print">印刷 / PDF保存</button>
+      <button type="button" id="receipt-close" autofocus>閉じる</button>
+    </div>
+  </dialog>
+
   <script>
     (() => {
       const PIN = "9314";
@@ -575,6 +631,51 @@
 
       // 金額を日本円の表示形式に整える。
       const formatYen = (amount) => `${amount.toLocaleString("ja-JP")} 円`;
+
+
+      const receiptDialog = document.querySelector("#receipt-dialog");
+      const receiptLaunch = document.querySelector("#receipt-launch");
+      const receiptDetails = document.querySelector("#receipt-details");
+      let receiptSequence = 0;
+      const showReceipt = (kind, amount, before, destination = null) => {
+        const timestamp = new Intl.DateTimeFormat("ja-JP", {
+          timeZone: "Asia/Tokyo", year: "numeric", month: "2-digit", day: "2-digit",
+          hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23"
+        }).format(new Date());
+        const rows = [
+          ["取引区分", kind],
+          ["取引日時", timestamp + "（日本時間）"],
+          ["サンプル番号", "SAMPLE-" + String(++receiptSequence).padStart(4, "0")],
+          ["口座", "まなび銀行 / 支店024 / ****256"]
+        ];
+        if (destination) {
+          rows.push(["振込先銀行コード", destination.bankCode],
+            ["振込先支店コード", destination.branchCode],
+            ["振込先口座番号", destination.accountNumber],
+            ["振込先名義", destination.recipientName]);
+        }
+        if (kind !== "残高照会") rows.push(["取引前残高", formatYen(before)]);
+        rows.push(["取引後残高", formatYen(balance)]);
+        receiptDetails.replaceChildren();
+        rows.forEach(([label, value]) => {
+          const row = document.createElement("div");
+          row.className = "receipt-row";
+          const term = document.createElement("dt");
+          const definition = document.createElement("dd");
+          term.textContent = label;
+          definition.textContent = value;
+          row.append(term, definition);
+          receiptDetails.append(row);
+        });
+        document.querySelector("#receipt-title").textContent = kind + "レシート";
+        document.querySelector("#receipt-amount-label").textContent = kind === "残高照会" ? "現在の残高" : "取引金額";
+        document.querySelector("#receipt-amount").textContent = formatYen(amount);
+        receiptLaunch.hidden = false;
+        receiptDialog.showModal();
+      };
+      receiptLaunch.addEventListener("click", () => receiptDialog.showModal());
+      document.querySelector("#receipt-close").addEventListener("click", () => receiptDialog.close());
+      document.querySelector("#receipt-print").addEventListener("click", () => window.print());
 
       // 操作結果を対象パネルに表示し、前回の表示種別を置き換える。
       const showNotice = (element, message, type) => {
@@ -635,6 +736,7 @@
         document.querySelector("#balance-value").textContent = formatYen(balance);
         result.hidden = false;
         showNotice(notice, `残高を照会しました。現在の残高: ${formatYen(balance)}`, "success");
+        showReceipt("残高照会", balance, balance);
         event.target.reset();
       });
 
@@ -647,9 +749,15 @@
           showNotice(notice, "入金額は1円以上の整数で入力してください。", "error");
           return;
         }
+        if (!Number.isSafeInteger(balance + amount)) {
+          showNotice(notice, "残高が取り扱い可能な上限を超えます。", "error");
+          return;
+        }
+        const before = balance;
         balance += amount;
         document.querySelector("#balance-value").textContent = formatYen(balance);
         showNotice(notice, `${formatYen(amount)}入金しました。現在の残高: ${formatYen(balance)}`, "success");
+        showReceipt("入金", amount, before);
         event.target.reset();
       });
 
@@ -671,9 +779,11 @@
           showNotice(notice, `残高が不足しています。現在の残高: ${formatYen(balance)}`, "error");
           return;
         }
+        const before = balance;
         balance -= amount;
         document.querySelector("#balance-value").textContent = formatYen(balance);
         showNotice(notice, `${formatYen(amount)}出金しました。現在の残高: ${formatYen(balance)}`, "success");
+        showReceipt("出金", amount, before);
         event.target.reset();
       });
 
@@ -702,10 +812,12 @@
           return;
         }
 
+        const before = balance;
         balance -= amount;
         document.querySelector("#balance-value").textContent = formatYen(balance);
         showNotice(notice,
           `${recipientName} 様へ ${formatYen(amount)}振り込みました。現在の残高: ${formatYen(balance)}`, "success");
+        showReceipt("振込", amount, before, { bankCode, branchCode, accountNumber, recipientName });
         event.target.reset();
       });
     })();
