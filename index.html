@@ -453,7 +453,7 @@
   <nav class="global-nav" aria-label="グローバルナビゲーション">
     <div class="global-nav-inner">
       <div>
-        <a href="#main-menu">ホーム</a>
+        <a href="#main-menu" data-tab-target="balance">ホーム</a>
         <a href="#practice" data-tab-target="balance">残高照会</a>
         <a href="#practice" data-tab-target="deposit">入金</a>
         <a href="#practice" data-tab-target="withdraw">出金</a>
@@ -704,9 +704,11 @@
         });
       });
 
-      // トップページのメニューから対応する取引タブを開く。
+      // 上部メニューはスクロールせず取引画面だけを切り替える。
+      // ページ内の案内リンクは対応する取引セクションへの移動を維持する。
       document.querySelectorAll("[data-tab-target]").forEach((link) => {
-        link.addEventListener("click", () => {
+        link.addEventListener("click", (event) => {
+          if (link.closest(".global-nav")) event.preventDefault();
           document.querySelector(`#tab-${link.dataset.tabTarget}`).click();
         });
       });
