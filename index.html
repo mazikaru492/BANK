@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>三井住友銀行風 ネットバンキング</title>
+  <style>
+    :root {
+      --brand: #641b35;
+      --brand-dark: #3f0d20;
+      --accent: #9d2a4b;
+      --accent-light: #f7e8ed;
+      --page: #f7f5f6;
+      --text: #333333;
+      --muted: #68747b;
+      --line: #dfe5e8;
+      --error-bg: #fff0f0;
+      --error-text: #b42318;
+      --shadow: 0 8px 24px rgba(63, 13, 32, 0.1);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-width: 320px;
+      color: var(--text);
+      background: var(--page);
+      font-family: "Noto Sans JP", "Yu Gothic", "Hiragino Kaku Gothic ProN", sans-serif;
+      line-height: 1.6;
+    }
+
+    .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      color: #fff;
+      background: var(--brand);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+    }
+
+    .header-inner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      max-width: 1120px;
+      min-height: 76px;
+      margin: 0 auto;
+      padding: 14px 24px;
+    }
+
+    .brand-title {
+      margin: 0;
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+    }
+
+    .brand-subtitle {
+      margin: 2px 0 0;
+      color: #ead0d9;
+      font-size: 0.72rem;
+    }
+
+    .account-summary {
+      display: grid;
+      grid-template-columns: repeat(3, auto);
+      gap: 10px 18px;
+      color: #f1e4e8;
+      font-size: 0.74rem;
+      text-align: right;
+    }
+
+    .account-summary span { color: #d1a8b7; }
+    .account-summary strong { display: block; color: #fff; font-weight: 500; }
+
+    main {
+      width: min(800px, calc(100% - 32px));
+      margin: 40px auto 64px;
+    }
+
+    .page-heading { margin-bottom: 22px; }
+    .page-heading p { margin: 0 0 4px; color: var(--accent); font-size: 0.8rem; font-weight: 700; letter-spacing: 0.1em; }
+    .page-heading h1 { margin: 0; color: var(--brand-dark); font-size: clamp(1.45rem, 3vw, 2rem); }
+
+    .bank-card {
+      overflow: hidden;
+      border: 1px solid #e7ecee;
+      border-radius: 8px;
+      background: #fff;
+      box-shadow: var(--shadow);
+    }
+
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .tab {
+      position: relative;
+      min-height: 58px;
+      padding: 12px 8px;
+      border: 0;
+      color: var(--muted);
+      background: #fff;
+      font: inherit;
+      font-size: 0.92rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: color 160ms ease, background 160ms ease;
+    }
+
+    .tab:hover { color: var(--brand); background: #fdf6f8; }
+    .tab[aria-selected="true"] { color: var(--brand); }
+    .tab[aria-selected="true"]::after {
+      position: absolute;
+      right: 16%;
+      bottom: -1px;
+      left: 16%;
+      height: 4px;
+      border-radius: 4px 4px 0 0;
+      background: var(--accent);
+      content: "";
+    }
+
+    .panel { display: none; padding: 34px 42px 40px; }
+    .panel.is-active { display: block; animation: panel-in 220ms ease-out; }
+    @keyframes panel-in { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+
+    .panel-header { margin-bottom: 28px; }
+    .panel-header h2 { margin: 0 0 6px; color: var(--brand-dark); font-size: 1.35rem; }
+    .panel-header p { margin: 0; color: var(--muted); font-size: 0.88rem; }
+
+    .form { max-width: 480px; }
+    .field { margin-bottom: 20px; }
+    .field label { display: block; margin-bottom: 7px; color: #424c52; font-size: 0.88rem; font-weight: 700; }
+    .field input {
+      width: 100%;
+      height: 48px;
+      padding: 0 14px;
+      border: 1px solid #bec9ce;
+      border-radius: 5px;
+      outline: none;
+      color: var(--text);
+      background: #fff;
+      font: inherit;
+      font-size: 1rem;
+      transition: border-color 160ms ease, box-shadow 160ms ease;
+    }
+    .field input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(157, 42, 75, 0.16); }
+    .field input::placeholder { color: #9aa5aa; }
+
+    .primary-button {
+      min-width: 180px;
+      min-height: 48px;
+      padding: 10px 24px;
+      border: 0;
+      border-radius: 5px;
+      color: #fff;
+      background: var(--accent);
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+      transition: background 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+    }
+    .primary-button:hover { background: #b3375a; box-shadow: 0 5px 12px rgba(112, 20, 51, 0.24); }
+    .primary-button:active { transform: translateY(1px); }
+    .primary-button:focus-visible, .tab:focus-visible { outline: 3px solid rgba(157, 42, 75, 0.3); outline-offset: 2px; }
+
+    .notice {
+      display: none;
+      margin-top: 24px;
+      padding: 13px 16px;
+      border-radius: 5px;
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+    .notice.is-visible { display: block; }
+    .notice.success { color: var(--brand); background: var(--accent-light); }
+    .notice.error { color: var(--error-text); background: var(--error-bg); }
+
+    .balance-result {
+      margin-top: 24px;
+      padding: 18px 20px;
+      border-left: 4px solid var(--accent);
+      background: #fcf5f7;
+    }
+    .balance-result span { display: block; color: var(--muted); font-size: 0.82rem; }
+    .balance-result strong { color: var(--brand-dark); font-size: 1.7rem; letter-spacing: 0.03em; }
+
+    .footer-note { margin: 18px 0 0; color: var(--muted); font-size: 0.76rem; text-align: center; }
+
+    @media (max-width: 620px) {
+      .header-inner { align-items: flex-start; flex-direction: column; gap: 10px; padding: 14px 18px; }
+      .account-summary { width: 100%; grid-template-columns: repeat(3, 1fr); gap: 8px; text-align: left; }
+      main { width: min(100% - 20px, 800px); margin-top: 24px; }
+      .panel { padding: 28px 22px 30px; }
+      .tab { min-height: 54px; font-size: 0.82rem; }
+      .tab[aria-selected="true"]::after { right: 8%; left: 8%; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-inner">
+      <div>
+        <p class="brand-title">三井住友銀行風 ネットバンキング</p>
+        <p class="brand-subtitle">安心・便利なオンライン口座サービス</p>
+      </div>
+      <div class="account-summary" aria-label="口座情報">
+        <div><span>銀行コード</span><strong>003</strong></div>
+        <div><span>支店コード</span><strong>024</strong></div>
+        <div><span>口座番号</span><strong>1017256</strong></div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <div class="page-heading">
+      <p>ONLINE BANKING</p>
+      <h1>お取引メニュー</h1>
+    </div>
+
+    <section class="bank-card" aria-label="銀行操作パネル">
+      <nav class="tabs" role="tablist" aria-label="取引メニュー">
+        <button class="tab" id="tab-balance" role="tab" aria-controls="panel-balance" aria-selected="true">残高照会</button>
+        <button class="tab" id="tab-deposit" role="tab" aria-controls="panel-deposit" aria-selected="false">入金</button>
+        <button class="tab" id="tab-withdraw" role="tab" aria-controls="panel-withdraw" aria-selected="false">出金</button>
+        <button class="tab" id="tab-transfer" role="tab" aria-controls="panel-transfer" aria-selected="false">振込</button>
+      </nav>
+
+      <div class="panel is-active" id="panel-balance" role="tabpanel" aria-labelledby="tab-balance">
+        <div class="panel-header">
+          <h2>残高照会</h2>
+          <p>暗証番号を入力して、現在の口座残高をご確認ください。</p>
+        </div>
+        <form class="form" id="balance-form">
+          <div class="field">
+            <label for="balance-pin">暗証番号</label>
+            <input id="balance-pin" type="password" inputmode="numeric" autocomplete="off" maxlength="4" placeholder="4桁の暗証番号">
+          </div>
+          <button class="primary-button" type="submit">残高を照会する</button>
+        </form>
+        <div class="notice" id="balance-notice" role="status" aria-live="polite"></div>
+        <div class="balance-result" id="balance-result" hidden>
+          <span>現在の残高</span>
+          <strong id="balance-value">0 円</strong>
+        </div>
+      </div>
+
+      <div class="panel" id="panel-deposit" role="tabpanel" aria-labelledby="tab-deposit" hidden>
+        <div class="panel-header">
+          <h2>入金</h2>
+          <p>入金額を入力してください。1円以上の金額を指定できます。</p>
+        </div>
+        <form class="form" id="deposit-form">
+          <div class="field">
+            <label for="deposit-amount">入金額</label>
+            <input id="deposit-amount" type="number" min="1" step="1" inputmode="numeric" placeholder="例：10,000">
+          </div>
+          <button class="primary-button" type="submit">入金する</button>
+        </form>
+        <div class="notice" id="deposit-notice" role="status" aria-live="polite"></div>
+      </div>
+
+      <div class="panel" id="panel-withdraw" role="tabpanel" aria-labelledby="tab-withdraw" hidden>
+        <div class="panel-header">
+          <h2>出金</h2>
+          <p>暗証番号と出金額を入力してください。</p>
+        </div>
+        <form class="form" id="withdraw-form">
+          <div class="field">
+            <label for="withdraw-pin">暗証番号</label>
+            <input id="withdraw-pin" type="password" inputmode="numeric" autocomplete="off" maxlength="4" placeholder="4桁の暗証番号">
+          </div>
+          <div class="field">
+            <label for="withdraw-amount">出金額</label>
+            <input id="withdraw-amount" type="number" min="1" step="1" inputmode="numeric" placeholder="例：5,000">
+          </div>
+          <button class="primary-button" type="submit">出金する</button>
+        </form>
+        <div class="notice" id="withdraw-notice" role="status" aria-live="polite"></div>
+      </div>
+
+      <div class="panel" id="panel-transfer" role="tabpanel" aria-labelledby="tab-transfer" hidden>
+        <div class="panel-header">
+          <h2>振込</h2>
+          <p>振込先と金額を入力してください。振込完了後、残高から差し引かれます。</p>
+        </div>
+        <form class="form" id="transfer-form">
+          <div class="field">
+            <label for="transfer-bank">振込先銀行コード</label>
+            <input id="transfer-bank" type="text" inputmode="numeric" maxlength="3" placeholder="例：001">
+          </div>
+          <div class="field">
+            <label for="transfer-branch">振込先支店コード</label>
+            <input id="transfer-branch" type="text" inputmode="numeric" maxlength="3" placeholder="例：123">
+          </div>
+          <div class="field">
+            <label for="transfer-account">振込先口座番号</label>
+            <input id="transfer-account" type="text" inputmode="numeric" maxlength="7" placeholder="例：1234567">
+          </div>
+          <div class="field">
+            <label for="transfer-name">振込先名義</label>
+            <input id="transfer-name" type="text" maxlength="40" placeholder="例：ヤマダ タロウ">
+          </div>
+          <div class="field">
+            <label for="transfer-amount">振込金額</label>
+            <input id="transfer-amount" type="number" min="1" step="1" inputmode="numeric" placeholder="例：30,000">
+          </div>
+          <div class="field">
+            <label for="transfer-pin">暗証番号</label>
+            <input id="transfer-pin" type="password" inputmode="numeric" autocomplete="off" maxlength="4" placeholder="4桁の暗証番号">
+          </div>
+          <button class="primary-button" type="submit">振込を実行する</button>
+        </form>
+        <div class="notice" id="transfer-notice" role="status" aria-live="polite"></div>
+      </div>
+    </section>
+    <p class="footer-note">本画面はデモ用です。実際の銀行サービスには接続していません。</p>
+  </main>
+
+  <script>
+    (() => {
+      const PIN = "9314";
+      let balance = 0;
+      let noticeTimer;
+
+      const formatYen = (amount) => `${amount.toLocaleString("ja-JP")} 円`;
+
+      const showNotice = (element, message, type) => {
+        window.clearTimeout(noticeTimer);
+        element.textContent = message;
+        element.className = `notice is-visible ${type}`;
+        noticeTimer = window.setTimeout(() => {
+          element.classList.remove("is-visible");
+        }, 5000);
+      };
+
+      const isValidAmount = (value) => Number.isInteger(value) && value > 0;
+
+      const tabs = [...document.querySelectorAll(".tab")];
+      const panels = [...document.querySelectorAll(".panel")];
+      tabs.forEach((tab) => {
+        tab.addEventListener("click", () => {
+          const targetId = tab.getAttribute("aria-controls");
+          tabs.forEach((item) => item.setAttribute("aria-selected", String(item === tab)));
+          panels.forEach((panel) => {
+            const isTarget = panel.id === targetId;
+            panel.classList.toggle("is-active", isTarget);
+            panel.hidden = !isTarget;
+          });
+        });
+      });
+
+      document.querySelector("#balance-form").addEventListener("submit", (event) => {
+        event.preventDefault();
+        const pin = document.querySelector("#balance-pin").value;
+        const notice = document.querySelector("#balance-notice");
+        const result = document.querySelector("#balance-result");
+        if (pin !== PIN) {
+          result.hidden = true;
+          showNotice(notice, "暗証番号が正しくありません。", "error");
+          return;
+        }
+        document.querySelector("#balance-value").textContent = formatYen(balance);
+        result.hidden = false;
+        showNotice(notice, "残高を照会しました。", "success");
+        event.target.reset();
+      });
+
+      document.querySelector("#deposit-form").addEventListener("submit", (event) => {
+        event.preventDefault();
+        const amount = Number(document.querySelector("#deposit-amount").value);
+        const notice = document.querySelector("#deposit-notice");
+        if (!isValidAmount(amount)) {
+          showNotice(notice, "1円以上の正しい入金額を入力してください。", "error");
+          return;
+        }
+        balance += amount;
+        showNotice(notice, `${formatYen(amount)}入金しました。現在の残高: ${formatYen(balance)}`, "success");
+        event.target.reset();
+      });
+
+      document.querySelector("#withdraw-form").addEventListener("submit", (event) => {
+        event.preventDefault();
+        const pin = document.querySelector("#withdraw-pin").value;
+        const amount = Number(document.querySelector("#withdraw-amount").value);
+        const notice = document.querySelector("#withdraw-notice");
+        if (pin !== PIN) {
+          showNotice(notice, "暗証番号が正しくありません。", "error");
+          return;
+        }
+        if (!isValidAmount(amount)) {
+          showNotice(notice, "1円以上の正しい出金額を入力してください。", "error");
+          return;
+        }
+        if (amount > balance) {
+          showNotice(notice, `残高が不足しています。現在の残高: ${formatYen(balance)}`, "error");
+          return;
+        }
+        balance -= amount;
+        showNotice(notice, `${formatYen(amount)}出金しました。現在の残高: ${formatYen(balance)}`, "success");
+        event.target.reset();
+      });
+
+      document.querySelector("#transfer-form").addEventListener("submit", (event) => {
+        event.preventDefault();
+        const bankCode = document.querySelector("#transfer-bank").value.trim();
+        const branchCode = document.querySelector("#transfer-branch").value.trim();
+        const accountNumber = document.querySelector("#transfer-account").value.trim();
+        const recipientName = document.querySelector("#transfer-name").value.trim();
+        const amount = Number(document.querySelector("#transfer-amount").value);
+        const pin = document.querySelector("#transfer-pin").value;
+        const notice = document.querySelector("#transfer-notice");
+
+        if (!/^\d{3}$/.test(bankCode) || !/^\d{3}$/.test(branchCode) || !/^\d{7}$/.test(accountNumber)
+          || !recipientName || !isValidAmount(amount)) {
+          showNotice(notice, "振込先と1円以上の正しい振込金額を入力してください。", "error");
+          return;
+        }
+        if (pin !== PIN) {
+          showNotice(notice, "暗証番号が正しくありません。", "error");
+          return;
+        }
+        if (amount > balance) {
+          showNotice(notice, `残高が不足しています。現在の残高: ${formatYen(balance)}`, "error");
+          return;
+        }
+
+        balance -= amount;
+        showNotice(notice,
+          `${recipientName} 様へ ${formatYen(amount)}振り込みました。現在の残高: ${formatYen(balance)}`, "success");
+        event.target.reset();
+      });
+    })();
+  </script>
+</body>
+</html>
