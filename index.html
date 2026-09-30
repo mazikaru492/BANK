@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>まなび銀行 | ネットバンキング練習サイト</title>
+  <title>まなび銀行 | インターネットバンキング</title>
   <style>
     :root {
-      --brand: #004d25;
-      --brand-dark: #004d25;
-      --accent: #008a4b;
-      --accent-light: #e8f5ed;
-      --page: #f5f7f9;
+      --brand: #164b35;
+      --brand-dark: #103c2a;
+      --accent: #26734d;
+      --accent-light: #f0f5e7;
+      --page: #f5f5f2;
       --text: #333333;
       --muted: #68747b;
       --line: #dfe5e8;
@@ -34,15 +34,6 @@
     button, input { font-family: inherit; }
     [hidden] { display: none !important; }
 
-    .training-banner {
-      padding: 7px 20px;
-      color: #fff;
-      background: #173c2a;
-      font-size: 0.76rem;
-      font-weight: 700;
-      text-align: center;
-      letter-spacing: 0.04em;
-    }
 
     .site-header {
       position: sticky;
@@ -50,8 +41,8 @@
       z-index: 10;
       color: var(--text);
       background: #fff;
+      border-top: 5px solid var(--brand);
       border-bottom: 1px solid #e4e9e6;
-      box-shadow: 0 2px 8px rgba(18, 38, 57, 0.06);
     }
 
     .header-inner {
@@ -68,7 +59,7 @@
     .brand-title {
       margin: 0;
       color: var(--brand);
-      font-size: 1.25rem;
+      font-size: 1.55rem;
       font-weight: 700;
       letter-spacing: 0.03em;
     }
@@ -97,9 +88,9 @@
       place-items: center;
       width: 42px;
       height: 42px;
-      border-radius: 12px 12px 12px 4px;
+      border-radius: 50%;
       color: #fff;
-      background: linear-gradient(135deg, #008a4b, #004d25);
+      background: var(--brand);
       font-size: 1.3rem;
       font-weight: 900;
     }
@@ -218,26 +209,12 @@
     .updates ul { margin: 0; padding: 0; list-style: none; }
     .updates li { padding: 10px 0; border-top: 1px solid #e8eeea; color: #526259; font-size: 0.85rem; }
     .updates time { display: inline-block; min-width: 100px; color: var(--brand); font-weight: 700; }
-    .practice-section { max-width: 800px; margin: 0 auto; scroll-margin-top: 170px; }
+    .practice-section { max-width: 800px; margin: 24px auto 36px; scroll-margin-top: 170px; }
 
     .page-heading { margin-bottom: 22px; }
     .page-heading p { margin: 0 0 4px; color: var(--brand); font-size: 0.78rem; font-weight: 700; letter-spacing: 0.1em; }
     .page-heading h2 { margin: 0; color: var(--brand-dark); font-size: clamp(1.45rem, 3vw, 2rem); }
 
-    .notice-board {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 24px;
-      padding: 12px 16px;
-      border: 1px solid #d6e7dc;
-      border-left: 4px solid var(--brand);
-      background: #fff;
-      font-size: 0.84rem;
-    }
-
-    .notice-board strong { color: var(--brand); white-space: nowrap; }
-    .notice-board span { color: var(--muted); }
 
     .bank-card {
       overflow: hidden;
@@ -369,23 +346,65 @@
       .panel { padding: 28px 22px 30px; }
       .tab { min-height: 54px; font-size: 0.82rem; }
       .tab[aria-selected="true"]::after { right: 8%; left: 8%; }
-      .notice-board { align-items: flex-start; flex-direction: column; gap: 2px; }
+    }
+
+    /* Account dashboard */
+    .account-summary { padding: 10px 18px; background: #f3f5ef; border-left: 3px solid #a4bc60; }
+    .global-nav { color: var(--brand); background: #fff; border-bottom: 3px solid #a4bc60; }
+    .global-nav-inner > div { display: flex; flex-wrap: wrap; }
+    .global-nav a, .global-nav a:first-child { padding: 15px 22px; color: var(--brand); font-weight: 700; border-right: 1px solid #e5e8df; }
+    .global-nav a:hover { color: var(--brand-dark); background: var(--accent-light); }
+    .secure-label { color: var(--muted); }
+    .practice-section { max-width: 1000px; margin: 28px auto 44px; }
+    .page-heading { padding-left: 15px; border-left: 5px solid #a4bc60; }
+    .page-heading p { color: #6f7869; letter-spacing: 0.16em; font-size: 0.68rem; }
+    .page-heading h2 { font-size: 1.65rem; }
+    .bank-card { display: grid; grid-template-columns: 210px minmax(0, 1fr); border-radius: 3px; box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04); }
+    .tabs { display: flex; flex-direction: column; border-bottom: 0; border-right: 1px solid #dfe5dc; background: #f7f8f4; }
+    .tab { min-height: 64px; padding: 18px 22px; text-align: left; border-bottom: 1px solid #dfe5dc; background: transparent; }
+    .tab[aria-selected="true"] { color: #fff; background: var(--brand); }
+    .tab[aria-selected="true"]::after { top: 0; bottom: 0; left: 0; right: auto; width: 4px; height: auto; background: #a4bc60; }
+    .panel { min-height: 360px; padding: 32px 36px 36px; }
+    .panel-header { padding-bottom: 16px; border-bottom: 1px solid #e4e8df; }
+    .primary-button { border-radius: 3px; background: var(--brand); }
+    .primary-button:hover { background: var(--accent); }
+    .field input { border-radius: 3px; }
+    .hero-main { min-height: 250px; border-radius: 3px; background: #edf2e3; }
+    .hero-main::after { border-color: rgba(164, 188, 96, 0.18); }
+    .hero h1 { font-size: clamp(1.5rem, 3vw, 2rem); }
+    .quick-link, .service-tile, .updates { border-radius: 3px; box-shadow: none; }
+    .updates { border-top: 3px solid var(--brand); }
+    .footer-note { padding: 24px 0; border-top: 1px solid #dfe5dc; }
+    @media (max-width: 800px) {
+      .secure-label { display: none; }
+    }
+    @media (max-width: 620px) {
+      .global-nav-inner { padding: 0; }
+      .global-nav-inner > div { width: 100%; }
+      .global-nav a, .global-nav a:first-child { flex: 1; padding: 12px 4px; font-size: 0.75rem; text-align: center; }
+      .account-summary { padding: 8px 12px; }
+      .practice-section { margin-top: 20px; }
+      .bank-card { display: block; }
+      .tabs { display: grid; grid-template-columns: repeat(4, 1fr); border-right: 0; border-bottom: 1px solid #dfe5dc; }
+      .tab { min-height: 52px; padding: 12px 4px; text-align: center; border-bottom: 0; }
+      .tab[aria-selected="true"]::after { top: auto; bottom: 0; left: 0; right: 0; height: 3px; width: auto; }
+      .panel { min-height: 320px; padding: 24px 18px; }
+      .page-heading h2 { font-size: 1.4rem; }
     }
   </style>
 </head>
 <body>
-  <div class="training-banner">セキュリティ学習用の模擬サイトです。実在の銀行とは関係ありません。実際の暗証番号は入力しないでください。</div>
   <header class="site-header">
     <div class="header-inner">
       <div class="brand-lockup">
         <span class="brand-mark" aria-hidden="true">M</span>
         <div>
           <p class="brand-title">まなび銀行</p>
-          <p class="brand-subtitle">BANKING SECURITY LAB</p>
+          <p class="brand-subtitle">ONLINE BANKING</p>
         </div>
       </div>
       <div class="account-summary" aria-label="口座情報">
-        <div><span>練習用 銀行コード</span><strong>003</strong></div>
+        <div><span>銀行コード</span><strong>003</strong></div>
         <div><span>支店コード</span><strong>024</strong></div>
         <div><span>口座番号</span><strong>1017256</strong></div>
       </div>
@@ -396,60 +415,19 @@
     <div class="global-nav-inner">
       <div>
         <a href="#main-menu">ホーム</a>
-        <a href="#services">サービス</a>
-        <a href="#updates">お知らせ</a>
-        <a href="#practice">取引の練習</a>
+        <a href="#practice" data-tab-target="balance">残高照会</a>
+        <a href="#practice" data-tab-target="deposit">入金</a>
+        <a href="#practice" data-tab-target="withdraw">出金</a>
+        <a href="#practice" data-tab-target="transfer">振込</a>
       </div>
-      <span class="secure-label">デモ用・実際のお取引はできません</span>
+      <span class="secure-label">インターネットバンキング</span>
     </div>
   </nav>
 
   <main id="main-menu">
-    <section class="hero" aria-label="サイトのご案内">
-      <div class="hero-main">
-        <div class="hero-content">
-          <p class="eyebrow">BANKING SECURITY PRACTICE</p>
-          <h1>銀行の操作を、<br>安心して練習しよう。</h1>
-          <p>残高照会から入出金まで、模擬口座で操作を体験できます。入力内容はこの画面内だけで処理されます。</p>
-          <div class="hero-actions">
-            <a class="hero-link" href="#practice">取引の練習を始める</a>
-            <a class="outline-link" href="#services">サービスを見る</a>
-          </div>
-        </div>
-      </div>
-      <div class="hero-side" aria-label="主なメニュー">
-        <a class="quick-link" href="#practice" data-tab-target="balance">残高照会を練習する</a>
-        <a class="quick-link" href="#practice" data-tab-target="deposit">入金・出金を練習する</a>
-        <a class="quick-link" href="#updates">安全に使うためのお知らせ</a>
-      </div>
-    </section>
-
-    <section class="service-section" id="services" aria-labelledby="services-title">
-      <h2 class="section-title" id="services-title">よく使うメニュー</h2>
-      <div class="service-grid">
-        <a class="service-tile" href="#practice" data-tab-target="balance"><span aria-hidden="true">▤</span>残高照会</a>
-        <a class="service-tile" href="#practice" data-tab-target="deposit"><span aria-hidden="true">＋</span>入金</a>
-        <a class="service-tile" href="#practice" data-tab-target="withdraw"><span aria-hidden="true">−</span>出金</a>
-        <a class="service-tile" href="#practice" data-tab-target="transfer"><span aria-hidden="true">↗</span>振込</a>
-      </div>
-    </section>
-
-    <section class="updates" id="updates" aria-labelledby="updates-title">
-      <h2 class="section-title" id="updates-title">お知らせ</h2>
-      <ul>
-        <li><time datetime="2026-09-30">2026年9月30日</time> このサイトはセキュリティ学習用の模擬画面です。</li>
-        <li><time datetime="2026-09-30">2026年9月30日</time> 実際の口座情報や暗証番号は入力しないでください。</li>
-      </ul>
-    </section>
-
     <section class="practice-section" id="practice" aria-labelledby="practice-title">
-      <div class="notice-board" id="notice-area" role="note">
-        <strong>練習用のお知らせ</strong>
-        <span>模擬口座の暗証番号は「9314」です。実際の暗証番号は入力しないでください。</span>
-      </div>
-
     <div class="page-heading">
-      <p>DEMO TRANSACTIONS</p>
+      <p>TRANSACTIONS</p>
       <h2 id="practice-title">お取引メニュー</h2>
     </div>
 
@@ -468,7 +446,7 @@
         </div>
         <form class="form" id="balance-form">
           <div class="field">
-            <label for="balance-pin">練習用暗証番号</label>
+            <label for="balance-pin">暗証番号</label>
             <input id="balance-pin" type="password" inputmode="numeric" autocomplete="off" maxlength="4" placeholder="4桁の暗証番号">
           </div>
           <button class="primary-button" type="submit">残高を照会する</button>
@@ -502,7 +480,7 @@
         </div>
         <form class="form" id="withdraw-form" novalidate>
           <div class="field">
-            <label for="withdraw-pin">練習用暗証番号</label>
+            <label for="withdraw-pin">暗証番号</label>
             <input id="withdraw-pin" type="password" inputmode="numeric" autocomplete="off" maxlength="4" placeholder="4桁の暗証番号">
           </div>
           <div class="field">
@@ -541,7 +519,7 @@
             <input id="transfer-amount" type="number" min="1" step="1" inputmode="numeric" placeholder="例：30000">
           </div>
           <div class="field">
-            <label for="transfer-pin">練習用暗証番号</label>
+            <label for="transfer-pin">暗証番号</label>
             <input id="transfer-pin" type="password" inputmode="numeric" autocomplete="off" maxlength="4" placeholder="4桁の暗証番号">
           </div>
           <button class="primary-button" type="submit">振込を実行する</button>
@@ -550,7 +528,44 @@
       </div>
     </section>
     </section>
-    <p class="footer-note" id="support">まなび銀行はセキュリティ学習用の架空のサイトです。実際の銀行サービスには接続していません。</p>
+    <section class="hero" aria-label="サイトのご案内">
+      <div class="hero-main">
+        <div class="hero-content">
+          <p class="eyebrow">PERSONAL BANKING</p>
+          <h1>毎日のお取引を、<br>もっと身近に。</h1>
+          <p>残高照会・入金・出金・振込を、こちらのメニューから操作できます。</p>
+          <div class="hero-actions">
+            <a class="hero-link" href="#practice">お取引メニューへ</a>
+            <a class="outline-link" href="#services">サービスを見る</a>
+          </div>
+        </div>
+      </div>
+      <div class="hero-side" aria-label="主なメニュー">
+        <a class="quick-link" href="#practice" data-tab-target="balance">残高照会</a>
+        <a class="quick-link" href="#practice" data-tab-target="deposit">入金・出金</a>
+        <a class="quick-link" href="#updates">安全に使うためのお知らせ</a>
+      </div>
+    </section>
+
+    <section class="service-section" id="services" aria-labelledby="services-title">
+      <h2 class="section-title" id="services-title">よく使うメニュー</h2>
+      <div class="service-grid">
+        <a class="service-tile" href="#practice" data-tab-target="balance"><span aria-hidden="true">▤</span>残高照会</a>
+        <a class="service-tile" href="#practice" data-tab-target="deposit"><span aria-hidden="true">＋</span>入金</a>
+        <a class="service-tile" href="#practice" data-tab-target="withdraw"><span aria-hidden="true">−</span>出金</a>
+        <a class="service-tile" href="#practice" data-tab-target="transfer"><span aria-hidden="true">↗</span>振込</a>
+      </div>
+    </section>
+
+    <section class="updates" id="updates" aria-labelledby="updates-title">
+      <h2 class="section-title" id="updates-title">お知らせ</h2>
+      <ul>
+        <li><time datetime="2026-09-30">2026年9月30日</time> 暗証番号は第三者に知らせないでください。</li>
+        <li><time datetime="2026-09-30">2026年9月30日</time> 不審なメールやSMSに記載されたリンクにご注意ください。</li>
+      </ul>
+    </section>
+
+    <p class="footer-note" id="support">© 2026 まなび銀行</p>
   </main>
 
   <script>
@@ -588,19 +603,19 @@
         });
       });
 
-      // トップページのメニューから対応する練習タブを開く。
+      // トップページのメニューから対応する取引タブを開く。
       document.querySelectorAll("[data-tab-target]").forEach((link) => {
         link.addEventListener("click", () => {
           document.querySelector(`#tab-${link.dataset.tabTarget}`).click();
         });
       });
 
-      // 左右キーでも取引タブを移動できるようにする。
+      // 縦・横どちらの配置でも矢印キーで取引タブを移動できるようにする。
       document.querySelector(".tabs").addEventListener("keydown", (event) => {
-        if (event.key !== "ArrowLeft" && event.key !== "ArrowRight") return;
+        if (!["ArrowLeft", "ArrowRight", "ArrowUp", "ArrowDown"].includes(event.key)) return;
         event.preventDefault();
         const currentIndex = tabs.indexOf(document.activeElement);
-        const direction = event.key === "ArrowRight" ? 1 : -1;
+        const direction = event.key === "ArrowRight" || event.key === "ArrowDown" ? 1 : -1;
         const nextTab = tabs[(currentIndex + direction + tabs.length) % tabs.length];
         nextTab.click();
         nextTab.focus();
