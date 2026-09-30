@@ -418,7 +418,6 @@
     .receipt-row { display: grid; grid-template-columns: 100px minmax(0,1fr); gap: 12px; padding: 9px 0; border-bottom: 1px solid #edf0ea; }
     .receipt-row dt { color: var(--muted); }
     .receipt-row dd { margin: 0; text-align: right; overflow-wrap: anywhere; white-space: pre-wrap; }
-    .receipt-disclaimer { margin-bottom: 0; color: #59685f; font-size: .78rem; }
     .receipt-actions { display: flex; flex-wrap: wrap; gap: 10px; padding: 18px 28px; background: #f2f5ed; }
     .receipt-actions button { flex: 1; min-width: 130px; min-height: 44px; padding: 10px; border: 1px solid var(--brand); border-radius: 4px; color: var(--brand); background: #fff; font: inherit; cursor: pointer; }
     .receipt-actions button:first-child { color: #fff; background: var(--brand); }
@@ -719,14 +718,13 @@
   </main>
 
 
-  <dialog class="receipt-dialog" id="receipt-dialog" aria-labelledby="receipt-title" aria-describedby="receipt-disclaimer">
+  <dialog class="receipt-dialog" id="receipt-dialog" aria-labelledby="receipt-title" aria-describedby="receipt-sample">
     <article class="receipt-paper">
       <p class="receipt-brand"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none" aria-hidden="true" focusable="false"><path class="mark-main" d="M4 11 22 21v22L4 33V11Z" fill="#164B35"/><path class="mark-secondary" d="m26 21 18-10v22L26 43V21Z" fill="#42775A"/><path class="mark-accent" d="m24 4 8 4.5-8 4.5-8-4.5L24 4Z" fill="#B49B5D"/></svg><span>まなび銀行</span></p>
-      <span class="receipt-badge">サンプル / SAMPLE</span>
+      <span class="receipt-badge" id="receipt-sample">サンプル / SAMPLE</span>
       <h2 id="receipt-title">お取引レシート</h2>
       <div class="receipt-amount"><span id="receipt-amount-label">取引金額</span><strong id="receipt-amount"></strong></div>
       <dl class="receipt-details" id="receipt-details"></dl>
-      <p class="receipt-disclaimer" id="receipt-disclaimer">ブラウザ内のシミュレーション結果です。実際の入出金・振込は行われておらず、金融機関の取引証明には使用できません。</p>
     </article>
     <div class="receipt-actions">
       <button type="button" id="receipt-print">印刷 / PDF保存</button>
