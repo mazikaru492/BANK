@@ -6,3 +6,5 @@ await rm(outputDirectory, { recursive: true, force: true });
 await mkdir(outputDirectory, { recursive: true });
 await copyFile(new URL('../index.html', import.meta.url), new URL('index.html', outputDirectory));
 console.log('Built dist/index.html');
+
+//
