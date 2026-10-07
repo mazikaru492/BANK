@@ -1,0 +1,9 @@
+.env
+.env.*
+.local-login.txt
+*.sql
+node_modules
+test
+SimpleBankSystem.java
+SimpleBankSystem.class
+メモ.txt

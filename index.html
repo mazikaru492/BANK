@@ -621,9 +621,9 @@
       </div>
       <p class="header-home-note" id="header-home-note">毎日のお金に、わかりやすさを。</p>
       <div class="account-summary" id="header-account" aria-label="口座情報" hidden>
-        <div><span>銀行コード</span><strong>003</strong></div>
-        <div><span>支店コード</span><strong>024</strong></div>
-        <div><span>口座番号</span><strong>1017256</strong></div>
+        <div><span>銀行コード</span><strong id="account-bank">003</strong></div>
+        <div><span>支店コード</span><strong id="account-branch">024</strong></div>
+        <div><span>口座番号</span><strong id="account-number">1017256</strong></div>
       </div>
       <div class="auth-controls"><span id="login-status" role="status">未ログイン</span><button type="button" id="login-open">ログイン</button><button type="button" id="logout-button" hidden>ログアウト</button></div>
     </div>
@@ -647,8 +647,13 @@
     <section id="login-view" class="login-view" hidden aria-labelledby="login-title">
       <p class="home-kicker">MANABI / ACCOUNT ACCESS</p>
       <h1 id="login-title" tabindex="-1">ログイン</h1>
-      <p class="login-intro">4桁の暗証番号を入力してください。</p>
+      <p class="login-intro" id="login-intro">接続を確認しています。</p>
       <form id="login-form" novalidate>
+        <div id="login-account-fields" hidden>
+          <div class="field"><label for="login-bank">銀行コード</label><input id="login-bank" type="text" inputmode="numeric" maxlength="4" value="0158" placeholder="4桁の銀行コード" autocomplete="off"></div>
+          <div class="field"><label for="login-branch">支店コード</label><input id="login-branch" type="text" inputmode="numeric" maxlength="3" placeholder="3桁の支店コード" autocomplete="off"></div>
+          <div class="field"><label for="login-account">口座番号</label><input id="login-account" type="text" inputmode="numeric" maxlength="7" placeholder="7桁の口座番号" autocomplete="username"></div>
+        </div>
         <div class="field"><label for="login-pin">暗証番号</label><input id="login-pin" type="password" inputmode="numeric" maxlength="4" pattern="[0-9]{4}" autocomplete="off" aria-describedby="login-error" required placeholder="4桁の暗証番号"></div>
         <p id="login-error" class="card-error" role="alert" hidden></p>
         <button class="primary-button" type="submit">ログインする</button>
@@ -737,6 +742,11 @@
           <span>現在の残高</span>
           <strong id="balance-value">0 円</strong>
         </div>
+        <section id="transaction-history" hidden aria-labelledby="history-title">
+          <h3 id="history-title">最近のお取引</h3>
+          <div id="history-rows"></div>
+          <p id="history-error" role="status" hidden></p>
+        </section>
       </div>
 
       <div class="panel" id="panel-deposit" role="tabpanel" aria-labelledby="tab-deposit" hidden>
@@ -781,7 +791,7 @@
         <form class="form" id="transfer-form">
           <div class="field">
             <label for="transfer-bank">振込先銀行コード</label>
-            <input id="transfer-bank" type="text" inputmode="numeric" maxlength="3" placeholder="例：001">
+            <input id="transfer-bank" type="text" inputmode="numeric" maxlength="4" placeholder="例：0158">
           </div>
           <div class="field">
             <label for="transfer-branch">振込先支店コード</label>
@@ -871,25 +881,72 @@
       let balance = 0;
       let loggedIn = false;
       let afterLoginRoute = "balance";
+      let databaseMode = false;
+      let apiReady = false;
+      let account = null;
+      let transactionPending = false;
 
       // 金額を日本円の表示形式に整える。
       const formatYen = (amount) => `${amount.toLocaleString("ja-JP")} 円`;
+
+      const api = async (action, input) => {
+        let response;
+        try {
+          response = await fetch("/api/bank?action=" + action, {
+            method: input === undefined ? "GET" : "POST", credentials: "same-origin",
+            cache: "no-store", headers: input === undefined ? {} : { "Content-Type": "application/json" },
+            body: input === undefined ? undefined : JSON.stringify(input)
+          });
+        } catch { throw new Error("接続できません。操作を送信した場合は、残高・取引履歴で結果を確認してください。"); }
+        const data = await response.json().catch(() => { throw new Error("応答を確認できません。サーバーの状態と取引結果を確認してください。"); });
+        if (!response.ok) throw new Error(data.error || "操作に失敗しました。");
+        return data;
+      };
+      const applyAccount = value => {
+        account = value; balance = value.balance;
+        document.querySelector("#account-bank").textContent = value.bankCode;
+        document.querySelector("#account-branch").textContent = value.branchCode;
+        document.querySelector("#account-number").textContent = value.accountNumber;
+        document.querySelector("#balance-value").textContent = formatYen(balance);
+      };
+      const refreshHistory = async () => {
+        const section = document.querySelector("#transaction-history");
+        const error = document.querySelector("#history-error");
+        const container = document.querySelector("#history-rows");
+        const accountId = account?.id;
+        section.hidden = false; error.hidden = true;
+        try {
+          const data = await api("history");
+          if (account?.id !== accountId) return;
+          container.replaceChildren();
+          data.history.forEach(item => {
+            const row = document.createElement("p");
+            row.className = "receipt-amount";
+            row.textContent = `${item.date}　${item.kind}　${formatYen(item.amount)} / 残高 ${formatYen(item.balance)}`;
+            container.append(row);
+          });
+          if (!data.history.length) container.textContent = "お取引はまだありません。";
+        } catch {
+          if (account?.id !== accountId) return;
+          error.textContent = "取引履歴を取得できませんでした。残高照会で再度お試しください。"; error.hidden = false;
+        }
+      };
 
 
       const receiptDialog = document.querySelector("#receipt-dialog");
       const receiptLaunch = document.querySelector("#receipt-launch");
       const receiptDetails = document.querySelector("#receipt-details");
       let receiptSequence = 0;
-      const showReceipt = (kind, amount, before, destination = null) => {
+      const showReceipt = (kind, amount, before, destination = null, saved = null) => {
         const timestamp = new Intl.DateTimeFormat("ja-JP", {
           timeZone: "Asia/Tokyo", year: "numeric", month: "2-digit", day: "2-digit",
           hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23"
-        }).format(new Date());
+        }).format(saved?.date ? new Date(saved.date) : new Date());
         const rows = [
           ["取引区分", kind],
           ["取引日時", timestamp + "（日本時間）"],
-          ["サンプル番号", "SAMPLE-" + String(++receiptSequence).padStart(4, "0")],
-          ["口座", "まなび銀行 / 支店024 / ****256"]
+          [saved?.id ? "取引番号" : "サンプル番号", saved?.id || "SAMPLE-" + String(++receiptSequence).padStart(4, "0")],
+          ["口座", account ? `まなび銀行 / 支店${account.branchCode} / ${account.accountNumber}` : "まなび銀行 / 支店024 / ****256"]
         ];
         if (destination) {
           rows.push(["振込先銀行コード", destination.bankCode],
@@ -928,6 +985,27 @@
 
       // 1円以上の安全な整数だけを取引金額として受け付ける。
       const isValidAmount = (value) => Number.isSafeInteger(value) && value >= 1;
+
+      const performTransaction = async (kind, input, form) => {
+        if (transactionPending) return;
+        transactionPending = true;
+        const controls = [...document.querySelectorAll("#practice button[type=submit], #logout-button")];
+        controls.forEach(button => button.disabled = true);
+        const notice = document.querySelector("#" + kind + "-notice");
+        if (kind === "balance") document.querySelector("#balance-result").hidden = true;
+        try {
+          showNotice(notice, "処理中です。", "");
+          const data = await api(kind, input);
+          applyAccount(data.account);
+          if (kind === "balance") document.querySelector("#balance-result").hidden = false;
+          showNotice(notice, `${data.receipt.kind}が完了しました。現在の残高: ${formatYen(balance)}`, "success");
+          const receipt = data.receipt;
+          showReceipt(receipt.kind, receipt.amount, receipt.before, receipt.destination, receipt);
+          form.reset();
+          await refreshHistory();
+        } catch (error) { showNotice(notice, error.message, "error"); }
+        finally { controls.forEach(button => button.disabled = false); transactionPending = false; }
+      };
 
 
 
@@ -1094,9 +1172,30 @@
         event.target.removeAttribute("aria-invalid");
         document.querySelector("#login-error").hidden = true;
       });
-      document.querySelector("#login-form").addEventListener("submit", event => {
+      document.querySelector("#login-form").addEventListener("submit", async event => {
         event.preventDefault();
+        if (!apiReady || transactionPending) return;
         const input = document.querySelector("#login-pin");
+        if (databaseMode) {
+          const button = event.target.querySelector("button[type=submit]");
+          if (button.disabled) return;
+          button.disabled = true;
+          try {
+            const data = await api("login", {
+              bankCode: document.querySelector("#login-bank").value.trim(),
+              branchCode: document.querySelector("#login-branch").value.trim(),
+              accountNumber: document.querySelector("#login-account").value.trim(), pin: input.value
+            });
+            applyAccount(data.account); loggedIn = true; input.value = "";
+            document.querySelector("#login-error").hidden = true;
+            navigate(afterLoginRoute, true);
+            await refreshHistory();
+          } catch (error) {
+            const output = document.querySelector("#login-error");
+            output.textContent = error.message; output.hidden = false; input.value = ""; input.focus();
+          } finally { button.disabled = false; }
+          return;
+        }
         if (input.value !== PIN) {
           const error = document.querySelector("#login-error");
           error.textContent = "暗証番号が違います。4桁の番号を確認してください。";
@@ -1108,7 +1207,21 @@
         input.removeAttribute("aria-invalid");
         navigate(afterLoginRoute, true);
       });
-      document.querySelector("#logout-button").addEventListener("click", () => {
+      document.querySelector("#logout-button").addEventListener("click", async () => {
+        if (transactionPending) return;
+        const logoutButton = document.querySelector("#logout-button");
+        if (logoutButton.disabled) return;
+        logoutButton.disabled = true;
+        transactionPending = true;
+        if (databaseMode) {
+          try { await api("logout", {}); }
+          catch (error) { transactionPending = false; logoutButton.disabled = false; alert(error.message); return; }
+        }
+        logoutButton.disabled = false;
+        transactionPending = false;
+        account = null;
+        document.querySelector("#transaction-history").hidden = true;
+        document.querySelector("#history-rows").replaceChildren();
         loggedIn = false; balance = 0; afterLoginRoute = "balance";
         if (receiptDialog.open) receiptDialog.close();
         receiptLaunch.hidden = true; receiptDetails.replaceChildren(); receiptSequence = 0;
@@ -1128,6 +1241,9 @@
       });
       // Gate form actions as well as screen navigation in this local demo.
       document.addEventListener("submit", event => {
+        if (!apiReady && event.target.closest("#login-form, #practice, #cards-view")) {
+          event.preventDefault(); event.stopImmediatePropagation(); return;
+        }
         if (!loggedIn && event.target.closest("#practice, #cards-view")) {
           event.preventDefault(); event.stopImmediatePropagation(); navigate("login", true);
         }
@@ -1148,9 +1264,10 @@
       });
 
       // 正しい暗証番号が入力されたときだけ残高を表示する。
-      document.querySelector("#balance-form").addEventListener("submit", (event) => {
+      document.querySelector("#balance-form").addEventListener("submit", async (event) => {
         event.preventDefault();
         const pin = document.querySelector("#balance-pin").value;
+        if (databaseMode) return performTransaction("balance", { pin }, event.target);
         const notice = document.querySelector("#balance-notice");
         const result = document.querySelector("#balance-result");
         if (pin !== PIN) {
@@ -1166,9 +1283,10 @@
       });
 
       // 入金額を検証し、残高に加算する。
-      document.querySelector("#deposit-form").addEventListener("submit", (event) => {
+      document.querySelector("#deposit-form").addEventListener("submit", async (event) => {
         event.preventDefault();
         const amount = Number(document.querySelector("#deposit-amount").value);
+        if (databaseMode) return performTransaction("deposit", { amount }, event.target);
         const notice = document.querySelector("#deposit-notice");
         if (!isValidAmount(amount)) {
           showNotice(notice, "入金額は1円以上の整数で入力してください。", "error");
@@ -1187,10 +1305,11 @@
       });
 
       // 暗証番号、金額、残高を順に確認して出金する。
-      document.querySelector("#withdraw-form").addEventListener("submit", (event) => {
+      document.querySelector("#withdraw-form").addEventListener("submit", async (event) => {
         event.preventDefault();
         const pin = document.querySelector("#withdraw-pin").value;
         const amount = Number(document.querySelector("#withdraw-amount").value);
+        if (databaseMode) return performTransaction("withdraw", { pin, amount }, event.target);
         const notice = document.querySelector("#withdraw-notice");
         if (pin !== PIN) {
           showNotice(notice, "暗証番号が違います。", "error");
@@ -1213,7 +1332,7 @@
       });
 
       // エディターに追加されていた振込機能を検証し、残高に反映する。
-      document.querySelector("#transfer-form").addEventListener("submit", (event) => {
+      document.querySelector("#transfer-form").addEventListener("submit", async (event) => {
         event.preventDefault();
         const bankCode = document.querySelector("#transfer-bank").value.trim();
         const branchCode = document.querySelector("#transfer-branch").value.trim();
@@ -1221,6 +1340,7 @@
         const recipientName = document.querySelector("#transfer-name").value.trim();
         const amount = Number(document.querySelector("#transfer-amount").value);
         const pin = document.querySelector("#transfer-pin").value;
+        if (databaseMode) return performTransaction("transfer", { bankCode, branchCode, accountNumber, recipientName, amount, pin }, event.target);
         const notice = document.querySelector("#transfer-notice");
 
         if (!/^\d{3}$/.test(bankCode) || !/^\d{3}$/.test(branchCode) || !/^\d{7}$/.test(accountNumber)
@@ -1245,6 +1365,30 @@
         showReceipt("振込", amount, before, { bankCode, branchCode, accountNumber, recipientName });
         event.target.reset();
       });
+
+      const initialize = async () => {
+        const intro = document.querySelector("#login-intro");
+        const button = document.querySelector("#login-form button[type=submit]");
+        button.disabled = true;
+        try {
+          const data = location.protocol === "file:" ? { mode: "demo", account: null } : await api("session");
+          databaseMode = data.mode === "database";
+          document.querySelector("#login-account-fields").hidden = !databaseMode;
+          document.querySelector("#transfer-bank").maxLength = databaseMode ? 4 : 3;
+          document.querySelector("#transfer-bank").placeholder = databaseMode ? "例：0158" : "例：001";
+          intro.textContent = databaseMode ? "口座情報と4桁の暗証番号を入力してください。" : "4桁の暗証番号を入力してください。（デモ）";
+          apiReady = true;
+          if (data.account) {
+            applyAccount(data.account); loggedIn = true;
+            navigate(routeFromHash() === "login" ? afterLoginRoute : routeFromHash(), true, false);
+            await refreshHistory();
+          }
+        } catch (error) {
+          intro.textContent = "接続を確認できませんでした。サーバー起動後に再読み込みしてください。";
+          const output = document.querySelector("#login-error"); output.textContent = error.message; output.hidden = false;
+        } finally { button.disabled = !apiReady; }
+      };
+      initialize();
     })();
   </script>
 </body>

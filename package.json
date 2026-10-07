@@ -1,0 +1,19 @@
+{
+  "name": "manabi-bank",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node --env-file-if-exists=.env scripts/serve.mjs",
+    "build": "node scripts/build.mjs",
+    "db:import": "node --env-file-if-exists=.env scripts/import-db.mjs",
+    "db:supabase": "node --env-file-if-exists=.env.supabase.local scripts/import-supabase.mjs",
+    "test": "node --env-file-if-exists=.env --test"
+  },
+  "dependencies": {
+    "mysql2": "^3.15.3",
+    "pg": "^8.23.1"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
