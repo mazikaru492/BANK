@@ -469,6 +469,7 @@
     .home-service { position: relative; display: block; min-height: 205px; padding: 25px; border: 1px solid #e0e6d9; border-radius: 12px; background: #fff; text-decoration: none; transition: border-color .15s, box-shadow .15s; }
     .home-service:hover { border-color: #72906a; box-shadow: 0 6px 18px #164b3510; }
     .home-service-icon { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 12px; color: #285c40; background: #f0f4e8; font-size: 1.6rem; }
+    .home-service-icon svg, .card-entry-symbol svg { display: block; width: 28px; height: 28px; fill: none; stroke: currentColor; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
     .home-service h3 { margin: 18px 0 8px; color: #1e4b36; font-size: 1.07rem; }
     .home-service p { margin: 0; color: #7a8378; font-size: .77rem; line-height: 1.8; }
     .home-service-arrow { position: absolute; right: 22px; top: 30px; color: #59734d; }
@@ -683,10 +684,10 @@
       <section class="home-services" id="services" aria-labelledby="services-title">
         <div class="home-section-heading"><div><p class="home-kicker">SERVICES</p><h2 id="services-title">今日は、どのお取引ですか。</h2></div><p>目的に合わせて、すぐにアクセス。</p></div>
         <div class="home-service-grid">
-          <a class="home-service" href="#balance" data-tab-target="balance"><span class="home-service-icon" aria-hidden="true">▤</span><h3>残高照会</h3><p>現在の口座残高を<br>確認する</p><span class="home-service-arrow" aria-hidden="true">↗</span></a>
-          <a class="home-service" href="#deposit" data-tab-target="deposit"><span class="home-service-icon" aria-hidden="true">＋</span><h3>入金</h3><p>金額を指定して<br>口座に入金する</p><span class="home-service-arrow" aria-hidden="true">↗</span></a>
-          <a class="home-service" href="#withdraw" data-tab-target="withdraw"><span class="home-service-icon" aria-hidden="true">−</span><h3>出金</h3><p>残高を確認しながら<br>口座から出金する</p><span class="home-service-arrow" aria-hidden="true">↗</span></a>
-          <a class="home-service" href="#transfer" data-tab-target="transfer"><span class="home-service-icon" aria-hidden="true">↗</span><h3>振込</h3><p>振込先と金額を指定して<br>お取引を進める</p><span class="home-service-arrow" aria-hidden="true">↗</span></a>
+          <a class="home-service" href="#balance" data-tab-target="balance"><span class="home-service-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" focusable="false"><path d="M18 8V5H5a2 2 0 0 0 0 4h13M3 7v11a2 2 0 0 0 2 2h5"/><circle cx="16" cy="15" r="4"/><path d="m19 18 3 3"/></svg></span><h3>残高照会</h3><p>現在の口座残高を<br>確認する</p><span class="home-service-arrow" aria-hidden="true">↗</span></a>
+          <a class="home-service" href="#deposit" data-tab-target="deposit"><span class="home-service-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" focusable="false"><path d="M12 2v6m-3-3 3 3 3-3"/><rect x="2" y="11" width="20" height="10" rx="2"/><circle cx="12" cy="16" r="2.5"/><path d="M5 16h1m12 0h1"/></svg></span><h3>入金</h3><p>金額を指定して<br>口座に入金する</p><span class="home-service-arrow" aria-hidden="true">↗</span></a>
+          <a class="home-service" href="#withdraw" data-tab-target="withdraw"><span class="home-service-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" focusable="false"><path d="M12 8V2m-3 3 3-3 3 3"/><rect x="2" y="11" width="20" height="10" rx="2"/><circle cx="12" cy="16" r="2.5"/><path d="M5 16h1m12 0h1"/></svg></span><h3>出金</h3><p>残高を確認しながら<br>口座から出金する</p><span class="home-service-arrow" aria-hidden="true">↗</span></a>
+          <a class="home-service" href="#transfer" data-tab-target="transfer"><span class="home-service-icon" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" focusable="false"><path d="m3 7 9-4 9 4H3Zm2 3v6m5-6v6m4-6v6m5-6v6M3 16h18M3 21h18m-3-3 3 3-3 2"/></svg></span><h3>振込</h3><p>振込先と金額を指定して<br>お取引を進める</p><span class="home-service-arrow" aria-hidden="true">↗</span></a>
         </div>
       </section>
 
@@ -694,8 +695,8 @@
       <section class="home-card-section" aria-labelledby="home-card-title">
         <div class="home-section-heading"><div><p class="home-kicker">MANABI CARDS</p><h2 id="home-card-title">あなたに合う、一枚を。</h2></div><p>2つのカードから選べます。</p></div>
         <div class="card-entry-grid">
-          <a class="card-entry" href="#virtual-card" data-card-route="virtual-card"><span class="card-entry-symbol" aria-hidden="true">▱</span><div><span class="home-kicker">VIRTUAL</span><h3>バーチャルカード</h3><p>画面上で使うカードのデザインを作成。</p></div><span aria-hidden="true">↗</span></a>
-          <a class="card-entry" href="#physical-card" data-card-route="physical-card"><span class="card-entry-symbol" aria-hidden="true">▣</span><div><span class="home-kicker">PHYSICAL</span><h3>リアルカード</h3><p>手に持つ一枚をイメージして作成。</p></div><span aria-hidden="true">↗</span></a>
+          <a class="card-entry" href="#virtual-card" data-card-route="virtual-card"><span class="card-entry-symbol" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" focusable="false"><rect x="5" y="2" width="14" height="20" rx="2.5"/><path d="M10 5h4M11 19h2"/><rect x="8" y="8" width="13" height="8" rx="1.5"/><path d="M8 11h13m-10 2h2"/></svg></span><div><span class="home-kicker">VIRTUAL</span><h3>バーチャルカード</h3><p>画面上で使うカードのデザインを作成。</p></div><span aria-hidden="true">↗</span></a>
+          <a class="card-entry" href="#physical-card" data-card-route="physical-card"><span class="card-entry-symbol" aria-hidden="true"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" focusable="false"><rect x="2" y="5" width="20" height="14" rx="2.5"/><rect x="5" y="9" width="5" height="4" rx="1"/><path d="M5 16h6m4 0h4m-4-7h4"/></svg></span><div><span class="home-kicker">PHYSICAL</span><h3>リアルカード</h3><p>手に持つ一枚をイメージして作成。</p></div><span aria-hidden="true">↗</span></a>
         </div>
       </section>
 
