@@ -1,7 +1,15 @@
 import { databaseConfigured } from '../lib/db.mjs';
-import { BankError, login, logout, sessionAccount, history, transact, withdrawalSettings, saveWithdrawalLimit, investment, tradeInvestment, cardStatements, addCardEntry } from '../lib/bank.mjs';
+import { isIP } from 'node:net';
+import { BankError, register, login, logout, sessionAccount, history, transact, withdrawalSettings, saveWithdrawalLimit, investment, tradeInvestment, stockInvestment, orderStock, cancelStockOrder, cardStatements, addCardEntry } from '../lib/bank.mjs';
 
 const cookieName = 'bank_session';
+export function clientAddress(req) {
+  // Vercel supplies this header from its edge proxy; local clients cannot opt in.
+  // https://vercel.com/docs/headers/request-headers#x-vercel-forwarded-for
+  const forwarded = process.env.VERCEL === '1' ? req.headers['x-vercel-forwarded-for'] : undefined;
+  if (typeof forwarded === 'string' && isIP(forwarded.trim())) return forwarded.trim();
+  return req.socket?.remoteAddress || 'unknown';
+}
 function sessionToken(req) {
   return (req.headers.cookie || '').split(';').map(value => value.trim()).find(value => value.startsWith(cookieName + '='))?.slice(cookieName.length + 1);
 }
@@ -45,7 +53,12 @@ export default async function handler(req, res) {
       if (origin !== `${proto}://${req.headers.host}`) throw new BankError(403, 'この送信元からは操作できません。');
     }
     const token = sessionToken(req);
-    const address = req.socket?.remoteAddress || 'unknown';
+    const address = clientAddress(req);
+    if (req.method === 'POST' && action === 'register') {
+      const result = await register(await body(req), address);
+      setCookie(req, res, result.token, 8 * 60 * 60);
+      return send(res, 201, { account: result.account });
+    }
     if (req.method === 'POST' && action === 'login') {
       const result = await login(await body(req), address);
       setCookie(req, res, result.token, 8 * 60 * 60);
@@ -63,6 +76,9 @@ export default async function handler(req, res) {
     if (req.method === 'GET' && action === 'settings') return send(res, 200, { settings: await withdrawalSettings(account.id) });
     if (req.method === 'POST' && action === 'settings') return send(res, 200, await saveWithdrawalLimit(account, await body(req), address));
     if (req.method === 'GET' && action === 'investment') return send(res, 200, await investment(account));
+    if (req.method === 'GET' && action === 'stocks') return send(res, 200, await stockInvestment(account));
+    if (req.method === 'POST' && action === 'stock-order') return send(res, 200, await orderStock(account, await body(req), address));
+    if (req.method === 'POST' && action === 'stock-cancel') return send(res, 200, await cancelStockOrder(account, await body(req)));
     if (req.method === 'POST' && ['invest-buy', 'invest-sell'].includes(action)) return send(res, 200, await tradeInvestment(account, action, await body(req), address));
     if (req.method === 'GET' && action === 'statements') return send(res, 200, { entries: await cardStatements(account.id) });
     if (req.method === 'POST' && action === 'card-entry') return send(res, 200, await addCardEntry(account.id, await body(req)));

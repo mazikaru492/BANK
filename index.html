@@ -592,7 +592,7 @@
     .auth-controls { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
     #login-status { font-size: .7rem; color: #6a7867; }
     .auth-controls button { min-height: 40px; padding: 8px 15px; border: 1px solid var(--brand); border-radius: 5px; font: inherit; font-size: .8rem; cursor: pointer; color: #fff; background: var(--brand); }
-    #logout-button { background: #fff; color: var(--brand); }
+    #logout-button, #register-open { background: #fff; color: var(--brand); }
     .login-view { max-width: 440px; margin: 48px auto; padding: 34px; border: 1px solid #dce5d7; border-radius: 14px; background: #fff; box-shadow: 0 12px 30px #164b3510; }
     .login-view h1 { margin: 0 0 12px; color: var(--brand); font-size: 1.8rem; }
     .login-intro { color: var(--muted); font-size: .86rem; margin-bottom: 28px; }
@@ -600,11 +600,17 @@
     .login-back { margin-top: 24px; margin-bottom: 0; }
     #login-pin { letter-spacing: .3em; font-size: 1.2rem; }
     #login-pin::placeholder { letter-spacing: normal; font-size: .9rem; }
+    .register-view { max-width: 500px; }
+    .registration-details { display: grid; grid-template-columns: auto 1fr; gap: 10px 18px; padding: 16px; background: #f0f5eb; border-radius: 6px; }
+    .registration-details dt { color: var(--muted); font-size: .85rem; }
+    .registration-details dd { margin: 0; font-weight: 700; overflow-wrap: anywhere; }
+    .registration-success { color: var(--brand); }
+    .registration-success a { display: inline-block; margin-top: 16px; }
     @media (max-width: 800px) { .header-inner { flex-wrap: wrap; }.header-home-note { display: none; } }
     @media (max-width: 620px) {
       .header-inner { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; }
       #header-account { grid-column: 1 / -1; grid-row: 2; }
-      .auth-controls { gap: 0; }#login-status { display: none; }.auth-controls button { padding: 8px 10px; font-size: .72rem; }
+      .auth-controls { gap: 6px; }#login-status { display: none; }.auth-controls button { padding: 8px 10px; font-size: .72rem; }
       .login-view { margin: 24px auto; padding: 26px 22px; }
     }
 
@@ -644,6 +650,44 @@
     .background-preset span { display: block; padding: 8px; font-weight: 700; }
     body.has-photo-background .view-back, body.has-photo-background .footer-note, body.has-photo-background .home-section-heading { background: #fffffff0; border-radius: 6px; padding: 12px 16px; }
     .feature-panel h3 { margin-bottom: 10px; color: var(--brand); }
+    .stock-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .stock-directory { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 12px; margin: 16px 0; }
+    .stock-company-card { display: flex; flex-direction: column; gap: 8px; padding: 16px; border: 1px solid var(--line); border-radius: 8px; background: #fff; }
+    .stock-company-card.is-selected { border: 2px solid var(--brand); padding: 15px; background: #f1f6ed; }
+    .stock-company-card h4 { margin: 0; color: var(--brand); font-size: 1rem; }
+    .stock-company-card p { margin: 0; font-size: .8rem; color: var(--muted); }
+    .stock-company-card .stock-card-business { min-height: 2.8em; flex: 1; }
+    .stock-card-price { display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+    .stock-card-price strong { font-size: 1.2rem; } .stock-card-price span { font-size: .85rem; }
+    .stock-company-card .secondary-button { width: 100%; margin-top: 4px; }
+    .stock-list-header, .stock-pagination { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+    .stock-list-header h3 { margin: 10px 0; } .stock-list-header p { margin: 0; }
+    .stock-pagination { margin-bottom: 24px; }
+    .stock-pagination button:disabled { cursor: default; }
+    .stock-account-summary { grid-template-columns: repeat(3,minmax(0,1fr)); }
+    .stock-steps { display: flex; flex-wrap: wrap; gap: 16px; padding: 0; list-style: none; font-size: .85rem; color: var(--brand); font-weight: 700; }
+    .stock-trade-section { scroll-margin-top: 110px; border: 1px solid #bdcfb1; border-radius: 8px; padding: 18px; margin: 24px 0; background: #f9fcf5; }
+    .stock-trade-section .feature-form { margin: 0; padding: 0; border: 0; }
+    .stock-trade-section .feature-summary { margin-top: 12px; }
+    .stock-budget-options { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0; }
+    .stock-budget-options button { font-size: .8rem; padding: 6px 12px; min-height: 36px; }
+    .stock-budget-estimate { padding: 12px; background: #eaf2e2; border-radius: 6px; }
+    .stock-up { color: #b53030; } .stock-down { color: #2469a6; }
+    .stock-profile { padding: 18px; border: 1px solid var(--line); background: #fafcf8; border-radius: 8px; }
+    .stock-profile h3 { margin-top: 0; }
+    .stock-profile h4 { margin: 10px 0 4px; }
+    .stock-profile p { margin: 4px 0 12px; }
+    .stock-metrics { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 8px; margin: 16px 0; }
+    .stock-metrics div { background: #f0f5eb; padding: 10px; border-radius: 5px; }
+    .stock-metrics dt { font-size: .75rem; color: var(--muted); } .stock-metrics dd { margin: 0; font-weight: 700; }
+    .stock-chart-controls { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin: 12px 0; }
+    .stock-chart-controls select { font: inherit; padding: 8px; }
+    .stock-news { padding: 12px 18px; background: #f5f3ea; border-left: 3px solid #a78e4a; font-size: .85rem; }
+    .stock-table { min-width: 560px; } .stock-table td { white-space: nowrap; }
+    .stock-table button { padding: 5px 8px; min-height: 32px; }
+    .stock-rules { font-size: .8rem; color: var(--muted); margin: 18px 0; }
+    .stock-rules summary { cursor: pointer; font-weight: 700; }
+    @media (max-width: 620px) { .stock-grid, .stock-directory, .stock-account-summary { grid-template-columns: 1fr; } .stock-metrics { grid-template-columns: repeat(2,minmax(0,1fr)); } }
     @media (max-width: 620px) {
       .global-nav a, .global-nav a:first-child { flex: 0 0 25%; }
       .tabs { grid-template-columns: repeat(4, minmax(0, 1fr)); }
@@ -672,7 +716,7 @@
         <div><span>支店コード</span><strong id="account-branch">024</strong></div>
         <div><span>口座番号</span><strong id="account-number">1017256</strong></div>
       </div>
-      <div class="auth-controls"><span id="login-status" role="status">未ログイン</span><button type="button" id="login-open">ログイン</button><button type="button" id="logout-button" hidden>ログアウト</button></div>
+      <div class="auth-controls"><span id="login-status" role="status">未ログイン</span><button type="button" id="login-open">ログイン</button><button type="button" id="register-open">新規登録</button><button type="button" id="logout-button" hidden>ログアウト</button></div>
     </div>
   </header>
 
@@ -699,6 +743,7 @@
       <h1 id="login-title" tabindex="-1">ログイン</h1>
       <p class="login-intro" id="login-intro">接続を確認しています。</p>
       <form id="login-form" novalidate>
+        <div class="field" id="login-demo-account-field" hidden><label for="login-demo-account">ログインするデモ口座</label><select id="login-demo-account"><option value="legacy">既存のデモ口座</option></select></div>
         <div id="login-account-fields" hidden>
           <div class="field"><label for="login-bank">銀行コード</label><input id="login-bank" type="text" inputmode="numeric" maxlength="4" value="0158" placeholder="4桁の銀行コード" autocomplete="off"></div>
           <div class="field"><label for="login-branch">支店コード</label><input id="login-branch" type="text" inputmode="numeric" maxlength="3" placeholder="3桁の支店コード" autocomplete="off"></div>
@@ -708,6 +753,24 @@
         <p id="login-error" class="card-error" role="alert" hidden></p>
         <button class="primary-button" type="submit">ログインする</button>
       </form>
+      <p class="field-help">はじめての方は、<a href="#register" data-register-link>新規登録して口座を作成</a>できます。</p>
+      <a class="view-back login-back" href="#home" data-home-link>← ホームへ戻る</a>
+    </section>
+
+    <section id="register-view" class="login-view register-view" hidden aria-labelledby="register-title">
+      <p class="home-kicker">MANABI / CREATE ACCOUNT</p>
+      <h1 id="register-title" tabindex="-1">新規登録</h1>
+      <p class="login-intro" id="register-intro">練習用の口座を作成します。口座番号は自動発行され、残高0円から始まります。</p>
+      <form id="register-form" novalidate>
+        <div class="field"><label for="register-name">お名前</label><input id="register-name" type="text" maxlength="100" autocomplete="name" placeholder="例：まなび 太郎" required></div>
+        <div class="field"><label for="register-kana">フリガナ</label><input id="register-kana" type="text" maxlength="100" placeholder="例：マナビ タロウ" required><p class="field-help">ひらがな・カタカナで入力できます。</p></div>
+        <div class="field"><label for="register-pin">暗証番号（4桁）</label><input id="register-pin" type="password" inputmode="numeric" maxlength="4" pattern="[0-9]{4}" autocomplete="off" placeholder="4桁の数字" required></div>
+        <div class="field"><label for="register-pin-confirmation">暗証番号の確認</label><input id="register-pin-confirmation" type="password" inputmode="numeric" maxlength="4" pattern="[0-9]{4}" autocomplete="off" placeholder="同じ暗証番号をもう一度" required></div>
+        <p id="register-error" class="card-error" role="alert" hidden></p>
+        <button class="primary-button" type="submit" id="register-submit">登録して口座を作成</button>
+      </form>
+      <div id="register-success" class="registration-success" role="status" hidden><h2>口座を作成しました</h2><p>ログイン済みです。再ログインには口座情報と、登録した暗証番号を使います。</p><dl id="register-account-details" class="registration-details"></dl><p class="field-help">口座情報を控えておくと、次回のログインがスムーズです。</p><a class="primary-button" href="#balance" data-tab-target="balance">残高・お取引へ進む →</a></div>
+      <p class="field-help"><a href="#login" id="register-login-link">登録済みの方はこちらからログイン</a></p>
       <a class="view-back login-back" href="#home" data-home-link>← ホームへ戻る</a>
     </section>
 
@@ -877,32 +940,60 @@
         <div class="notice" id="transfer-notice" role="status" aria-live="polite"></div>
       </div>
       <div class="panel feature-panel" id="panel-investment" role="tabpanel" aria-labelledby="tab-investment" hidden>
-        <div class="panel-header"><h2>投資シミュレーション</h2><p>架空の「MANABI インデックス」を口座残高で売買できます。価格は約3秒ごとにランダムに変動します。</p></div>
-        <p class="field-help">実際の市場・証券会社とは連携しない、銀行シミュレーター内の取引です。</p>
-        <div class="feature-summary" data-depth="4">
-          <div><span>現在の価格 / 1口</span><strong id="investment-price">—</strong></div>
-          <div><span>口座残高</span><strong id="investment-balance">—</strong></div>
+        <div class="panel-header"><h2>日本株・100社の投資シミュレーション</h2><p>さまざまな分野の会社を選び、アプリ内の残高で投資を練習できます。</p></div>
+        <p class="stock-news"><strong>練習専用</strong> — 企業名・証券コードは実在します。株価・出来高・板・ニュースはすべて架空で、実際の株は購入されません。</p>
+        <ol class="stock-steps"><li>① 会社を選ぶ</li><li>② 投資金額を入れて買う</li><li>③ 売って損益を残高へ戻す</li></ol>
+        <p class="field-help">値上がりした株を売ると、利益が口座残高に戻ります。値下がりや手数料で残高が減る場合もあります。</p>
+        <div class="feature-summary stock-account-summary"><div><span>使える口座残高</span><strong id="investment-balance">—</strong><span id="stock-available"></span></div><div><span>残高 ＋ 保有株の総資産</span><strong id="stock-total-assets">—</strong><span id="stock-assets-help">旧インデックス保有分も含みます。</span></div><div><span>株式の運用損益</span><strong id="stock-overall-profit">—</strong><span id="stock-realized-profit">売却済みの利益・損失と保有株の評価損益。</span></div></div>
+        <p id="stock-funding" class="field-help" hidden>投資用の残高がありません。<a href="#deposit" data-tab-target="deposit">アプリ内の口座に入金する ↗</a></p>
+        <h3>会社を探す</h3>
+        <div class="stock-grid">
+          <div class="field"><label for="stock-search">企業名・証券コード・事業で検索</label><input id="stock-search" type="search" placeholder="例：トヨタ、Toyota、食品、7203"></div>
+          <div class="field"><label for="stock-sector">分野で絞り込む</label><select id="stock-sector"><option value="all">すべての分野</option></select></div>
+          <div class="field"><label for="stock-sort">企業一覧の並び順</label><select id="stock-sort"><option value="code">証券コード順</option><option value="price">株価の安い順</option><option value="change">値上がり率順</option><option value="name">企業名順</option></select></div>
+          <div class="field"><label for="stock-scope">表示する会社</label><select id="stock-scope"><option value="all">すべての会社</option><option value="affordable">今の残高で1株以上買える会社</option><option value="held">保有している会社</option></select></div>
         </div>
-        <svg class="market-chart" id="investment-chart" viewBox="0 0 600 230" role="img" aria-labelledby="chart-title chart-description" data-depth="3">
-          <title id="chart-title">MANABI インデックスの価格チャート</title><desc id="chart-description">価格を読み込んでいます。</desc>
-          <path d="M55 25H580 M55 100H580 M55 175H580" stroke="#dce6da" fill="none" aria-hidden="true"/>
-          <text id="chart-high" x="8" y="28" font-size="12" fill="#506457"></text><text id="chart-low" x="8" y="179" font-size="12" fill="#506457"></text>
-          <path id="chart-area" fill="#26734d18" aria-hidden="true"/><polyline id="chart-line" fill="none" stroke="#26734d" stroke-width="3" stroke-linejoin="round" aria-hidden="true"/>
-          <text x="55" y="213" font-size="12" fill="#506457">過去</text><text x="545" y="213" font-size="12" fill="#506457">現在</text>
-        </svg>
-        <p class="chart-caption" id="chart-updated">価格を読み込んでいます。</p>
-        <button type="button" class="secondary-button" id="chart-pause" aria-pressed="false">チャートを一時停止</button>
+        <div class="stock-list-header"><h3 id="stock-count">日本の実在企業 100社</h3><p id="stock-page-range" class="field-help"></p></div>
+        <div id="stock-watch-rows" class="stock-directory" aria-label="企業一覧"></div>
+        <nav class="stock-pagination" aria-label="企業一覧のページ切り替え"><button type="button" class="secondary-button" id="stock-page-prev">← 前のページ</button><span id="stock-page-status"></span><button type="button" class="secondary-button" id="stock-page-next">次のページ →</button></nav>
+        <div class="field"><label for="stock-symbol">詳しく見る・売買する銘柄</label><select id="stock-symbol"></select></div>
+        <section class="stock-profile" aria-labelledby="stock-name"><h3 id="stock-name">銘柄を読み込んでいます。</h3><p id="stock-business"></p><div class="stock-grid"><div><h4>強み・良いところ</h4><p id="stock-strength"></p></div><div><h4>リスク・注意点</h4><p id="stock-risk"></p></div></div><p class="field-help">事業情報をもとにした学習用の整理です。強み・リスクは当アプリの解釈を含み、売買の推奨ではありません。</p><a id="stock-source" target="_blank" rel="noopener noreferrer">公式の企業・投資家情報 ↗</a></section>
+        <div class="feature-summary" data-depth="4">
+          <div><span>架空の現在値 / 1株</span><strong id="investment-price">—</strong><span id="stock-change"></span></div>
+          <div><span>この会社への投資</span><strong id="stock-selected-cost">—</strong><span>1株から購入できる少額練習。</span></div>
+        </div>
+        <section class="stock-trade-section" id="stock-trade-section" aria-labelledby="stock-trade-title">
         <div class="feature-summary">
-          <div><span>保有数量</span><strong id="holding-quantity">0 口</strong></div>
+          <div><span>選択銘柄の保有 / 売却可能</span><strong id="holding-quantity">0 株</strong><span id="stock-sellable"></span></div>
           <div><span>評価額 / 評価損益</span><strong id="holding-value">0 円</strong><span id="holding-profit">0 円</span></div>
         </div>
         <form id="investment-form" class="form feature-form" novalidate>
-          <div class="field"><label for="investment-quantity">売買数量（口）</label><input id="investment-quantity" type="number" min="1" step="1" value="1" inputmode="numeric"></div>
-          <p id="investment-total">合計: —</p>
+          <h3 id="stock-trade-title">この会社に投資する</h3>
+          <div class="field"><label for="stock-input-mode">投資の方法</label><select id="stock-input-mode"><option value="budget">金額を指定して購入（1株から）</option><option value="quantity">株数を指定して購入・売却</option></select></div>
+          <div id="stock-budget-fields"><div class="field"><label for="investment-budget">投資の予算（円・手数料込み）</label><input id="investment-budget" type="number" min="1" step="1" value="5000" inputmode="numeric"></div><div class="stock-budget-options"><button type="button" class="secondary-button" data-budget="1000">1,000円</button><button type="button" class="secondary-button" data-budget="5000">5,000円</button><button type="button" class="secondary-button" data-budget="available">買付可能額を使う</button></div><p class="field-help">予算内で買える整数株を購入します。使わなかった金額は口座に残ります。</p></div>
+          <div id="stock-quantity-fields" hidden><div class="stock-grid"><div class="field"><label for="stock-unit">売買単位</label><select id="stock-unit"><option value="1">少額練習・1株単位</option><option value="100">通常取引・100株単位</option></select></div><div class="field"><label for="stock-order-type">注文方法</label><select id="stock-order-type"><option value="market">成行（最新の気配で即時約定）</option><option value="limit">指値（希望価格まで待つ・当日限り）</option></select></div></div><div class="stock-grid"><div class="field"><label for="investment-quantity">売買数量（株）</label><input id="investment-quantity" type="number" min="1" step="1" max="100000" value="1" inputmode="numeric"></div><div class="field" id="stock-limit-field" hidden><label for="stock-limit">指値（円 / 1株）</label><input id="stock-limit" type="number" min="1" step="1" inputmode="numeric"></div></div></div>
+          <p class="field-help">1回の注文は100,000株まで。保有株がそれ以上ある場合は、分けて売却できます。</p>
+          <p id="investment-total" class="stock-budget-estimate">合計: —</p>
           <div class="field"><label for="investment-pin">暗証番号</label><input id="investment-pin" type="password" maxlength="4" inputmode="numeric" autocomplete="off" placeholder="4桁の暗証番号"></div>
-          <div class="feature-actions"><button class="primary-button" type="submit" value="invest-buy">購入する</button><button class="primary-button" type="submit" value="invest-sell">売却する</button></div>
+          <div class="feature-actions"><button class="primary-button" id="stock-buy-button" type="submit" value="buy">予算内で購入する</button><button class="primary-button" id="stock-sell-button" type="submit" value="sell" hidden>売り注文</button><button class="secondary-button" id="stock-sell-all" type="button" hidden>この会社の保有株を売る</button></div>
         </form>
         <div class="notice" id="investment-notice" role="status" aria-live="polite"></div>
+        </section>
+        <dl class="stock-metrics" id="stock-metrics"></dl>
+        <div class="stock-chart-controls"><label for="chart-range">ローソク足の期間</label><select id="chart-range"><option value="30">直近30分</option><option value="60">直近60分</option><option value="90">直近90分</option></select><button type="button" class="secondary-button" id="chart-pause" aria-pressed="false">練習市場を一時停止</button></div>
+        <svg class="market-chart" id="investment-chart" viewBox="0 0 600 290" role="img" aria-labelledby="chart-title chart-description" data-depth="3">
+          <title id="chart-title">架空株価のローソク足チャート</title><desc id="chart-description">価格を読み込んでいます。</desc>
+          <path d="M60 25H580 M60 110H580 M60 195H580 M60 245H580" stroke="#dce6da" fill="none" aria-hidden="true"/>
+          <text id="chart-high" x="2" y="28" font-size="11" fill="#506457"></text><text id="chart-low" x="2" y="199" font-size="11" fill="#506457"></text>
+          <g id="chart-candles" aria-hidden="true"></g><g id="chart-volume" aria-hidden="true"></g><polyline id="chart-line" fill="none" stroke="#aa8836" stroke-width="2" aria-hidden="true"/>
+          <text x="60" y="276" font-size="11" fill="#506457">過去 → 現在 ｜ 赤：上昇　青：下落　金：10本移動平均　下段：出来高</text>
+        </svg>
+        <p class="chart-caption" id="chart-updated">価格を読み込んでいます。</p>
+        <div class="stock-grid"><div><h3>気配値・板（架空）</h3><table class="statement-table"><thead><tr><th>売数量</th><th>売気配</th><th>買気配</th><th>買数量</th></tr></thead><tbody id="stock-book"></tbody></table></div><div><h3>市場ニュース（架空）</h3><div id="stock-news"></div></div></div>
+        <h3>保有株一覧・ポートフォリオ</h3><p id="stock-portfolio-total"></p><div class="statement-scroll"><table class="statement-table stock-table"><thead><tr><th>銘柄</th><th>保有株数</th><th>平均取得単価</th><th>評価額</th><th>評価損益</th><th>売却</th></tr></thead><tbody id="stock-holdings"></tbody></table></div>
+        <h3>注文・約定履歴</h3><p class="field-help">未約定の買い注文は資金、売り注文は株数を拘束します。当日限りの指値は次の練習営業日に失効します。</p><div class="statement-scroll"><table class="statement-table stock-table"><thead><tr><th>銘柄 / 売買</th><th>数量</th><th>注文価格</th><th>状態</th><th>約定価格 / 手数料</th><th>操作</th></tr></thead><tbody id="stock-orders"></tbody></table></div>
+        <section id="stock-legacy" hidden><h3>以前のMANABI インデックス保有分</h3><p id="stock-legacy-value"></p><div class="field"><label for="stock-legacy-pin">売却用の暗証番号</label><input id="stock-legacy-pin" type="password" maxlength="4" inputmode="numeric" autocomplete="off"></div><button type="button" id="stock-legacy-sell" class="secondary-button">旧インデックスを全口売却</button></section>
+        <details class="stock-rules"><summary>練習市場のルール・現実との違い</summary><p>約3秒を練習市場の1分として進め、昼休みを飛ばして9:00〜15:29を再現します。実際の日付・休場日・市場時間には連動しません。画面を開いている間に市場が進みます。</p><p>市場全体・業種・企業固有のランダムな変動と架空ニュースを反映します。通常100株単位、少額練習は1株単位。価格は練習用に1円刻み、基準価格に応じた値幅制限を設けています。</p><p>成行買いは売気配、成行売りは買気配で全量約定する簡易モデルです。板数量・出来高は架空で、部分約定や実際の注文優先順位は再現しません。指値は市場更新時の気配が条件を満たすと約定します。一時停止中は自動更新・指値の照合を停止します。</p><p>練習用手数料は約定代金の0.05%（切り上げ、最低1円）。取得原価・実現損益にも手数料を含めます。配当、税、信用取引、株式分割、決済日（受渡日）は再現せず、代金は即時に口座へ反映します。実際の証券会社の条件とは異なります。</p><p>制度の参照：<a href="https://www.jpx.co.jp/equities/trading/domestic/03.html" target="_blank" rel="noopener noreferrer">JPX・売買単位</a> / <a href="https://www.jpx.co.jp/equities/trading/domestic/06.html" target="_blank" rel="noopener noreferrer">JPX・制限値幅</a>。企業の事業説明は各社公式情報を参照（2026年10月14日確認）。</p></details>
       </div>
       <div class="panel feature-panel" id="panel-statements" role="tabpanel" aria-labelledby="tab-statements" hidden>
         <div class="panel-header"><h2>クレカの利用明細</h2><p>サンプル明細と、自分で登録した利用記録を月ごとに確認できます。実際の請求・口座引き落としはありません。</p></div>
@@ -1009,9 +1100,11 @@
     </div>
   </dialog>
 
-  <script>
+  <script type="module">
+    import { companies, companyById, createMarket, advanceMarket, upgradeMarket, quantityForBudget, emptyPortfolio, validPortfolio, validMarket, reservedCash, reservedShares, bookFor, limitsFor, feeFor, placeOrder, settleOrders, cancelOrder, simulationTime } from './assets/stocks.mjs';
+    import { registerDemoAccount, listDemoAccounts, authenticateDemoAccount, demoStorageKey } from './assets/demo-accounts.mjs';
     (() => {
-      const PIN = "9314";
+      let PIN = "9314";
       let balance = 0;
       let loggedIn = false;
       let afterLoginRoute = "balance";
@@ -1020,6 +1113,7 @@
       let account = null;
       let transactionPending = false;
       let sessionVersion = 0;
+      let activeDemoAccount = null, registrationComplete = false;
 
       // 金額を日本円の表示形式に整える。
       const formatYen = (amount) => `${amount.toLocaleString("ja-JP")} 円`;
@@ -1146,12 +1240,13 @@
 
 
       const todayJapan = () => new Intl.DateTimeFormat("sv-SE", { timeZone: "Asia/Tokyo", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
-      const emptyDemo = () => ({ balance: 0, limit: null, used: 0, date: todayJapan(), quantity: 0, cost: 0, entries: [], price: 1000, prices: [1000] });
+      const emptyDemo = () => ({ balance: 0, limit: null, used: 0, date: todayJapan(), quantity: 0, cost: 0, entries: [], price: 1000, prices: [1000], stockMarket: null, portfolio: emptyPortfolio() });
       let demo = emptyDemo();
       let withdrawal = null;
       let withdrawalRequest = 0;
       let market = null;
       let holding = { quantity: 0, cost: 0 };
+      let stockMarket = null, portfolio = emptyPortfolio(), selectedStock = '7203', legacy = { quantity: 0, cost: 0, price: 1000 };
       let cardEntries = [];
       let chartPaused = false;
       let marketLoading = false;
@@ -1161,13 +1256,13 @@
       let backgroundDraft = { ...background };
       let imageLoading = false;
       let imageRequest = 0;
-      const demoKey = "manabi-demo-v2";
+      const demoKey = () => activeDemoAccount ? demoStorageKey(activeDemoAccount.id) : "manabi-demo-v2";
       const resetDemoDay = () => {
         if (demo.date !== todayJapan()) { demo.date = todayJapan(); demo.used = 0; }
       };
       const loadDemo = () => {
         try {
-          const saved = localStorage.getItem(demoKey);
+          const saved = localStorage.getItem(demoKey());
           const value = saved ? JSON.parse(saved) : emptyDemo();
           if (![value.balance, value.used, value.quantity, value.cost, value.price].every(number => Number.isSafeInteger(number) && number >= 0)
             || value.price < 1 || value.price > 1000000 || (value.limit !== null && (!Number.isSafeInteger(value.limit) || value.limit < 0))
@@ -1177,7 +1272,11 @@
               && typeof entry.merchant === "string" && entry.merchant.length <= 100
               && Number.isSafeInteger(entry.amount) && entry.amount > 0 && entry.sample === false)
             || !value.prices.every(price => Number.isSafeInteger(price) && price >= 1 && price <= 1000000)) throw new Error();
+          const upgradedMarket = value.stockMarket ? upgradeMarket(value.stockMarket) : null;
+          if ((value.portfolio && !validPortfolio(value.portfolio)) || (upgradedMarket && !validMarket(upgradedMarket))) throw new Error();
           demo = value; resetDemoDay(); balance = demo.balance;
+          portfolio = value.portfolio || emptyPortfolio(); stockMarket = upgradedMarket;
+          demo.stockMarket = upgradedMarket; demo.portfolio = portfolio;
           holding = { quantity: demo.quantity, cost: demo.cost };
           market = { price: demo.price, prices: demo.prices.slice(-40), updatedAt: Date.now() };
           cardEntries = demo.entries;
@@ -1192,10 +1291,11 @@
       const commitDemo = (patch, notice) => {
         resetDemoDay();
         const next = { ...demo, ...patch, price: market?.price || demo.price, prices: market?.prices || demo.prices };
-        try { localStorage.setItem(demoKey, JSON.stringify(next)); }
+        try { localStorage.setItem(demoKey(), JSON.stringify(next)); }
         catch { showNotice(notice, "保存できませんでした。ブラウザの保存容量・設定を確認してください。", "error"); return false; }
         demo = next; balance = next.balance;
         holding = { quantity: next.quantity, cost: next.cost }; cardEntries = next.entries;
+        portfolio = next.portfolio || emptyPortfolio(); stockMarket = next.stockMarket || null;
         document.querySelector("#balance-value").textContent = formatYen(balance);
         return true;
       };
@@ -1227,7 +1327,7 @@
         buttons.forEach(button => button.disabled = true);
         try { await operation(); }
         catch (error) { showNotice(notice, error.message, "error"); }
-        finally { transactionPending = false; buttons.forEach(button => button.disabled = false); }
+        finally { transactionPending = false; buttons.forEach(button => button.disabled = false); if (stockMarket) renderInvestmentTotal(); }
       };
       document.querySelector("#limit-form").addEventListener("submit", event => {
         event.preventDefault();
@@ -1246,103 +1346,233 @@
           showNotice(notice, "1日の引き出し上限を保存しました。", "success");
         });
       });
+      const stockNotice = () => document.querySelector('#investment-notice');
+      const stockCellRow = (body, values) => {
+        const row = document.createElement('tr');
+        values.forEach(value => { const cell = document.createElement('td'); if (value instanceof Node) cell.append(value); else cell.textContent = value; row.append(cell); });
+        body.append(row); return row;
+      };
+      const signedYen = value => (value > 0 ? '+' : '') + formatYen(value);
+      const stockChoice = document.querySelector('#stock-symbol');
+      let stockListPage = 1, stockListSignature = '';
+      const stockPageSize = 8;
+      const normalizeStockSearch = value => String(value).normalize('NFKC').toLocaleLowerCase().replace(/[ぁ-ゖ]/g, c => String.fromCharCode(c.charCodeAt(0) + 0x60));
+      companies.forEach(c => { const option = document.createElement('option'); option.value = c.id; option.textContent = `${c.id} ${c.name} / ${c.sector}`; stockChoice.append(option); });
+      [...new Set(companies.map(c => c.sector))].forEach(sector => { const option = document.createElement('option'); option.value = sector; option.textContent = sector; document.querySelector('#stock-sector').append(option); });
+      const renderStockList = () => {
+        const body = document.querySelector('#stock-watch-rows');
+        const terms = document.querySelector('#stock-search').value.trim().split(/\s+/).filter(Boolean).map(normalizeStockSearch);
+        const sector = document.querySelector('#stock-sector').value, scope = document.querySelector('#stock-scope').value;
+        const available = Math.max(0, balance - reservedCash(portfolio));
+        const matches = companies.filter(c => {
+          const text = normalizeStockSearch([c.id,c.name,c.sector,c.business,...(c.searchTerms || [])].join(' '));
+          if (!terms.every(term => text.includes(term)) || sector !== 'all' && c.sector !== sector) return false;
+          if (scope === 'held') return (portfolio.holdings[c.id]?.quantity || 0) > 0;
+          if (scope === 'affordable') { const ask = stockMarket && bookFor(stockMarket.quotes[c.id]).ask; return ask !== null && ask > 0 && ask + feeFor(ask) <= available; }
+          return true;
+        });
+        const sort = document.querySelector('#stock-sort').value;
+        matches.sort((a,b) => {
+          if (sort === 'name') return a.name.localeCompare(b.name,'ja');
+          if (sort === 'price' && stockMarket) return stockMarket.quotes[a.id].price-stockMarket.quotes[b.id].price || a.id.localeCompare(b.id);
+          if (sort === 'change' && stockMarket) { const qa=stockMarket.quotes[a.id],qb=stockMarket.quotes[b.id]; return qb.price/qb.previousClose-qa.price/qa.previousClose || a.id.localeCompare(b.id); }
+          return a.id.localeCompare(b.id);
+        });
+        const pages = Math.max(1,Math.ceil(matches.length/stockPageSize)); stockListPage = Math.max(1,Math.min(stockListPage,pages));
+        const start=(stockListPage-1)*stockPageSize, page=matches.slice(start,start+stockPageSize);
+        document.querySelector('#stock-count').textContent=`企業一覧：${matches.length}社 / 全${companies.length}社`;
+        document.querySelector('#stock-page-range').textContent=matches.length?`${start+1}〜${start+page.length}件を表示`:'条件に合う会社がありません。';
+        document.querySelector('#stock-page-status').textContent=`${stockListPage} / ${pages}ページ`;
+        document.querySelector('#stock-page-prev').disabled=stockListPage===1; document.querySelector('#stock-page-next').disabled=stockListPage===pages;
+        const signature=page.map(c=>c.id).join(',');
+        if(signature!==stockListSignature || !body.children.length) {
+          stockListSignature=signature;body.replaceChildren();
+          for(const c of page) {
+            const card=document.createElement('article');card.className='stock-company-card';card.dataset.company=c.id;
+            const title=document.createElement('h4');title.textContent=c.name;
+            const meta=document.createElement('p');meta.textContent=`${c.id} ｜ ${c.sector}`;
+            const business=document.createElement('p');business.className='stock-card-business';business.textContent=c.business;
+            const price=document.createElement('div');price.className='stock-card-price';const amount=document.createElement('strong'),change=document.createElement('span');price.append(amount,change);
+            const button=document.createElement('button');button.type='button';button.className='secondary-button';button.dataset.symbol=c.id;button.textContent='詳細を見る・投資する';button.setAttribute('aria-label',`${c.id} ${c.name}の詳細と投資`);
+            card.append(title,meta,business,price,button);body.append(card);
+          }
+          if(!page.length) {const p=document.createElement('p');p.className='field-help';p.textContent='検索語や分野を変更すると、別の会社を探せます。';body.append(p);}
+        }
+        for(const card of body.querySelectorAll('[data-company]')) {
+          const id=card.dataset.company,q=stockMarket?.quotes[id],change=q?q.price-q.previousClose:0;
+          card.classList.toggle('is-selected',id===selectedStock);
+          const button=card.querySelector('button');button.setAttribute('aria-pressed',String(id===selectedStock));
+          card.querySelector('strong').textContent=q?formatYen(q.price):'読み込み中';
+          const diff=card.querySelector('.stock-card-price span');diff.textContent=q?`前日比 ${change>0?'+':''}${(change/q.previousClose*100).toFixed(2)}%`:'架空株価';diff.className=change>=0?'stock-up':'stock-down';
+        }
+      };
+      const svgItem = (parent, tag, attributes) => { const node = document.createElementNS('http://www.w3.org/2000/svg', tag); Object.entries(attributes).forEach(([key,value]) => node.setAttribute(key, String(value))); parent.append(node); };
+      const renderStockChart = quote => {
+        const all = quote.candles, candles = all.slice(-Number(document.querySelector('#chart-range').value));
+        const low = Math.max(0, Math.min(...candles.map(c => c.low)) - 2), high = Math.max(...candles.map(c => c.high)) + 2;
+        const y = price => 195 - (price - low) * 170 / (high - low), width = 520 / candles.length;
+        const bars = document.querySelector('#chart-candles'), volumes = document.querySelector('#chart-volume'); bars.replaceChildren(); volumes.replaceChildren();
+        const maxVolume = Math.max(1, ...candles.map(c => c.volume)), average = [];
+        candles.forEach((c,i) => {
+          const x = 60 + width * (i + .5), color = c.close >= c.open ? '#b53030' : '#2469a6';
+          svgItem(bars, 'line', { x1:x, x2:x, y1:y(c.high), y2:y(c.low), stroke:color, 'stroke-width':1 });
+          svgItem(bars, 'rect', { x:x-width*.3, y:Math.min(y(c.open),y(c.close)), width:Math.max(1,width*.6), height:Math.max(1,Math.abs(y(c.open)-y(c.close))), fill:color });
+          const h = c.volume / maxVolume * 35; svgItem(volumes, 'rect', { x:x-width*.3, y:245-h, width:Math.max(1,width*.6), height:h, fill:color, opacity:.55 });
+          const index = all.length - candles.length + i;
+          if (index >= 9) average.push(`${x},${y(all.slice(index-9,index+1).reduce((s,b) => s+b.close,0)/10)}`);
+        });
+        document.querySelector('#chart-line').setAttribute('points', average.join(' '));
+        document.querySelector('#chart-high').textContent = high.toLocaleString('ja-JP'); document.querySelector('#chart-low').textContent = low.toLocaleString('ja-JP');
+        document.querySelector('#chart-title').textContent = `${companyById(selectedStock).name}の架空株価・ローソク足`;
+        document.querySelector('#chart-description').textContent = `直近${candles.length}本のローソク足。現在${quote.price}円、期間安値${low}円、高値${high}円。下段は架空出来高。`;
+      };
       const renderInvestment = () => {
-        if (!market) return;
-        document.querySelector("#investment-price").textContent = formatYen(market.price);
-        document.querySelector("#investment-balance").textContent = formatYen(balance);
-        document.querySelector("#holding-quantity").textContent = holding.quantity.toLocaleString("ja-JP") + " 口";
-        const value = holding.quantity * market.price;
-        document.querySelector("#holding-value").textContent = Number.isSafeInteger(value) ? formatYen(value) : "取扱上限を超えています";
-        const profit = value - holding.cost;
-        document.querySelector("#holding-profit").textContent = Number.isSafeInteger(value) ? "評価損益: " + (profit > 0 ? "+" : "") + formatYen(profit) : "—";
-        const prices = market.prices;
-        const low = Math.max(0, Math.min(...prices) - 5), high = Math.max(...prices) + 5;
-        const points = prices.map((price, index) => `${55 + index * 525 / Math.max(1, prices.length - 1)},${175 - (price - low) * 150 / (high - low)}`);
-        document.querySelector("#chart-line").setAttribute("points", points.join(" "));
-        document.querySelector("#chart-area").setAttribute("d", `M55 175 L${points.join(" L")} L${prices.length === 1 ? 55 : 580} 175 Z`);
-        document.querySelector("#chart-high").textContent = high.toLocaleString("ja-JP");
-        document.querySelector("#chart-low").textContent = low.toLocaleString("ja-JP");
-        document.querySelector("#chart-description").textContent = `直近${prices.length}回の価格。現在${market.price}円、最低${Math.min(...prices)}円、最高${Math.max(...prices)}円。`;
-        document.querySelector("#chart-updated").textContent = "更新: " + new Intl.DateTimeFormat("ja-JP", { timeZone: "Asia/Tokyo", timeStyle: "medium" }).format(new Date(market.updatedAt)) + "（日本時間）";
+        const company = companyById(selectedStock); stockChoice.value = selectedStock;
+        document.querySelector('#stock-name').textContent = `${company.id} ${company.name} / ${company.sector}`;
+        for (const key of ['business','strength','risk']) document.querySelector('#stock-'+key).textContent = company[key];
+        document.querySelector('#stock-source').href = company.source;
+        document.querySelector('#stock-trade-title').textContent = `${company.name}に投資する`;
+        renderStockList();
+        if (!stockMarket) return;
+        const q = stockMarket.quotes[selectedStock], book = bookFor(q), h = portfolio.holdings[selectedStock] || { quantity:0, cost:0 };
+        const change = q.price - q.previousClose, value = h.quantity * q.price, profit = value - h.cost;
+        document.querySelector('#investment-price').textContent = formatYen(q.price);
+        const changeNode = document.querySelector('#stock-change'); changeNode.textContent = `前日比 ${signedYen(change)} / ${(change / q.previousClose * 100).toFixed(2)}%`; changeNode.className = change >= 0 ? 'stock-up' : 'stock-down';
+        document.querySelector('#investment-balance').textContent = formatYen(balance);
+        document.querySelector('#stock-available').textContent = `買付可能 ${formatYen(Math.max(0,balance-reservedCash(portfolio)))}（拘束 ${formatYen(reservedCash(portfolio))}）`;
+        document.querySelector('#stock-funding').hidden = balance - reservedCash(portfolio) > 0;
+        document.querySelector('#stock-selected-cost').textContent = book.ask === null ? '売気配がありません' : `1株 約${formatYen(book.ask+feeFor(book.ask))}`;
+        document.querySelector('#holding-quantity').textContent = h.quantity.toLocaleString('ja-JP') + ' 株';
+        document.querySelector('#stock-sellable').textContent = `売却可能 ${h.quantity-reservedShares(portfolio,selectedStock)} 株`;
+        document.querySelector('#holding-value').textContent = formatYen(value); document.querySelector('#holding-profit').textContent = `取得原価 ${formatYen(h.cost)} / 評価損益 ${signedYen(profit)}`;
+        const metrics = document.querySelector('#stock-metrics'); metrics.replaceChildren(); const limits = limitsFor(q);
+        const limitInput = document.querySelector('#stock-limit'); limitInput.min = limits.low; limitInput.max = limits.high; if (!limitInput.value) limitInput.value = q.price;
+        [['前日終値',formatYen(q.previousClose)],['始値',formatYen(q.open)],['高値 / 安値',`${formatYen(q.high)} / ${formatYen(q.low)}`],['出来高',q.volume.toLocaleString('ja-JP')+' 株'],['値幅制限',`${limits.low.toLocaleString('ja-JP')}〜${limits.high.toLocaleString('ja-JP')} 円`],['状態',q.price === limits.high ? 'ストップ高' : q.price === limits.low ? 'ストップ安' : '取引中（架空）']].forEach(([title,text])=>{ const div=document.createElement('div'),dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=title;dd.textContent=text;div.append(dt,dd);metrics.append(div); });
+        renderStockChart(q); document.querySelector('#chart-updated').textContent = `${simulationTime(stockMarket)} ｜ 約3秒 = 練習1分${chartPaused ? ' ｜ 一時停止中' : ''}`;
+        const board = document.querySelector('#stock-book'); board.replaceChildren();
+        for (let i=0;i<5;i++) stockCellRow(board,[book.asks[i].price === null ? '—' : book.asks[i].quantity.toLocaleString('ja-JP'),book.asks[i].price === null ? '売気配なし' : formatYen(book.asks[i].price),book.bids[i].price === null ? '買気配なし' : formatYen(book.bids[i].price),book.bids[i].price === null ? '—' : book.bids[i].quantity.toLocaleString('ja-JP')]);
+        const news = document.querySelector('#stock-news'); news.replaceChildren(); stockMarket.news.slice(0,3).forEach(item=>{const p=document.createElement('p'); p.className='field-help';p.textContent=`${simulationTime(item)} ${item.text}`;news.append(p);});
+        const holdingsBody = document.querySelector('#stock-holdings'); holdingsBody.replaceChildren(); let totalValue=0,totalCost=0;
+        Object.entries(portfolio.holdings).filter(([,item])=>item.quantity>0).forEach(([id,item])=>{const v=item.quantity*stockMarket.quotes[id].price;totalValue+=v;totalCost+=item.cost;const sell=document.createElement('button');sell.type='button';sell.className='secondary-button';sell.dataset.holding=id;sell.textContent='売却へ';sell.setAttribute('aria-label',`${companyById(id).name}の保有株を売却`);sell.disabled=item.quantity-reservedShares(portfolio,id)<=0;stockCellRow(holdingsBody,[`${id} ${companyById(id).name}`,`${item.quantity} 株`,formatYen(Math.round(item.cost/item.quantity)),formatYen(v),signedYen(v-item.cost),sell]);});
+        if (!holdingsBody.children.length) stockCellRow(holdingsBody,['保有株はありません。','','','','','']);
+        document.querySelector('#stock-portfolio-total').textContent=`株式評価額 ${formatYen(totalValue)} / 評価損益 ${signedYen(totalValue-totalCost)} / 実現損益 ${signedYen(portfolio.realized)}（手数料込み・税引前）`;
+        document.querySelector('#stock-total-assets').textContent=formatYen(balance+totalValue+legacy.quantity*legacy.price);
+        const overallProfit=portfolio.realized+totalValue-totalCost,overall=document.querySelector('#stock-overall-profit');overall.textContent=signedYen(overallProfit);overall.className=overallProfit>=0?'stock-up':'stock-down';
+        document.querySelector('#stock-realized-profit').textContent=`売却済 ${signedYen(portfolio.realized)} / 保有分 ${signedYen(totalValue-totalCost)}`;
+        const ordersBody = document.querySelector('#stock-orders'); ordersBody.replaceChildren(); const statuses={open:'未約定',filled:'約定',cancelled:'取消',expired:'失効'};
+        [...portfolio.orders].reverse().slice(0,50).forEach(order=>{const control=document.createElement('span');if(order.status==='open'){const button=document.createElement('button');button.type='button';button.className='secondary-button';button.dataset.cancel=order.id;button.textContent='取消';button.setAttribute('aria-label',`${order.symbol} ${order.side==='buy'?'買い':'売り'} ${order.quantity}株の注文を取消`);control.append(button);}stockCellRow(ordersBody,[`${order.symbol} ${companyById(order.symbol).name} / ${order.side==='buy'?'買':'売'}`,`${order.quantity} 株`,order.type==='market'?'成行':formatYen(order.limitPrice),statuses[order.status],order.status==='filled'?`${formatYen(order.price)} / ${formatYen(order.fee)}`:'—',control]);});
+        if (!portfolio.orders.length) stockCellRow(ordersBody,['注文はありません。','','','','','']);
+        document.querySelector('#stock-legacy').hidden = !legacy.quantity;
+        document.querySelector('#stock-legacy-value').textContent=`${legacy.quantity}口 / 評価額 ${formatYen(legacy.quantity*legacy.price)}。以前の保有分をそのまま残しています。`;
         renderInvestmentTotal();
       };
-      const renderInvestmentTotal = () => {
-        const quantity = Number(document.querySelector("#investment-quantity").value);
-        const total = market && quantity * market.price;
-        document.querySelector("#investment-total").textContent = "合計: " + (isValidAmount(quantity) && Number.isSafeInteger(total) ? formatYen(total) : "—") + "（表示中の価格）";
+      const budgetOrder = () => {
+        const budget=Number(document.querySelector('#investment-budget').value),ask=stockMarket&&bookFor(stockMarket.quotes[selectedStock]).ask;
+        const available=Math.max(0,balance-reservedCash(portfolio));
+        const quantity=isValidAmount(budget)&&ask!==null?quantityForBudget(Math.min(budget,available),ask,1):0;
+        return {budget,quantity,ask,available};
       };
-      const refreshMarket = async (advance = false) => {
-        if (marketLoading || !loggedIn) return;
-        marketLoading = true;
-        const version = sessionVersion, request = ++marketRequest;
+      const renderInvestmentTotal = () => {
+        if (!stockMarket) return;
+        const budgetMode=document.querySelector('#stock-input-mode').value==='budget';
+        document.querySelector('#stock-budget-fields').hidden=!budgetMode;document.querySelector('#stock-quantity-fields').hidden=budgetMode;
+        document.querySelector('#stock-buy-button').textContent=budgetMode?'予算内で購入する':'買い注文';document.querySelector('#stock-sell-button').hidden=budgetMode;
+        const sellable=(portfolio.holdings[selectedStock]?.quantity||0)-reservedShares(portfolio,selectedStock);
+        document.querySelector('#stock-sell-all').hidden=sellable<=0;document.querySelector('#stock-sell-all').disabled=transactionPending;
+        if(budgetMode) {
+          const order=budgetOrder(),fee=order.quantity?feeFor(order.ask*order.quantity):0,total=order.quantity*order.ask+fee;
+          document.querySelector('#stock-buy-button').disabled=transactionPending||order.quantity<1;
+          document.querySelector('#investment-total').textContent=order.quantity?`購入予定 ${order.quantity.toLocaleString('ja-JP')}株 / 使用額 ${formatYen(total)}（手数料 ${formatYen(fee)}）/ 購入後の残高 ${formatYen(balance-total)}`:order.ask===null?'売気配がないため、今は購入できません。':`この予算・買付可能額では1株を購入できません。1株の必要額 ${formatYen(order.ask+feeFor(order.ask))}。金額を増やすか、買付可能な会社を選んでください。`;
+          return;
+        }
+        const quantity=Number(document.querySelector('#investment-quantity').value), type=document.querySelector('#stock-order-type').value;
+        const book=bookFor(stockMarket.quotes[selectedStock]), price=Number(document.querySelector('#stock-limit').value);
+        document.querySelector('#stock-limit-field').hidden=type!=='limit';
+        const estimate=side=>{const p=type==='limit'?price:side==='buy'?book.ask:book.bid;if(!isValidAmount(quantity)||!isValidAmount(p)||!Number.isSafeInteger(p*quantity))return '—';const amount=p*quantity,fee=feeFor(amount);return `${formatYen(side==='buy'?amount+fee:amount-fee)}（手数料 ${formatYen(fee)}）`;};
+        document.querySelector('#investment-total').textContent=`買い ${type==='limit'?'最大拘束':'概算必要'}額: ${estimate('buy')} / 売り ${type==='limit'?'指値での':'概算'}受取額: ${estimate('sell')}`;
+        const validQuantity=isValidAmount(quantity)&&quantity<=100000&&quantity%Number(document.querySelector('#stock-unit').value)===0;
+        const buyPrice=type==='limit'?price:book.ask,buyCost=buyPrice*quantity+feeFor(buyPrice*quantity);
+        document.querySelector('#stock-buy-button').disabled=transactionPending||!validQuantity||!isValidAmount(buyPrice)||!Number.isSafeInteger(buyCost)||buyCost>balance-reservedCash(portfolio);
+        document.querySelector('#stock-sell-button').disabled=transactionPending||!validQuantity||quantity>sellable||(type==='market'&&book.bid===null);
+      };
+      const acceptStocks = data => {
+        stockMarket=data.market; portfolio=data.portfolio; legacy=data.legacy;
+        if(databaseMode)applyAccount(data.account);
+        renderInvestment();
+      };
+      const refreshMarket = async (advance=false) => {
+        if(marketLoading||!loggedIn||transactionPending)return;
+        marketLoading=true; const version=sessionVersion,request=++marketRequest;
         try {
           let data;
-          if (databaseMode) data = await api("investment");
+          if(databaseMode)data=await api('stocks');
           else {
-            if (advance && !chartPaused) {
-              const change = Math.floor(Math.random() * 401) - 200;
-              const price = Math.max(1, Math.min(1000000, market.price + (Math.round(market.price * change / 10000) || (change < 0 ? -1 : 1))));
-              market = { price, prices: [...market.prices, price].slice(-40), updatedAt: Date.now() };
-            }
-            data = { market, holding };
+            const nextMarket=stockMarket ? advance&&!chartPaused ? advanceMarket(stockMarket) : stockMarket : createMarket();
+            const result=chartPaused ? {state:portfolio,balance,fills:[]} : settleOrders(portfolio,nextMarket,balance);
+            if(!commitDemo({stockMarket:nextMarket,portfolio:result.state,balance:result.balance},stockNotice()))return;
+            data={market:stockMarket,portfolio,legacy:{quantity:demo.quantity,cost:demo.cost,price:demo.price},fills:result.fills};
           }
-          if (!loggedIn || version !== sessionVersion || request !== marketRequest) return;
-          market = data.market; holding = data.holding; renderInvestment();
-          const notice = document.querySelector("#investment-notice");
-          if (notice.dataset.connectionError === "true") { notice.className = "notice"; notice.textContent = ""; delete notice.dataset.connectionError; }
-        } catch (error) {
-          if (version !== sessionVersion || !loggedIn) return;
-          const notice = document.querySelector("#investment-notice");
-          showNotice(notice, error.message, "error"); notice.dataset.connectionError = "true";
-        } finally { marketLoading = false; }
+          if(!loggedIn||version!==sessionVersion||request!==marketRequest)return;
+          acceptStocks(data);
+          if(data.fills.length) {showNotice(stockNotice(),`${data.fills.length}件の指値注文が約定しました。履歴をご確認ください。`,'success');if(databaseMode)await refreshHistory();}
+          else if(stockNotice().dataset.connectionError==='true'){stockNotice().textContent='';stockNotice().className='notice';delete stockNotice().dataset.connectionError;}
+        } catch(error){if(version===sessionVersion&&loggedIn){showNotice(stockNotice(),error.message,'error');stockNotice().dataset.connectionError='true';}}
+        finally{marketLoading=false;}
       };
-      document.querySelector("#investment-quantity").addEventListener("input", renderInvestmentTotal);
-      document.querySelector("#chart-pause").addEventListener("click", () => {
-        chartPaused = !chartPaused;
-        document.querySelector("#chart-pause").textContent = chartPaused ? "チャートを再開" : "チャートを一時停止";
-        document.querySelector("#chart-pause").setAttribute("aria-pressed", String(chartPaused));
-        if (!chartPaused) refreshMarket();
-      });
-      document.querySelector("#investment-form").addEventListener("submit", event => {
-        event.preventDefault();
-        const kind = event.submitter?.value || "invest-buy";
-        const quantity = Number(document.querySelector("#investment-quantity").value), pin = document.querySelector("#investment-pin").value;
-        const notice = document.querySelector("#investment-notice");
-        if (!market) return showNotice(notice, "価格の読み込み後に操作してください。", "error");
-        const price = market.price, amount = price * quantity;
-        if (!isValidAmount(quantity) || !isValidAmount(amount)) return showNotice(notice, "数量と合計金額が取り扱える範囲の整数になるように入力してください。", "error");
-        featureAction(notice, async () => {
-          if (databaseMode) {
-            try {
-              const data = await api(kind, { quantity, pin, price });
-              marketRequest++;
-              applyAccount(data.account); holding = data.holding; market = data.market;
-              renderInvestment(); document.querySelector("#investment-pin").value = "";
-              showNotice(notice, `${data.receipt.kind}が完了しました。${quantity}口 / ${formatYen(amount)}`, "success");
-              const receipt = data.receipt; showReceipt(receipt.kind, receipt.amount, receipt.before, null, receipt);
-              await refreshHistory();
-            } catch (error) { await refreshMarket(); throw error; }
-          } else {
-            if (pin !== PIN) throw new Error("暗証番号が違います。");
-            const buy = kind === "invest-buy";
-            if (buy && amount > balance) throw new Error("残高が不足しています。");
-            if (!buy && quantity > holding.quantity) throw new Error("保有数量が不足しています。");
-            const nextBalance = balance + (buy ? -amount : amount), nextQuantity = holding.quantity + (buy ? quantity : -quantity);
-            const nextCost = buy ? holding.cost + amount : nextQuantity === 0 ? 0 : holding.cost - Math.floor(holding.cost * (quantity / holding.quantity));
-            if (![nextBalance, nextQuantity, nextCost].every(number => Number.isSafeInteger(number) && number >= 0)) throw new Error("取り扱い可能な上限を超えます。");
-            const before = balance;
-            if (!commitDemo({ balance: nextBalance, quantity: nextQuantity, cost: nextCost }, notice)) return;
-            renderInvestment(); document.querySelector("#investment-pin").value = "";
-            showNotice(notice, `${buy ? "購入" : "売却"}しました。${quantity}口 / ${formatYen(amount)}`, "success");
-            showReceipt(buy ? "投資購入" : "投資売却", amount, before);
+      const selectStock = id => {selectedStock=id; if(stockMarket)document.querySelector('#stock-limit').value=stockMarket.quotes[id].price;renderInvestment();};
+      stockChoice.addEventListener('change',()=>selectStock(stockChoice.value));
+      const showStockTrade=()=>document.querySelector('#stock-trade-section').scrollIntoView({block:'start',behavior:'auto'});
+      document.querySelector('#stock-watch-rows').addEventListener('click',event=>{const button=event.target.closest('button[data-symbol]');if(button){selectStock(button.dataset.symbol);showStockTrade();}});
+      const resetStockPage=()=>{stockListPage=1;renderStockList();};
+      document.querySelector('#stock-search').addEventListener('input',resetStockPage);
+      for(const id of ['#stock-sector','#stock-sort','#stock-scope'])document.querySelector(id).addEventListener('change',resetStockPage);
+      document.querySelector('#stock-page-prev').addEventListener('click',()=>{stockListPage--;renderStockList();});document.querySelector('#stock-page-next').addEventListener('click',()=>{stockListPage++;renderStockList();});
+      document.querySelector('#chart-range').addEventListener('change',()=>{if(stockMarket)renderStockChart(stockMarket.quotes[selectedStock]);});
+      for(const selector of ['#investment-quantity','#stock-limit','#stock-order-type','#investment-budget','#stock-input-mode'])document.querySelector(selector).addEventListener('input',renderInvestmentTotal);
+      document.querySelectorAll('[data-budget]').forEach(button=>button.addEventListener('click',()=>{document.querySelector('#investment-budget').value=button.dataset.budget==='available'?Math.max(0,balance-reservedCash(portfolio)):button.dataset.budget;renderInvestmentTotal();}));
+      const prepareStockSale = id => {selectStock(id);document.querySelector('#stock-input-mode').value='quantity';document.querySelector('#stock-unit').value='1';document.querySelector('#stock-order-type').value='market';document.querySelector('#investment-quantity').value=Math.min(100000,(portfolio.holdings[id]?.quantity||0)-reservedShares(portfolio,id));document.querySelector('#investment-quantity').min=1;document.querySelector('#investment-quantity').step=1;renderInvestmentTotal();showStockTrade();document.querySelector('#investment-pin').focus({preventScroll:true});};
+      document.querySelector('#stock-sell-all').addEventListener('click',()=>prepareStockSale(selectedStock));
+      document.querySelector('#stock-holdings').addEventListener('click',event=>{const button=event.target.closest('button[data-holding]');if(button)prepareStockSale(button.dataset.holding);});
+      document.querySelector('#stock-unit').addEventListener('change',()=>{const unit=Number(document.querySelector('#stock-unit').value),input=document.querySelector('#investment-quantity');input.min=unit;input.step=unit;input.value=unit;renderInvestmentTotal();});
+      document.querySelector('#chart-pause').addEventListener('click',()=>{chartPaused=!chartPaused;document.querySelector('#chart-pause').textContent=chartPaused?'練習市場を再開':'練習市場を一時停止';document.querySelector('#chart-pause').setAttribute('aria-pressed',String(chartPaused));if(!chartPaused)refreshMarket(true);else renderInvestment();});
+      document.querySelector('#investment-form').addEventListener('submit',event=>{
+        event.preventDefault(); if(!stockMarket)return showNotice(stockNotice(),'市場の読み込み後に操作してください。','error');
+        const side=event.submitter?.value||'buy',book=bookFor(stockMarket.quotes[selectedStock]);
+        const input={symbol:selectedStock,side,type:document.querySelector('#stock-order-type').value,quantity:Number(document.querySelector('#investment-quantity').value),unit:Number(document.querySelector('#stock-unit').value),limitPrice:Number(document.querySelector('#stock-limit').value),expectedPrice:side==='buy'?book.ask:book.bid,pin:document.querySelector('#investment-pin').value};
+        if(document.querySelector('#stock-input-mode').value==='budget') {
+          const order=budgetOrder();if(side!=='buy'||order.quantity<1)return showNotice(stockNotice(),'予算内で1株以上買える金額を入力してください。','error');
+          Object.assign(input,{side:'buy',type:'market',unit:1,quantity:order.quantity,budget:order.budget,expectedPrice:order.ask});
+        }
+        featureAction(stockNotice(),async()=>{
+          marketRequest++;
+          let data;
+          if(databaseMode) {
+            try{data=await api('stock-order',input);}catch(error){try{acceptStocks(await api('stocks'));}catch{}throw error;}
           }
+          else {
+            if(input.pin!==PIN)throw new Error('暗証番号が違います。');
+            const result=placeOrder(portfolio,input,stockMarket,balance,crypto.randomUUID());
+            if(!commitDemo({portfolio:result.state,balance:result.balance},stockNotice()))return;
+            data={market:stockMarket,portfolio,legacy,order:result.order,fills:result.fills};
+          }
+          acceptStocks(data);document.querySelector('#investment-pin').value='';
+          const order=data.order;
+          const completed=order.side==='buy'?`${companyById(order.symbol).name} ${order.quantity}株を購入しました。使用額 ${formatYen(order.amount+order.fee)}（手数料 ${formatYen(order.fee)}）。現在の残高 ${formatYen(balance)}。`:`${companyById(order.symbol).name} ${order.quantity}株を売却しました。残高に ${formatYen(order.amount-order.fee)}戻りました。この売却の損益 ${signedYen(order.profit)}。現在の残高 ${formatYen(balance)}。`;
+          showNotice(stockNotice(),order.status==='filled'?completed:'指値注文を受け付けました。約定するまで資金・株数を拘束します。','success');
+          if(databaseMode)await refreshHistory();
         });
       });
-      setInterval(() => {
-        if (!loggedIn || document.hidden || transactionPending) return;
-        if (!document.querySelector("#panel-investment").hidden && !chartPaused) refreshMarket(true);
-        if (withdrawal && withdrawal.date !== todayJapan()) refreshWithdrawal();
-      }, 3000);
+      document.querySelector('#stock-orders').addEventListener('click',event=>{
+        const button=event.target.closest('button[data-cancel]');if(!button)return;
+        featureAction(stockNotice(),async()=>{marketRequest++;if(databaseMode)acceptStocks(await api('stock-cancel',{id:button.dataset.cancel}));else{const state=cancelOrder(portfolio,button.dataset.cancel);if(!commitDemo({portfolio:state},stockNotice()))return;renderInvestment();}showNotice(stockNotice(),'注文を取消し、拘束を解除しました。','success');});
+      });
+      document.querySelector('#stock-legacy-sell').addEventListener('click',()=>featureAction(stockNotice(),async()=>{
+        const pin=document.querySelector('#stock-legacy-pin').value;marketRequest++;
+        if(databaseMode){const data=await api('invest-sell',{quantity:legacy.quantity,price:legacy.price,pin});applyAccount(data.account);legacy={...data.holding,price:data.market.price};}
+        else{if(pin!==PIN)throw new Error('暗証番号が違います。');if(!commitDemo({balance:balance+demo.quantity*demo.price,quantity:0,cost:0},stockNotice()))return;legacy={quantity:0,cost:0,price:demo.price};}
+        document.querySelector('#stock-legacy-pin').value='';renderInvestment();showNotice(stockNotice(),'旧インデックス保有分を全口売却しました。','success');if(databaseMode)await refreshHistory();
+      }));
+      setInterval(()=>{if(!loggedIn||document.hidden||transactionPending)return;if(!document.querySelector('#panel-investment').hidden&&!chartPaused)refreshMarket(true);if(withdrawal&&withdrawal.date!==todayJapan())refreshWithdrawal();},3000);
 
       const sampleEntries = () => {
         const month = todayJapan().slice(0, 7);
@@ -1406,7 +1636,7 @@
         });
       });
 
-      const backgroundKey = () => "manabi-background:" + (databaseMode ? account.id : "demo");
+      const backgroundKey = () => "manabi-background:" + (databaseMode ? account.id : activeDemoAccount?.id || "demo");
       const backgroundPhotos = new Map([
         ["sakura", "assets/backgrounds/sakura.jpg"],
         ["forest", "assets/backgrounds/forest.jpg"],
@@ -1471,16 +1701,26 @@
       const beginAccountFeatures = () => {
         sessionVersion++; withdrawalRequest++; imageRequest++; imageLoading = false; withdrawal = null; cardEntries = []; holding = { quantity: 0, cost: 0 }; market = null;
         marketRequest++; statementRequest++;
-        document.querySelectorAll("#investment-price, #investment-balance, #holding-value, #holding-profit, #investment-total").forEach(element => element.textContent = "—");
-        document.querySelector("#holding-quantity").textContent = "0 口";
-        document.querySelector("#chart-line").setAttribute("points", ""); document.querySelector("#chart-area").setAttribute("d", "");
+        document.querySelectorAll("#investment-price, #investment-balance, #holding-value, #holding-profit, #investment-total, #stock-total-assets, #stock-overall-profit, #stock-realized-profit, #stock-selected-cost, #stock-available, #stock-sellable, #stock-change, #stock-portfolio-total").forEach(element => element.textContent = "—");
+        stockMarket = null; portfolio = emptyPortfolio(); legacy = { quantity: 0, cost: 0, price: 1000 };
+        stockListPage = 1; stockListSignature = '';
+        document.querySelector('#stock-search').value = '';
+        document.querySelector('#stock-sector').value = 'all'; document.querySelector('#stock-sort').value = 'code'; document.querySelector('#stock-scope').value = 'all';
+        document.querySelector('#stock-input-mode').value = 'budget'; document.querySelector('#stock-budget-fields').hidden = false; document.querySelector('#stock-quantity-fields').hidden = true;
+        document.querySelector('#stock-sell-button').hidden = true; document.querySelector('#stock-sell-all').hidden = true; document.querySelector('#stock-funding').hidden = true;
+        document.querySelector('#stock-buy-button').disabled = true;
+        renderInvestment();
+        document.querySelector("#holding-quantity").textContent = "0 株";
+        document.querySelector("#chart-line").setAttribute("points", "");
+        document.querySelectorAll('#chart-candles, #chart-volume, #stock-holdings, #stock-orders, #stock-book, #stock-news, #stock-metrics').forEach(element => element.replaceChildren());
+        document.querySelector('#stock-legacy').hidden = true;
         document.querySelector("#chart-high").textContent = ""; document.querySelector("#chart-low").textContent = "";
         document.querySelector("#chart-description").textContent = "価格を読み込んでいます。";
         document.querySelector("#chart-updated").textContent = "価格を読み込んでいます。";
         document.querySelector("#withdraw-limit-summary").textContent = "1日の引き出し上限を確認しています。";
         document.querySelector("#settings-limit-summary").textContent = "読み込み中です。";
         chartPaused = false;
-        document.querySelector("#chart-pause").textContent = "チャートを一時停止";
+        document.querySelector("#chart-pause").textContent = "練習市場を一時停止";
         document.querySelector("#chart-pause").setAttribute("aria-pressed", "false");
         document.querySelector("#statement-month").value = todayJapan().slice(0, 7);
         loadBackground();
@@ -1582,30 +1822,33 @@
       const panels = [...document.querySelectorAll(".panel")];
       const homeView = document.querySelector("#home-view");
       const transactionView = document.querySelector("#practice");
-      const routeNames = ["home", "balance", "deposit", "withdraw", "transfer", "investment", "statements", "settings", "virtual-card", "physical-card", "login"];
+      const routeNames = ["home", "balance", "deposit", "withdraw", "transfer", "investment", "statements", "settings", "virtual-card", "physical-card", "login", "register"];
       let activeView = "home";
-      const viewScroll = { home: 0, transaction: 0, cards: 0, login: 0 };
+      const viewScroll = { home: 0, transaction: 0, cards: 0, login: 0, register: 0 };
       const routeFromHash = () => {
         const hash = location.hash.slice(1);
         return routeNames.includes(hash) ? hash : hash === "practice" ? "balance" : "home";
       };
       const navigate = (route, push = false, restoreScroll = true) => {
         if (!routeNames.includes(route)) route = "home";
-        if (!loggedIn && !["home", "login"].includes(route)) {
+        if (!loggedIn && !["home", "login", "register"].includes(route)) {
           afterLoginRoute = route;
           route = "login";
           history.replaceState(null, "", "#login");
         }
         if (loggedIn && route === "login") route = "balance";
-        const nextView = route === "login" ? "login" : route === "home" ? "home" : route.endsWith("-card") ? "cards" : "transaction";
+        if (loggedIn && route === "register" && !registrationComplete) route = "balance";
+        const nextView = route === "register" ? "register" : route === "login" ? "login" : route === "home" ? "home" : route.endsWith("-card") ? "cards" : "transaction";
         const changedView = activeView !== nextView;
         if (changedView) viewScroll[activeView] = window.scrollY;
         homeView.hidden = nextView !== "home";
         transactionView.hidden = nextView !== "transaction";
-        document.querySelector("#header-account").hidden = !loggedIn || ["home", "login"].includes(nextView);
+        document.querySelector("#header-account").hidden = !loggedIn || ["home", "login", "register"].includes(nextView);
         document.querySelector("#header-home-note").hidden = nextView !== "home";
         document.querySelector("#login-view").hidden = nextView !== "login";
+        document.querySelector("#register-view").hidden = nextView !== "register";
         document.querySelector("#login-open").hidden = loggedIn;
+        document.querySelector("#register-open").hidden = loggedIn;
         document.querySelector("#logout-button").hidden = !loggedIn;
         document.querySelector("#login-status").textContent = loggedIn ? "ログイン中" : "未ログイン";
         document.querySelector("#cards-view").hidden = nextView !== "cards";
@@ -1628,27 +1871,71 @@
           if (current) link.setAttribute("aria-current", "page");
           else link.removeAttribute("aria-current");
         });
-        const label = route === "login" ? "ログイン" : route === "home" ? "ホーム" : nextView === "cards" ? cardLabel(route) + "発行" : document.querySelector("#tab-" + route).textContent;
+        const label = route === "register" ? "新規登録" : route === "login" ? "ログイン" : route === "home" ? "ホーム" : nextView === "cards" ? cardLabel(route) + "発行" : document.querySelector("#tab-" + route).textContent;
         document.title = label + " | まなび銀行";
         activeView = nextView;
         if (push && location.hash !== "#" + route) history.pushState(null, "", "#" + route);
         if (changedView && restoreScroll) {
-          const heading = document.querySelector(nextView === "login" ? "#login-title" : nextView === "home" ? "#home-title" : nextView === "cards" ? "#cards-title" : "#practice-title");
+          const heading = document.querySelector(nextView === "register" ? "#register-title" : nextView === "login" ? "#login-title" : nextView === "home" ? "#home-title" : nextView === "cards" ? "#cards-title" : "#practice-title");
           heading.focus({ preventScroll: true });
           window.scrollTo({ top: viewScroll[nextView], behavior: "instant" });
         }
       };
       tabs.forEach((tab) => tab.addEventListener("click", () => navigate(tab.id.slice(4), true)));
-      document.querySelectorAll("[data-tab-target], [data-home-link], [data-card-route]").forEach((link) => {
+      document.querySelectorAll("[data-tab-target], [data-home-link], [data-card-route], [data-register-link]").forEach((link) => {
         link.addEventListener("click", (event) => {
           if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey || event.button > 0) return;
           event.preventDefault();
           if (link.id === "card-statements-link") document.querySelector("#statement-card").value = currentCardRoute;
-          navigate(link.hasAttribute("data-home-link") ? "home" : link.dataset.cardRoute || link.dataset.tabTarget, true);
+          navigate(link.hasAttribute("data-register-link") ? "register" : link.hasAttribute("data-home-link") ? "home" : link.dataset.cardRoute || link.dataset.tabTarget, true);
         });
       });
 
+      const refreshDemoAccountChoices = (preferred = document.querySelector('#login-demo-account').value) => {
+        const select = document.querySelector('#login-demo-account');
+        const accounts = listDemoAccounts(); select.replaceChildren();
+        const legacyOption = document.createElement('option'); legacyOption.value = 'legacy'; legacyOption.textContent = '既存のデモ口座'; select.append(legacyOption);
+        accounts.forEach(value => { const option = document.createElement('option'); option.value = value.id; option.textContent = `${value.name} / ${value.accountNumber}`; select.append(option); });
+        select.value = accounts.some(value => value.id === preferred) ? preferred : 'legacy';
+        document.querySelector('#login-demo-account-field').hidden = databaseMode || !accounts.length;
+      };
+      const authButtons = () => [...document.querySelectorAll('#login-form button[type=submit], #register-form button[type=submit], #login-open, #register-open')];
+      const clearFailedDemoLogin = () => {
+        activeDemoAccount = null; PIN = '9314'; account = null; balance = 0; loggedIn = false; registrationComplete = false;
+        demo = emptyDemo(); stockMarket = null; market = null; portfolio = emptyPortfolio(); holding = { quantity: 0, cost: 0 }; cardEntries = [];
+        sessionVersion++; marketRequest++; statementRequest++; withdrawalRequest++;
+        paintBackground(document.body,{kind:'default',color:'#edf3ee',image:''}); document.querySelector('#balance-value').textContent='0 円';
+      };
+      const showRegisteredAccount = value => {
+        const details = document.querySelector('#register-account-details'); details.replaceChildren();
+        [['お名前',value.name],['銀行コード',value.bankCode],['支店コード',value.branchCode],['口座番号',value.accountNumber],['初期残高',formatYen(value.balance)]].forEach(([title,text])=>{const dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=title;dd.textContent=text;details.append(dt,dd);});
+        document.querySelector('#register-form').hidden = true; document.querySelector('#register-success').hidden = false;
+        document.querySelector('#register-login-link').parentElement.hidden = true;
+      };
+      document.querySelector('#register-open').addEventListener('click', () => { if (transactionPending) return; navigate('register',true); document.querySelector('#register-name').focus({preventScroll:true}); });
+      document.querySelector('#register-form').addEventListener('submit', async event => {
+        event.preventDefault(); if (!apiReady || transactionPending || loggedIn) return;
+        const input = { name: document.querySelector('#register-name').value.trim(), nameKana: document.querySelector('#register-kana').value.trim(), pin: document.querySelector('#register-pin').value, pinConfirmation: document.querySelector('#register-pin-confirmation').value };
+        const output = document.querySelector('#register-error'); output.hidden = true;
+        if (!input.name || !input.nameKana || !/^\d{4}$/.test(input.pin) || input.pin !== input.pinConfirmation) { output.textContent = 'お名前・フリガナと4桁の暗証番号を入力し、確認用の暗証番号を一致させてください。'; output.hidden = false; return; }
+        transactionPending = true; authButtons().forEach(button=>button.disabled=true);
+        document.querySelector('#register-submit').textContent = '口座を作成しています…';
+        try {
+          let value;
+          if (databaseMode) value = (await api('register',input)).account;
+          else { value = await registerDemoAccount(input,emptyDemo()); activeDemoAccount = value; PIN = input.pin; refreshDemoAccountChoices(value.id); }
+          applyAccount(value); beginAccountFeatures();
+          if (!databaseMode && !loadDemo()) { clearFailedDemoLogin(); throw new Error('口座は登録されましたが、保存データを読み込めません。ログイン画面から再度お試しください。'); }
+          loggedIn = true; registrationComplete = true; transactionPending = false;
+          document.querySelector('#login-bank').value = value.bankCode; document.querySelector('#login-branch').value = value.branchCode; document.querySelector('#login-account').value = value.accountNumber;
+          document.querySelector('#register-form').reset(); showRegisteredAccount(value); navigate('register',true);
+          if (databaseMode) await refreshHistory();
+        } catch(error) { output.textContent = error.message; output.hidden = false; }
+        finally { transactionPending = false; authButtons().forEach(button=>button.disabled=!apiReady); document.querySelector('#register-submit').textContent='登録して口座を作成'; document.querySelector('#register-pin').value=''; document.querySelector('#register-pin-confirmation').value=''; }
+      });
+      document.querySelectorAll('#register-form input').forEach(input=>input.addEventListener('input',()=>document.querySelector('#register-error').hidden=true));
       document.querySelector("#login-open").addEventListener("click", () => {
+        if (transactionPending) return;
         afterLoginRoute = "balance";
         navigate("login", true);
         document.querySelector("#login-pin").focus({ preventScroll: true });
@@ -1661,39 +1948,34 @@
         event.preventDefault();
         if (!apiReady || transactionPending) return;
         const input = document.querySelector("#login-pin");
-        if (databaseMode) {
-          const button = event.target.querySelector("button[type=submit]");
-          if (button.disabled) return;
-          button.disabled = true;
-          try {
+        transactionPending = true; authButtons().forEach(button=>button.disabled=true);
+        try {
+          const pin = input.value;
+          if (databaseMode) {
             const data = await api("login", {
               bankCode: document.querySelector("#login-bank").value.trim(),
               branchCode: document.querySelector("#login-branch").value.trim(),
-              accountNumber: document.querySelector("#login-account").value.trim(), pin: input.value
+              accountNumber: document.querySelector("#login-account").value.trim(), pin
             });
-            applyAccount(data.account); loggedIn = true; input.value = "";
-            beginAccountFeatures();
-            document.querySelector("#login-error").hidden = true;
-            navigate(afterLoginRoute, true);
-            await refreshHistory();
-          } catch (error) {
-            const output = document.querySelector("#login-error");
-            output.textContent = error.message; output.hidden = false; input.value = ""; input.focus();
-          } finally { button.disabled = false; }
-          return;
+            applyAccount(data.account);
+          } else {
+            const selected = document.querySelector('#login-demo-account').value;
+            if (selected === 'legacy') {
+              if (pin !== '9314') throw new Error('暗証番号が違います。4桁の番号を確認してください。');
+              activeDemoAccount = null; PIN = '9314';
+              applyAccount({id:'legacy-demo',bankCode:'003',branchCode:'024',accountNumber:'1017256',name:'MANABI TARO',nameKana:'マナビ タロウ',balance:0});
+            } else { const value = await authenticateDemoAccount(selected,pin); activeDemoAccount=value; PIN=pin; applyAccount(value); }
+          }
+          beginAccountFeatures();
+          if (!databaseMode && !loadDemo()) { clearFailedDemoLogin(); return; }
+          loggedIn = true; registrationComplete = false; transactionPending = false; input.value = '';
+          document.querySelector('#login-error').hidden = true; input.removeAttribute('aria-invalid');
+          navigate(afterLoginRoute,true); if (databaseMode) await refreshHistory();
+        } catch(error) {
+          const output=document.querySelector('#login-error');output.textContent=error.message;output.hidden=false;input.setAttribute('aria-invalid','true');input.value='';input.focus();
+        } finally {
+          transactionPending=false;authButtons().forEach(button=>button.disabled=!apiReady);
         }
-        if (input.value !== PIN) {
-          const error = document.querySelector("#login-error");
-          error.textContent = "暗証番号が違います。4桁の番号を確認してください。";
-          error.hidden = false; input.setAttribute("aria-invalid", "true");
-          input.value = ""; input.focus(); return;
-        }
-        beginAccountFeatures();
-        if (!loadDemo()) return;
-        loggedIn = true; input.value = "";
-        document.querySelector("#login-error").hidden = true;
-        input.removeAttribute("aria-invalid");
-        navigate(afterLoginRoute, true);
       });
       document.querySelector("#logout-button").addEventListener("click", async () => {
         if (transactionPending) return;
@@ -1707,9 +1989,12 @@
         }
         logoutButton.disabled = false;
         transactionPending = false;
+        const previousDemoAccountId = activeDemoAccount?.id || 'legacy';
+        const previousAccount = account;
         account = null;
+        activeDemoAccount = null; PIN = '9314'; registrationComplete = false;
         sessionVersion++; marketRequest++; statementRequest++;
-        withdrawal = null; market = null; cardEntries = []; holding = { quantity: 0, cost: 0 };
+        withdrawal = null; market = null; stockMarket = null; portfolio = emptyPortfolio(); cardEntries = []; holding = { quantity: 0, cost: 0 };
         paintBackground(document.body, { kind: "default", color: "#edf3ee", image: "" });
         document.querySelector("#transaction-history").hidden = true;
         document.querySelector("#history-rows").replaceChildren();
@@ -1720,19 +2005,23 @@
         document.querySelector("#receipt-title").textContent = "お取引レシート";
         document.querySelector("#balance-value").textContent = "0 円";
         document.querySelector("#balance-result").hidden = true;
-        document.querySelectorAll("#practice form, #login-form").forEach(form => form.reset());
+        document.querySelectorAll("#practice form, #login-form, #register-form").forEach(form => form.reset());
+        if (databaseMode && previousAccount) { document.querySelector('#login-bank').value=previousAccount.bankCode;document.querySelector('#login-branch').value=previousAccount.branchCode;document.querySelector('#login-account').value=previousAccount.accountNumber; }
+        document.querySelector('#register-form').hidden = false; document.querySelector('#register-success').hidden = true; document.querySelector('#register-login-link').parentElement.hidden = false;
+        document.querySelector('#register-account-details').replaceChildren(); document.querySelector('#register-error').hidden = true;
+        if (!databaseMode) { try { refreshDemoAccountChoices(previousDemoAccountId); } catch(error) { const output=document.querySelector('#login-error');output.textContent=error.message;output.hidden=false; } }
         document.querySelectorAll("#practice .notice").forEach(item => { item.textContent = ""; item.className = "notice"; });
         Object.keys(cardStates).forEach(key => cardStates[key] = { name: "MANABI TARO", tone: "forest", stage: "edit", created: "" });
         renderCard("virtual-card");
         document.querySelector("#card-confirm-details").replaceChildren();
         document.querySelector("#card-done-details").replaceChildren();
-        viewScroll.home = viewScroll.transaction = viewScroll.cards = viewScroll.login = 0;
+        viewScroll.home = viewScroll.transaction = viewScroll.cards = viewScroll.login = viewScroll.register = 0;
         history.replaceState(null, "", "#home");
         navigate("home");
       });
       // Gate form actions as well as screen navigation in this local demo.
       document.addEventListener("submit", event => {
-        if (!apiReady && event.target.closest("#login-form, #practice, #cards-view")) {
+        if (!apiReady && event.target.closest("#login-form, #register-form, #practice, #cards-view")) {
           event.preventDefault(); event.stopImmediatePropagation(); return;
         }
         if (!loggedIn && event.target.closest("#practice, #cards-view")) {
@@ -1817,6 +2106,9 @@
         if (!Number.isSafeInteger(demo.used + amount)) {
           showNotice(notice, "今日の出金合計が取り扱い可能な上限を超えます。", "error"); return;
         }
+        if (amount > balance - reservedCash(portfolio)) {
+          showNotice(notice, '未約定の株式注文で拘束中の金額は出金できません。注文を取消すか金額を減らしてください。', 'error'); return;
+        }
         if (amount > balance) {
           showNotice(notice, `残高が不足しています。現在の残高: ${formatYen(balance)}`, "error");
           return;
@@ -1856,6 +2148,7 @@
           return;
         }
 
+        if (amount > balance - reservedCash(portfolio)) { showNotice(notice, '未約定の株式注文で拘束中の金額は振込できません。', 'error'); return; }
         const before = balance;
         if (!commitDemo({ balance: balance - amount }, notice)) return;
         document.querySelector("#balance-value").textContent = formatYen(balance);
@@ -1867,15 +2160,16 @@
 
       const initialize = async () => {
         const intro = document.querySelector("#login-intro");
-        const button = document.querySelector("#login-form button[type=submit]");
-        button.disabled = true;
+        authButtons().forEach(control=>control.disabled=true);
         try {
           const data = location.protocol === "file:" ? { mode: "demo", account: null } : await api("session");
           databaseMode = data.mode === "database";
           document.querySelector("#login-account-fields").hidden = !databaseMode;
+          if (!databaseMode) refreshDemoAccountChoices();
+          document.querySelector('#register-intro').textContent = databaseMode ? '練習用の口座を作成します。口座番号は自動発行され、残高0円から始まります。' : '練習用の口座をこのブラウザに保存します。口座番号は自動発行され、残高0円から始まります。';
           document.querySelector("#transfer-bank").maxLength = databaseMode ? 4 : 3;
           document.querySelector("#transfer-bank").placeholder = databaseMode ? "例：0158" : "例：001";
-          intro.textContent = databaseMode ? "口座情報と4桁の暗証番号を入力してください。" : "4桁の暗証番号を入力してください。（デモ）";
+          intro.textContent = databaseMode ? "口座情報と4桁の暗証番号を入力してください。" : "デモ口座を選び、その口座の4桁の暗証番号を入力してください。";
           apiReady = true;
           if (data.account) {
             applyAccount(data.account); loggedIn = true;
@@ -1886,7 +2180,7 @@
         } catch (error) {
           intro.textContent = "接続を確認できませんでした。サーバー起動後に再読み込みしてください。";
           const output = document.querySelector("#login-error"); output.textContent = error.message; output.hidden = false;
-        } finally { button.disabled = !apiReady; }
+        } finally { authButtons().forEach(control=>control.disabled=!apiReady); }
       };
       initialize();
     })();

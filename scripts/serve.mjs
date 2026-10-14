@@ -7,6 +7,11 @@ const port = Number(process.env.PORT || 8000);
 const server = createServer(async (req, res) => {
   const path = new URL(req.url, 'http://localhost').pathname;
   if (path === '/api/bank') return bank(req, res);
+  if (/^\/assets\/(stocks|stock-companies|demo-accounts)\.mjs$/.test(path) && ['GET', 'HEAD'].includes(req.method)) {
+    const script = await readFile(new URL('..' + path, import.meta.url));
+    res.writeHead(200, { 'Content-Type': 'text/javascript; charset=utf-8', 'Cache-Control': 'no-cache', 'X-Content-Type-Options': 'nosniff' });
+    return res.end(req.method === 'HEAD' ? undefined : script);
+  }
   if (/^\/assets\/backgrounds\/(sakura|forest|sea)\.jpg$/.test(path) && ['GET', 'HEAD'].includes(req.method)) {
     try {
       const photo = await readFile(new URL('..' + path, import.meta.url));

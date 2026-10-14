@@ -8,6 +8,7 @@ import { readFile } from 'node:fs/promises';
 import handler from '../api/bank.mjs';
 import { connectionOptions, closePool, getPool, sessionSchema, featureSchema, usesPostgres, postgresOptions, table } from '../lib/db.mjs';
 import { japanDate } from '../lib/bank.mjs';
+import { companies, bookFor, feeFor, limitsFor, quantityForBudget, reservedCash } from '../assets/stocks.mjs';
 
 test(`${usesPostgres() ? 'PostgreSQL' : 'MySQL'} account and transaction flow`, { skip: !process.env.DB_HOST && !process.env.DATABASE_URL }, async t => {
   const database = 'bank_web_test_' + randomBytes(6).toString('hex');
@@ -32,17 +33,15 @@ test(`${usesPostgres() ? 'PostgreSQL' : 'MySQL'} account and transaction flow`, 
       await pool.query(schema.replace(/\bbank\b/g, database));
       created = true;
     } else {
-    await pool.query(`CREATE TABLE kokyaku_master (customer_id VARCHAR(20) PRIMARY KEY, name VARCHAR(255), name_kana VARCHAR(255)) ENGINE=InnoDB`);
+    await pool.query(`CREATE TABLE kokyaku_master (customer_id VARCHAR(20) PRIMARY KEY, name VARCHAR(255) NOT NULL, name_kana VARCHAR(255) NOT NULL,
+      gender VARCHAR(10) NOT NULL, phone_number VARCHAR(20) NOT NULL, postal_code VARCHAR(10) NOT NULL,
+      prefecture VARCHAR(20) NOT NULL, address VARCHAR(255) NOT NULL, birth_date DATE NOT NULL) ENGINE=InnoDB`);
     await pool.query(`CREATE TABLE kouza_master (account_id VARCHAR(20) PRIMARY KEY, customer_id VARCHAR(20), bank_code VARCHAR(10), branch_id VARCHAR(10), account_number VARCHAR(20), pin VARCHAR(10), balance BIGINT) ENGINE=InnoDB`);
     await pool.query(`CREATE TABLE torihiki_table (deal_id VARCHAR(20) PRIMARY KEY, bank_id VARCHAR(20), deal_date DATE, deal_code VARCHAR(255), price BIGINT, inbank_price BIGINT, comment VARCHAR(255)) ENGINE=InnoDB`);
     await pool.query(sessionSchema);
     }
     for (const statement of featureSchema()) await pool.query(statement);
-    if (postgres) {
-      await pool.query(`INSERT INTO ${table('kokyaku_master')} VALUES ('test-a','テスト太郎','テストタロウ','男','000','000','テスト','テスト','2000-01-01'),('test-b','テスト花子','テストハナコ','女','000','000','テスト','テスト','2000-01-01')`);
-    } else {
-      await pool.query("INSERT INTO kokyaku_master VALUES ('test-a','テスト太郎','テストタロウ'),('test-b','テスト花子','テストハナコ')");
-    }
+    await pool.query(`INSERT INTO ${table('kokyaku_master')} VALUES ('test-a','テスト太郎','テストタロウ','男','000','000','テスト','テスト','2000-01-01'),('test-b','テスト花子','テストハナコ','女','000','000','テスト','テスト','2000-01-01')`);
     await pool.query(`INSERT INTO ${table('kouza_master')} (account_id,customer_id,bank_code,branch_id,account_number,pin,balance) VALUES ('account-a','test-a','0158','999','9999998','0082',500),('account-b','test-b','0158','999','9999999','4321',300)`);
     server = createServer(handler);
     await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
@@ -130,7 +129,8 @@ test(`${usesPostgres() ? 'PostgreSQL' : 'MySQL'} account and transaction flow`, 
       assert.equal((await request('deposit', { amount: 1 })).status, 401);
     });
     await t.test('feature endpoints require a session', async () => {
-      for (const action of ['settings', 'investment', 'statements']) assert.equal((await request(action)).status, 401);
+      for (const action of ['settings', 'investment', 'stocks', 'statements']) assert.equal((await request(action)).status, 401);
+      for (const action of ['stock-order', 'stock-cancel']) assert.equal((await request(action, {})).status, 401);
       assert.equal((await request('settings', { limit: 10, pin: credentials.pin })).status, 401);
       const result = await request('login', credentials); cookie = result.cookie.split(';')[0];
     });
@@ -194,6 +194,180 @@ test(`${usesPostgres() ? 'PostgreSQL' : 'MySQL'} account and transaction flow`, 
       assert.deepEqual((await request('statements')).data.entries, []);
       assert.deepEqual((await request('investment')).data.holding, { quantity: 0, cost: 0 });
       assert.equal((await request('settings')).data.settings.limit, null);
+    });
+    await t.test('100-stock orders persist, reserve cash and shares, fill limits and isolate accounts', async () => {
+      const signedIn = await request('login', credentials); cookie = signedIn.cookie.split(';')[0];
+      await request('deposit', { amount: 1000000 });
+      let snapshot = (await request('stocks')).data;
+      assert.equal(Object.keys(snapshot.market.quotes).length, 100);
+      assert.deepEqual(snapshot.portfolio.holdings, {});
+      // Freeze the test-owned market so quote changes cannot make assertions flaky.
+      snapshot.market.updatedAt = Date.now() + 3600000;
+      await pool.execute(`UPDATE ${table('bank_stock_market')} SET payload=? WHERE market_id=?`, [JSON.stringify(snapshot.market), 'jp-stocks']);
+      const price = bookFor(snapshot.market.quotes['7203']).ask;
+      const buy = { symbol: '7203', side: 'buy', type: 'market', quantity: 2, unit: 1, expectedPrice: price, pin: credentials.pin };
+      for (const patch of [{ quantity: 1, unit: 100 }, { symbol: 'bad' }, { expectedPrice: 1 }]) assert.ok((await request('stock-order', { ...buy, ...patch })).status >= 400);
+      assert.equal((await request('stock-order', { ...buy, pin: '0000' })).status, 401);
+      const bought = await request('stock-order', buy); assert.equal(bought.status, 200);
+      const cost = price * 2 + feeFor(price * 2);
+      assert.equal(bought.data.account.balance, snapshot.account.balance - cost); assert.equal(bought.data.portfolio.holdings['7203'].cost, cost);
+      const low = limitsFor(snapshot.market.quotes['7203']).low;
+      const pending = await request('stock-order', { ...buy, type: 'limit', limitPrice: low, quantity: 100, unit: 100 });
+      assert.equal(pending.data.order.status, 'open'); assert.equal(pending.data.account.balance, bought.data.account.balance);
+      const heldCash = reservedCash(pending.data.portfolio);
+      assert.equal((await request('withdraw', { amount: pending.data.account.balance - heldCash + 1, pin: credentials.pin })).status, 409);
+      const cancelled = await request('stock-cancel', { id: pending.data.order.id }); assert.equal(cancelled.status, 200); assert.equal(reservedCash(cancelled.data.portfolio), 0);
+      assert.equal((await request('stock-cancel', { id: pending.data.order.id })).status, 409);
+      const sellPrice = bookFor(snapshot.market.quotes['7203']).bid;
+      const sales = await Promise.all([1, 2].map(() => request('stock-order', { ...buy, side: 'sell', quantity: 2, expectedPrice: sellPrice })));
+      assert.deepEqual(sales.map(s => s.status).sort(), [200, 409]);
+      const waiting = await request('stock-order', { ...buy, type: 'limit', limitPrice: price - 10, quantity: 1 }); assert.equal(waiting.data.order.status, 'open');
+      const crossing = structuredClone(snapshot.market); crossing.quotes['7203'].price = price - 20;
+      await pool.execute(`UPDATE ${table('bank_stock_market')} SET payload=? WHERE market_id=?`, [JSON.stringify(crossing), 'jp-stocks']);
+      const filled = await request('stocks'); assert.equal(filled.data.fills.length, 1); assert.equal(filled.data.portfolio.holdings['7203'].quantity, 1);
+      assert.equal((await request('stocks')).data.fills.length, 0);
+      await request('logout', {}); const again = await request('login', credentials); cookie = again.cookie.split(';')[0];
+      assert.equal((await request('stocks')).data.portfolio.holdings['7203'].quantity, 1);
+      const other = await request('login', { ...credentials, accountNumber: '9999999', pin: '4321' }); cookie = other.cookie.split(';')[0];
+      assert.deepEqual((await request('stocks')).data.portfolio.holdings, {});
+    });
+    await t.test('old 30-company data upgrades without losing balances, holdings or bank history', async () => {
+      const signedIn=await request('login',credentials); cookie=signedIn.cookie.split(';')[0];
+      const before=(await request('stocks')).data, historyBefore=(await request('history')).data.history;
+      const oldMarket=structuredClone(before.market), originalIds=companies.slice(0,30).map(c=>c.id);
+      oldMarket.updatedAt=Date.now()+3600000;
+      for(const id of Object.keys(oldMarket.quotes)) if(!originalIds.includes(id)) delete oldMarket.quotes[id];
+      await pool.execute(`UPDATE ${table('bank_stock_market')} SET payload=? WHERE market_id=?`,[JSON.stringify(oldMarket),'jp-stocks']);
+      const upgraded=await request('stocks'); assert.equal(upgraded.status,200);
+      assert.equal(Object.keys(upgraded.data.market.quotes).length,100);
+      for(const id of originalIds) assert.deepEqual(upgraded.data.market.quotes[id],oldMarket.quotes[id]);
+      for(const key of ['day','tick','updatedAt','news']) assert.deepEqual(upgraded.data.market[key],oldMarket[key]);
+      assert.equal(upgraded.data.account.balance,before.account.balance);
+      assert.deepEqual(upgraded.data.portfolio,before.portfolio);
+      assert.deepEqual((await request('history')).data.history,historyBefore);
+      const corrupted=structuredClone(upgraded.data.market); corrupted.quotes['7203'].price=0;
+      await pool.execute(`UPDATE ${table('bank_stock_market')} SET payload=? WHERE market_id=?`,[JSON.stringify(corrupted),'jp-stocks']);
+      assert.equal((await request('stocks')).status,503);
+      assert.equal((await request('session')).data.account.balance,before.account.balance);
+      const [[stored]]=await pool.execute(`SELECT payload FROM ${table('bank_stock_market')} WHERE market_id=?`,['jp-stocks']);
+      assert.deepEqual(JSON.parse(stored.payload),corrupted);
+      await pool.execute(`UPDATE ${table('bank_stock_market')} SET payload=? WHERE market_id=?`,[JSON.stringify(upgraded.data.market),'jp-stocks']);
+    });
+    await t.test('a budget-funded purchase and later profitable sale persist net profit in the bank account',async()=>{
+      const snapshot=(await request('stocks')).data, symbol='9432', market=structuredClone(snapshot.market);
+      const candle={open:150,high:150,low:150,close:150,volume:0,day:market.day,tick:market.tick};
+      market.updatedAt=Date.now()+3600000;
+      market.quotes[symbol]={price:150,previousClose:150,open:150,high:150,low:150,volume:0,candles:[candle]};
+      await pool.execute(`UPDATE ${table('bank_stock_market')} SET payload=? WHERE market_id=?`,[JSON.stringify(market),'jp-stocks']);
+      const budget=1000,price=bookFor(market.quotes[symbol]).ask,quantity=quantityForBudget(budget,price);
+      const input={symbol,side:'buy',type:'market',unit:1,quantity,expectedPrice:price,budget,pin:credentials.pin};
+      assert.equal((await request('stock-order',{...input,quantity:quantity+1})).status,409);
+      for(const badBudget of [0,-1,1.5,'1000']) assert.equal((await request('stock-order',{...input,budget:badBudget})).status,400);
+      const bought=await request('stock-order',input); assert.equal(bought.status,200);
+      const cost=price*quantity+feeFor(price*quantity);
+      assert.ok(cost<=budget); assert.equal(bought.data.account.balance,snapshot.account.balance-cost);
+      assert.equal(bought.data.order.budget,budget); assert.equal(bought.data.portfolio.holdings[symbol].cost,cost);
+      market.quotes[symbol].price=180; market.quotes[symbol].high=180;
+      market.quotes[symbol].candles=[{...candle,close:180,high:180}];
+      await pool.execute(`UPDATE ${table('bank_stock_market')} SET payload=? WHERE market_id=?`,[JSON.stringify(market),'jp-stocks']);
+      const sellPrice=bookFor(market.quotes[symbol]).bid;
+      const {budget:ignoredBudget,...sell}=input;
+      const sold=await request('stock-order',{...sell,side:'sell',expectedPrice:sellPrice}); assert.equal(sold.status,200);
+      const profit=sellPrice*quantity-feeFor(sellPrice*quantity)-cost;
+      assert.ok(profit>0); assert.equal(sold.data.order.profit,profit);
+      assert.equal(sold.data.account.balance,snapshot.account.balance+profit);
+      assert.equal(sold.data.portfolio.realized,snapshot.portfolio.realized+profit);
+      assert.deepEqual(sold.data.portfolio.holdings[symbol],{quantity:0,cost:0});
+      assert.equal((await request('session')).data.account.balance,snapshot.account.balance+profit);
+      assert.equal((await request('stocks')).data.portfolio.realized,snapshot.portfolio.realized+profit);
+      const history=(await request('history')).data.history;
+      assert.ok(history.some(entry=>entry.kind==='投資購入'&&entry.amount===price*quantity));
+      assert.ok(history.some(entry=>entry.kind==='投資売却'&&entry.amount===sellPrice*quantity));
+    });
+    const signup = { name: ' 新規 太郎 ', nameKana: 'しんき たろう', pin: '0082', pinConfirmation: '0082' };
+    let registered;
+    await t.test('registration validates names, kana, PIN confirmation and same-origin requests', async () => {
+      await request('logout', {}); cookie = '';
+      for (const patch of [{ name: '' }, { name: 'a'.repeat(101) }, { name: '\n太郎' }, { nameKana: '' }, { nameKana: '漢字' }, { nameKana: 'ーー・' }, { nameKana: 'ヽヾ' }, { pin: '123' }, { pin: 1234 }, { pinConfirmation: '0000' }]) {
+        assert.equal((await request('register', { ...signup, ...patch })).status, 400);
+      }
+      assert.equal((await request('register', signup, { Origin: 'https://other.example' })).status, 403);
+      const [[count]] = await pool.execute(`SELECT COUNT(*) AS total FROM ${table('bank_registered_accounts')}`);
+      assert.equal(Number(count.total), 0);
+    });
+    await t.test('anonymous registration creates a zero-balance account with a private hashed PIN and session', async () => {
+      const result = await request('register', { ...signup, balance: 999999, accountNumber: credentials.accountNumber, bankCode: '0158', branchCode: '999' });
+      assert.equal(result.status, 201);
+      registered = result.data.account;
+      assert.equal(registered.name, '新規 太郎'); assert.equal(registered.nameKana, 'シンキ タロウ');
+      assert.equal(registered.balance, 0); assert.equal(registered.bankCode, '0000'); assert.equal(registered.branchCode, '001');
+      assert.match(registered.accountNumber, /^\d{7}$/); assert.match(registered.id, /^[a-f0-9]{20}$/);
+      assert.ok(!('pin' in registered)); assert.ok(!('pinHash' in registered)); assert.ok(!('token' in result.data));
+      assert.match(result.cookie, /HttpOnly; SameSite=Strict/);
+      cookie = result.cookie.split(';')[0];
+      assert.deepEqual((await request('session')).data.account, registered);
+      const [[stored]] = await pool.execute(`SELECT a.pin, r.pin_hash FROM ${table('kouza_master')} a JOIN ${table('bank_registered_accounts')} r ON r.account_id=a.account_id WHERE a.account_id=?`, [registered.id]);
+      assert.equal(stored.pin, 'WEB'); assert.match(stored.pin_hash, /^scrypt\$[a-f0-9]{32}\$[a-f0-9]{64}$/);
+      assert.notEqual(stored.pin_hash, signup.pin);
+      assert.deepEqual((await request('history')).data.history, []);
+      assert.deepEqual((await request('statements')).data.entries, []);
+      assert.deepEqual((await request('stocks')).data.portfolio.holdings, {});
+    });
+    await t.test('registered accounts log in again and can deposit, withdraw, set limits and buy stocks using their PIN', async () => {
+      await request('logout', {}); cookie = '';
+      const input = { bankCode: registered.bankCode, branchCode: registered.branchCode, accountNumber: registered.accountNumber, pin: signup.pin };
+      assert.equal((await request('login', { ...input, pin: '0000' })).status, 401);
+      const result = await request('login', input); assert.equal(result.status, 200); cookie = result.cookie.split(';')[0];
+      assert.equal((await request('deposit', { amount: 10000 })).data.account.balance, 10000);
+      assert.equal((await request('withdraw', { amount: 10, pin: '0000' })).status, 401);
+      assert.equal((await request('withdraw', { amount: 10, pin: signup.pin })).data.account.balance, 9990);
+      assert.equal((await request('settings', { limit: 100, pin: '0000' })).status, 401);
+      assert.equal((await request('settings', { limit: 100, pin: signup.pin })).data.settings.limit, 100);
+      const legacyQuote = (await request('investment')).data.market.price;
+      assert.equal((await request('invest-buy', { quantity: 1, price: legacyQuote, pin: signup.pin })).status, 200);
+      const snapshot = (await request('stocks')).data;
+      const price = bookFor(snapshot.market.quotes['9432']).ask;
+      const order = { symbol: '9432', side: 'buy', type: 'market', unit: 1, quantity: 1, expectedPrice: price, pin: signup.pin };
+      assert.equal((await request('stock-order', { ...order, pin: '0000' })).status, 401);
+      const bought = await request('stock-order', order); assert.equal(bought.status, 200);
+      assert.equal(bought.data.portfolio.holdings['9432'].quantity, 1);
+      const ownHistoryIds = new Set((await request('history')).data.history.map(entry => entry.id));
+      assert.equal(ownHistoryIds.size, 4);
+      await request('logout', {}); cookie = '';
+      const old = await request('login', credentials); assert.equal(old.status, 200); cookie = old.cookie.split(';')[0];
+      assert.ok((await request('history')).data.history.every(entry => !ownHistoryIds.has(entry.id)));
+      await request('logout', {}); cookie = '';
+    });
+    await t.test('concurrent registrations with identical names and PINs get different accounts and salts', async () => {
+      const results = await Promise.all([1, 2].map(() => request('register', { ...signup, nameKana: 'しんきヽヾ たろう' })));
+      results.forEach(result => assert.equal(result.status, 201));
+      results.forEach(result => assert.equal(result.data.account.nameKana, 'シンキヽヾ タロウ'));
+      const accounts = [registered, ...results.map(result => result.data.account)];
+      assert.equal(new Set(accounts.map(account => account.id)).size, 3);
+      assert.equal(new Set(accounts.map(account => account.accountNumber)).size, 3);
+      const [rows] = await pool.execute(`SELECT pin_hash FROM ${table('bank_registered_accounts')}`);
+      assert.equal(new Set(rows.map(row => row.pin_hash)).size, 3);
+    });
+    await t.test('a session creation failure rolls back the entire registration', async () => {
+      const counts = async () => {
+        const totals = [];
+        for (const name of ['kokyaku_master', 'kouza_master', 'bank_registered_accounts']) {
+          const [[row]] = await pool.execute(`SELECT COUNT(*) AS total FROM ${table(name)}`); totals.push(Number(row.total));
+        }
+        return totals;
+      };
+      const before = await counts();
+      const renamed = postgres ? `${database}.bank_web_sessions_unavailable` : 'bank_web_sessions_unavailable';
+      await pool.execute(`ALTER TABLE ${table('bank_web_sessions')} RENAME TO bank_web_sessions_unavailable`);
+      try { assert.equal((await request('register', signup)).status, 503); }
+      finally { await pool.execute(`ALTER TABLE ${renamed} RENAME TO bank_web_sessions`); }
+      assert.deepEqual(await counts(), before);
+      assert.equal((await request('login', { bankCode: registered.bankCode, branchCode: registered.branchCode, accountNumber: registered.accountNumber, pin: signup.pin })).status, 200);
+    });
+    await t.test('registration rate limiting does not block existing account login', async () => {
+      assert.equal((await request('register', signup)).status, 201);
+      assert.equal((await request('register', signup)).status, 429);
+      assert.equal((await request('login', credentials)).status, 200);
     });
   } finally {
     if (server) await new Promise(resolve => server.close(resolve));
