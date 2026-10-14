@@ -7,6 +7,13 @@ const port = Number(process.env.PORT || 8000);
 const server = createServer(async (req, res) => {
   const path = new URL(req.url, 'http://localhost').pathname;
   if (path === '/api/bank') return bank(req, res);
+  if (/^\/assets\/backgrounds\/(sakura|forest|sea)\.jpg$/.test(path) && ['GET', 'HEAD'].includes(req.method)) {
+    try {
+      const photo = await readFile(new URL('..' + path, import.meta.url));
+      res.writeHead(200, { 'Content-Type': 'image/jpeg', 'Cache-Control': 'public, max-age=3600', 'X-Content-Type-Options': 'nosniff' });
+      return res.end(req.method === 'HEAD' ? undefined : photo);
+    } catch { res.writeHead(404); return res.end('Image not found'); }
+  }
   if (['/', '/index.html'].includes(path) && ['GET', 'HEAD'].includes(req.method)) {
     try {
       const html = await readFile(new URL('../index.html', import.meta.url));

@@ -1,6 +1,6 @@
 import { readFile } from 'node:fs/promises';
 import pg from 'pg';
-import { postgresOptions } from '../lib/db.mjs';
+import { postgresOptions, featureSchema } from '../lib/db.mjs';
 import { readBankDump, dumpColumns } from '../lib/sql-dump.mjs';
 
 const source = process.argv[2];
@@ -16,6 +16,7 @@ try {
   client = await pool.connect();
   await client.query('BEGIN');
   await client.query(schema);
+  for (const statement of featureSchema()) await client.query(statement);
   const counts = [];
   for (const name of Object.keys(dumpColumns)) {
     const result = await client.query(`SELECT COUNT(*) AS count FROM bank.${name}`);

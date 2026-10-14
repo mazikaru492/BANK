@@ -608,6 +608,52 @@
       .login-view { margin: 24px auto; padding: 26px 22px; }
     }
 
+    /* Added account features: chart, statement table and personal settings. */
+    .feature-links { display: flex; flex-wrap: wrap; gap: 12px; margin: 20px 0; }
+    .feature-links a { flex: 1; min-width: 150px; padding: 16px 20px; background: #fff; border: 1px solid var(--line); border-radius: 8px; color: var(--brand); font-weight: 700; text-decoration: none; }
+    .feature-summary { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin: 20px 0; }
+    .feature-summary div { padding: 16px; background: #f0f5eb; border-radius: 8px; }
+    .feature-summary span { display: block; font-size: .8rem; color: #506457; }
+    .feature-summary strong { display: block; font-size: 1.25rem; overflow-wrap: anywhere; }
+    .market-chart { width: 100%; height: auto; display: block; background: #f7faf5; border: 1px solid #dae6d8; border-radius: 8px; }
+    .chart-caption, .field-help { color: var(--muted); font-size: .8rem; }
+    .feature-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px; }
+    .feature-actions .primary-button { flex: 1; min-width: 120px; }
+    .secondary-button { min-height: 44px; padding: 10px 16px; color: var(--brand); background: #fff; border: 1px solid var(--brand); border-radius: 4px; font: inherit; cursor: pointer; }
+    button:disabled { opacity: .55; cursor: wait; }
+    .feature-form { margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--line); }
+    .field select { width: 100%; min-height: 46px; padding: 10px; border: 1px solid #c5d1c9; border-radius: 3px; background: #fff; color: var(--text); font: inherit; }
+    .field input[type=color] { height: 48px; padding: 4px; cursor: pointer; }
+    .statement-filters { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .statement-scroll { max-width: 100%; overflow-x: auto; margin-top: 16px; }
+    .statement-table { width: 100%; border-collapse: collapse; font-size: .85rem; }
+    .statement-table th, .statement-table td { padding: 12px 8px; border-bottom: 1px solid var(--line); text-align: left; overflow-wrap: anywhere; }
+    .statement-table th { white-space: nowrap; background: #f0f5eb; }
+    .statement-table td:nth-child(3) { text-align: right; white-space: nowrap; }
+    .statement-table caption { text-align: left; font-weight: 700; padding: 8px 0; }
+    .sample-tag { font-size: .7rem; color: #596351; }
+    .background-preview { height: 100px; margin: 12px 0; border-radius: 8px; border: 1px solid #bbc9bd; background-color: #edf3ee; background-image: radial-gradient(ellipse at 5% 10%, #abc76b47, transparent 42%), radial-gradient(ellipse at 95% 55%, #26734d24, transparent 40%); background-position: center; background-size: cover; }
+    .background-options { display: flex; flex-wrap: wrap; gap: 12px; margin: 12px 0; border: 0; padding: 0; }
+    .background-options label { cursor: pointer; }
+    .background-presets { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; width: 100%; margin: 10px 0; }
+    .background-preset { position: relative; overflow: hidden; border: 2px solid #dfe5e8; border-radius: 8px; background: #fff; text-align: center; }
+    .background-preset:has(input:checked) { border-color: var(--brand); box-shadow: 0 0 0 2px #164b3522; }
+    .background-preset:focus-within { outline: 3px solid #619349; outline-offset: 3px; }
+    .background-preset input { position: absolute; top: 8px; left: 8px; accent-color: var(--brand); }
+    .background-preset img { display: block; width: 100%; height: 90px; object-fit: cover; }
+    .background-preset span { display: block; padding: 8px; font-weight: 700; }
+    body.has-photo-background .view-back, body.has-photo-background .footer-note, body.has-photo-background .home-section-heading { background: #fffffff0; border-radius: 6px; padding: 12px 16px; }
+    .feature-panel h3 { margin-bottom: 10px; color: var(--brand); }
+    @media (max-width: 620px) {
+      .global-nav a, .global-nav a:first-child { flex: 0 0 25%; }
+      .tabs { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+      .tab { font-size: .75rem; }
+      .feature-summary strong { font-size: 1.05rem; }
+      .statement-filters { grid-template-columns: 1fr; gap: 0; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
+    }
   </style>
 </head>
 <body>
@@ -639,6 +685,9 @@
         <a href="#withdraw" data-tab-target="withdraw">出金</a>
         <a href="#transfer" data-tab-target="transfer">振込</a>
         <a href="#virtual-card" data-card-route="virtual-card">カード</a>
+        <a href="#investment" data-tab-target="investment">投資</a>
+        <a href="#statements" data-tab-target="statements">カード明細</a>
+        <a href="#settings" data-tab-target="settings">設定</a>
       </div>
       <span class="secure-label">インターネットバンキング</span>
     </div>
@@ -700,6 +749,11 @@
         </div>
       </section>
 
+      <div class="feature-links" aria-label="追加サービス">
+        <a href="#investment" data-tab-target="investment">投資シミュレーション ↗</a>
+        <a href="#statements" data-tab-target="statements">クレカの利用明細 ↗</a>
+        <a href="#settings" data-tab-target="settings">引き出し上限・背景設定 ↗</a>
+      </div>
       <section class="home-guide" aria-labelledby="guide-title">
         <div><p class="home-kicker">EASY TO FOLLOW</p><h2 id="guide-title">お取引のあとも、<br>ひと目でわかる。</h2><p>完了したお取引は、レシートで確認。<br>金額や日時、取引後の残高をまとめて表示します。</p><a class="home-text-link" href="#deposit" data-tab-target="deposit">入金画面へ進む <span aria-hidden="true">→</span></a></div>
         <ol class="home-steps"><li><span>01</span><div><h3>メニューを選ぶ</h3><p>残高照会・入金・出金・振込から選択。</p></div></li><li><span>02</span><div><h3>内容を入力する</h3><p>金額や振込先を確認して操作。</p></div></li><li><span>03</span><div><h3>レシートを確認する</h3><p>取引内容を確認して、印刷・PDF保存。</p></div></li></ol>
@@ -724,6 +778,9 @@
         <button class="tab" id="tab-deposit" role="tab" aria-controls="panel-deposit" aria-selected="false" tabindex="-1">入金</button>
         <button class="tab" id="tab-withdraw" role="tab" aria-controls="panel-withdraw" aria-selected="false" tabindex="-1">出金</button>
         <button class="tab" id="tab-transfer" role="tab" aria-controls="panel-transfer" aria-selected="false" tabindex="-1">振込</button>
+        <button class="tab" id="tab-investment" role="tab" aria-controls="panel-investment" aria-selected="false" tabindex="-1">投資</button>
+        <button class="tab" id="tab-statements" role="tab" aria-controls="panel-statements" aria-selected="false" tabindex="-1">カード明細</button>
+        <button class="tab" id="tab-settings" role="tab" aria-controls="panel-settings" aria-selected="false" tabindex="-1">設定</button>
       </nav>
 
       <div class="panel is-active" id="panel-balance" role="tabpanel" aria-labelledby="tab-balance">
@@ -769,6 +826,7 @@
         <div class="panel-header">
           <h2>出金</h2>
           <p>暗証番号と出金額を入力してください。</p>
+          <p id="withdraw-limit-summary">1日の引き出し上限を確認しています。</p>
         </div>
         <form class="form" id="withdraw-form" novalidate>
           <div class="field">
@@ -818,6 +876,80 @@
         </form>
         <div class="notice" id="transfer-notice" role="status" aria-live="polite"></div>
       </div>
+      <div class="panel feature-panel" id="panel-investment" role="tabpanel" aria-labelledby="tab-investment" hidden>
+        <div class="panel-header"><h2>投資シミュレーション</h2><p>架空の「MANABI インデックス」を口座残高で売買できます。価格は約3秒ごとにランダムに変動します。</p></div>
+        <p class="field-help">実際の市場・証券会社とは連携しない、銀行シミュレーター内の取引です。</p>
+        <div class="feature-summary" data-depth="4">
+          <div><span>現在の価格 / 1口</span><strong id="investment-price">—</strong></div>
+          <div><span>口座残高</span><strong id="investment-balance">—</strong></div>
+        </div>
+        <svg class="market-chart" id="investment-chart" viewBox="0 0 600 230" role="img" aria-labelledby="chart-title chart-description" data-depth="3">
+          <title id="chart-title">MANABI インデックスの価格チャート</title><desc id="chart-description">価格を読み込んでいます。</desc>
+          <path d="M55 25H580 M55 100H580 M55 175H580" stroke="#dce6da" fill="none" aria-hidden="true"/>
+          <text id="chart-high" x="8" y="28" font-size="12" fill="#506457"></text><text id="chart-low" x="8" y="179" font-size="12" fill="#506457"></text>
+          <path id="chart-area" fill="#26734d18" aria-hidden="true"/><polyline id="chart-line" fill="none" stroke="#26734d" stroke-width="3" stroke-linejoin="round" aria-hidden="true"/>
+          <text x="55" y="213" font-size="12" fill="#506457">過去</text><text x="545" y="213" font-size="12" fill="#506457">現在</text>
+        </svg>
+        <p class="chart-caption" id="chart-updated">価格を読み込んでいます。</p>
+        <button type="button" class="secondary-button" id="chart-pause" aria-pressed="false">チャートを一時停止</button>
+        <div class="feature-summary">
+          <div><span>保有数量</span><strong id="holding-quantity">0 口</strong></div>
+          <div><span>評価額 / 評価損益</span><strong id="holding-value">0 円</strong><span id="holding-profit">0 円</span></div>
+        </div>
+        <form id="investment-form" class="form feature-form" novalidate>
+          <div class="field"><label for="investment-quantity">売買数量（口）</label><input id="investment-quantity" type="number" min="1" step="1" value="1" inputmode="numeric"></div>
+          <p id="investment-total">合計: —</p>
+          <div class="field"><label for="investment-pin">暗証番号</label><input id="investment-pin" type="password" maxlength="4" inputmode="numeric" autocomplete="off" placeholder="4桁の暗証番号"></div>
+          <div class="feature-actions"><button class="primary-button" type="submit" value="invest-buy">購入する</button><button class="primary-button" type="submit" value="invest-sell">売却する</button></div>
+        </form>
+        <div class="notice" id="investment-notice" role="status" aria-live="polite"></div>
+      </div>
+      <div class="panel feature-panel" id="panel-statements" role="tabpanel" aria-labelledby="tab-statements" hidden>
+        <div class="panel-header"><h2>クレカの利用明細</h2><p>サンプル明細と、自分で登録した利用記録を月ごとに確認できます。実際の請求・口座引き落としはありません。</p></div>
+        <div class="statement-filters">
+          <div class="field"><label for="statement-card">カードの種類</label><select id="statement-card"><option value="virtual-card">バーチャルカード</option><option value="physical-card">リアルカード</option></select></div>
+          <div class="field"><label for="statement-month">表示する月</label><input id="statement-month" type="month"></div>
+        </div>
+        <label><input id="statement-samples" type="checkbox" checked> サンプル明細を表示する</label>
+        <div class="feature-summary"><div><span>自分の利用記録 合計</span><strong id="statement-total">0 円</strong></div><div><span>サンプル明細 合計</span><strong id="statement-sample-total">0 円</strong></div></div>
+        <div class="statement-scroll"><table class="statement-table"><caption id="statement-caption">利用明細</caption><thead><tr><th scope="col">利用日</th><th scope="col">利用先</th><th scope="col">金額</th><th scope="col">区分</th></tr></thead><tbody id="statement-rows"></tbody></table></div>
+        <button type="button" class="secondary-button" id="statement-refresh">明細を再読み込み</button>
+        <form class="form feature-form" id="card-entry-form" novalidate>
+          <h3>利用記録を追加</h3><p class="field-help">上で選択したカードに登録します。口座残高は変わりません。</p>
+          <div class="field"><label for="card-entry-date">利用日</label><input id="card-entry-date" type="date" min="1900-01-01"></div>
+          <div class="field"><label for="card-entry-merchant">利用先</label><input id="card-entry-merchant" type="text" maxlength="100" placeholder="例：まなび書店"></div>
+          <div class="field"><label for="card-entry-amount">利用額</label><input id="card-entry-amount" type="number" min="1" step="1" inputmode="numeric" placeholder="例：1500"></div>
+          <button class="primary-button" type="submit">利用記録を保存する</button>
+        </form>
+        <div class="notice" id="statements-notice" role="status" aria-live="polite"></div>
+      </div>
+      <div class="panel feature-panel" id="panel-settings" role="tabpanel" aria-labelledby="tab-settings" hidden>
+        <div class="panel-header"><h2>引き出し上限・背景設定</h2><p>1日の引き出し上限と、お好みの背景を設定できます。</p></div>
+        <form class="form" id="limit-form" novalidate>
+          <h3>1日の引き出し上限</h3><p class="field-help">日本時間の0時に日次合計をリセットします。0円で引き出しを停止、空欄で上限なし。入金・振込・投資は対象外です。</p>
+          <p id="settings-limit-summary">読み込み中です。</p>
+          <div class="field"><label for="withdrawal-limit">上限額（円）</label><input id="withdrawal-limit" type="number" min="0" step="1" inputmode="numeric" placeholder="空欄で上限なし"></div>
+          <div class="field"><label for="limit-pin">暗証番号</label><input id="limit-pin" type="password" maxlength="4" inputmode="numeric" autocomplete="off" placeholder="4桁の暗証番号"></div>
+          <button class="primary-button" type="submit">上限額を保存する</button>
+        </form>
+        <div class="notice" id="settings-notice" role="status" aria-live="polite"></div>
+        <form class="form feature-form" id="background-form">
+          <h3>背景を変更</h3><p class="field-help">背景は、このブラウザに口座ごとに保存します。</p>
+          <p class="field-help">桜・森・海の写真は、選ぶだけで背景に適用・保存されます。</p>
+          <fieldset class="background-options"><legend>背景の種類</legend><label><input type="radio" name="background-kind" value="default" checked>標準</label><label><input type="radio" name="background-kind" value="color">好きな色</label><label><input type="radio" name="background-kind" value="image">好きな画像</label>
+            <div class="background-presets">
+              <label class="background-preset"><input type="radio" name="background-kind" value="sakura"><img src="assets/backgrounds/sakura.jpg" alt="" loading="lazy" width="1920" height="1280"><span>桜</span></label>
+              <label class="background-preset"><input type="radio" name="background-kind" value="forest"><img src="assets/backgrounds/forest.jpg" alt="" loading="lazy" width="1920" height="1280"><span>森</span></label>
+              <label class="background-preset"><input type="radio" name="background-kind" value="sea"><img src="assets/backgrounds/sea.jpg" alt="" loading="lazy" width="1920" height="1280"><span>海</span></label>
+            </div>
+          </fieldset>
+          <div class="field"><label for="background-color">背景色</label><input id="background-color" type="color" value="#edf3ee"></div>
+          <div class="field"><label for="background-image">背景画像（PNG・JPEG・WebP、2MBまで）</label><input id="background-image" type="file" accept="image/png,image/jpeg,image/webp"></div>
+          <div id="background-preview" class="background-preview" role="img" aria-label="背景のプレビュー" data-depth="0"></div>
+          <div class="feature-actions"><button class="primary-button" type="submit">背景を保存して適用</button><button type="button" class="secondary-button" id="background-reset">標準に戻す</button></div>
+        </form>
+        <div class="notice" id="background-notice" role="status" aria-live="polite"></div>
+      </div>
     </section>
     <button type="button" class="receipt-launch" id="receipt-launch" hidden>直前のお取引レシートを表示</button>
     </section>
@@ -826,6 +958,7 @@
       <a class="view-back" href="#home" data-home-link>← ホームへ戻る</a>
       <div class="page-heading"><p>MANABI CARDS</p><h1 id="cards-title" tabindex="-1">バーチャルカード発行</h1></div>
       <nav class="card-kind-nav" aria-label="カードの種類"><a href="#virtual-card" data-card-route="virtual-card">バーチャルカード</a><a href="#physical-card" data-card-route="physical-card">リアルカード</a></nav>
+      <p><a href="#statements" data-tab-target="statements" id="card-statements-link">このカードの利用明細を見る →</a></p>
       <ol class="card-progress" aria-label="カード作成の手順"><li data-card-step="edit"><span>1</span>内容を入力</li><li data-card-step="confirm"><span>2</span>確認</li><li data-card-step="done"><span>3</span>完了</li></ol>
       <div class="card-creation-grid">
         <aside class="card-preview-pane" aria-label="カードのプレビュー">
@@ -886,6 +1019,7 @@
       let apiReady = false;
       let account = null;
       let transactionPending = false;
+      let sessionVersion = 0;
 
       // 金額を日本円の表示形式に整える。
       const formatYen = (amount) => `${amount.toLocaleString("ja-JP")} 円`;
@@ -1004,11 +1138,359 @@
           showReceipt(receipt.kind, receipt.amount, receipt.before, receipt.destination, receipt);
           form.reset();
           await refreshHistory();
+          if (kind === "withdraw") await refreshWithdrawal();
         } catch (error) { showNotice(notice, error.message, "error"); }
         finally { controls.forEach(button => button.disabled = false); transactionPending = false; }
       };
 
 
+
+      const todayJapan = () => new Intl.DateTimeFormat("sv-SE", { timeZone: "Asia/Tokyo", year: "numeric", month: "2-digit", day: "2-digit" }).format(new Date());
+      const emptyDemo = () => ({ balance: 0, limit: null, used: 0, date: todayJapan(), quantity: 0, cost: 0, entries: [], price: 1000, prices: [1000] });
+      let demo = emptyDemo();
+      let withdrawal = null;
+      let withdrawalRequest = 0;
+      let market = null;
+      let holding = { quantity: 0, cost: 0 };
+      let cardEntries = [];
+      let chartPaused = false;
+      let marketLoading = false;
+      let marketRequest = 0;
+      let statementRequest = 0;
+      let background = { kind: "default", color: "#edf3ee", image: "" };
+      let backgroundDraft = { ...background };
+      let imageLoading = false;
+      let imageRequest = 0;
+      const demoKey = "manabi-demo-v2";
+      const resetDemoDay = () => {
+        if (demo.date !== todayJapan()) { demo.date = todayJapan(); demo.used = 0; }
+      };
+      const loadDemo = () => {
+        try {
+          const saved = localStorage.getItem(demoKey);
+          const value = saved ? JSON.parse(saved) : emptyDemo();
+          if (![value.balance, value.used, value.quantity, value.cost, value.price].every(number => Number.isSafeInteger(number) && number >= 0)
+            || value.price < 1 || value.price > 1000000 || (value.limit !== null && (!Number.isSafeInteger(value.limit) || value.limit < 0))
+            || !Array.isArray(value.entries) || !Array.isArray(value.prices) || !value.prices.length
+            || !value.entries.every(entry => entry && ["virtual-card", "physical-card"].includes(entry.cardType)
+              && typeof entry.date === "string" && /^\d{4}-\d{2}-\d{2}$/.test(entry.date)
+              && typeof entry.merchant === "string" && entry.merchant.length <= 100
+              && Number.isSafeInteger(entry.amount) && entry.amount > 0 && entry.sample === false)
+            || !value.prices.every(price => Number.isSafeInteger(price) && price >= 1 && price <= 1000000)) throw new Error();
+          demo = value; resetDemoDay(); balance = demo.balance;
+          holding = { quantity: demo.quantity, cost: demo.cost };
+          market = { price: demo.price, prices: demo.prices.slice(-40), updatedAt: Date.now() };
+          cardEntries = demo.entries;
+          document.querySelector("#balance-value").textContent = formatYen(balance);
+          return true;
+        } catch {
+          const error = document.querySelector("#login-error");
+          error.textContent = "デモデータを読み込めません。このブラウザの保存設定を確認してください。"; error.hidden = false;
+          return false;
+        }
+      };
+      const commitDemo = (patch, notice) => {
+        resetDemoDay();
+        const next = { ...demo, ...patch, price: market?.price || demo.price, prices: market?.prices || demo.prices };
+        try { localStorage.setItem(demoKey, JSON.stringify(next)); }
+        catch { showNotice(notice, "保存できませんでした。ブラウザの保存容量・設定を確認してください。", "error"); return false; }
+        demo = next; balance = next.balance;
+        holding = { quantity: next.quantity, cost: next.cost }; cardEntries = next.entries;
+        document.querySelector("#balance-value").textContent = formatYen(balance);
+        return true;
+      };
+      const renderWithdrawal = (fill = false) => {
+        if (!withdrawal) return;
+        const text = `1日の上限: ${withdrawal.limit === null ? "なし" : formatYen(withdrawal.limit)} / 今日の出金: ${formatYen(withdrawal.used)}${withdrawal.remaining === null ? "" : " / 残り: " + formatYen(withdrawal.remaining)}（日本時間）`;
+        document.querySelector("#withdraw-limit-summary").textContent = text;
+        document.querySelector("#settings-limit-summary").textContent = text;
+        if (fill) document.querySelector("#withdrawal-limit").value = withdrawal.limit ?? "";
+      };
+      const refreshWithdrawal = async (fill = false) => {
+        const version = sessionVersion, request = ++withdrawalRequest;
+        try {
+          let value;
+          if (databaseMode) value = (await api("settings")).settings;
+          else { resetDemoDay(); value = { limit: demo.limit, used: demo.used, date: demo.date, remaining: demo.limit === null ? null : Math.max(0, demo.limit - demo.used) }; }
+          if (!loggedIn || version !== sessionVersion || request !== withdrawalRequest) return;
+          withdrawal = value; renderWithdrawal(fill);
+        } catch (error) {
+          if (version !== sessionVersion || !loggedIn || request !== withdrawalRequest) return;
+          document.querySelector("#withdraw-limit-summary").textContent = "上限情報を取得できませんでした。";
+          showNotice(document.querySelector("#settings-notice"), error.message, "error");
+        }
+      };
+      const featureAction = async (notice, operation) => {
+        if (transactionPending || !loggedIn) return;
+        transactionPending = true;
+        const buttons = [...document.querySelectorAll("#practice button[type=submit], #logout-button")];
+        buttons.forEach(button => button.disabled = true);
+        try { await operation(); }
+        catch (error) { showNotice(notice, error.message, "error"); }
+        finally { transactionPending = false; buttons.forEach(button => button.disabled = false); }
+      };
+      document.querySelector("#limit-form").addEventListener("submit", event => {
+        event.preventDefault();
+        const raw = document.querySelector("#withdrawal-limit").value.trim();
+        const limit = raw === "" ? null : Number(raw), pin = document.querySelector("#limit-pin").value;
+        const notice = document.querySelector("#settings-notice");
+        if (document.querySelector("#withdrawal-limit").validity.badInput || (limit !== null && (!Number.isSafeInteger(limit) || limit < 0))) return showNotice(notice, "上限額は0円以上の整数で入力してください。", "error");
+        featureAction(notice, async () => {
+          if (databaseMode) { withdrawal = (await api("settings", { limit, pin })).settings; withdrawalRequest++; }
+          else {
+            if (pin !== PIN) throw new Error("暗証番号が違います。");
+            if (!commitDemo({ limit }, notice)) return;
+            await refreshWithdrawal();
+          }
+          renderWithdrawal(true); document.querySelector("#limit-pin").value = "";
+          showNotice(notice, "1日の引き出し上限を保存しました。", "success");
+        });
+      });
+      const renderInvestment = () => {
+        if (!market) return;
+        document.querySelector("#investment-price").textContent = formatYen(market.price);
+        document.querySelector("#investment-balance").textContent = formatYen(balance);
+        document.querySelector("#holding-quantity").textContent = holding.quantity.toLocaleString("ja-JP") + " 口";
+        const value = holding.quantity * market.price;
+        document.querySelector("#holding-value").textContent = Number.isSafeInteger(value) ? formatYen(value) : "取扱上限を超えています";
+        const profit = value - holding.cost;
+        document.querySelector("#holding-profit").textContent = Number.isSafeInteger(value) ? "評価損益: " + (profit > 0 ? "+" : "") + formatYen(profit) : "—";
+        const prices = market.prices;
+        const low = Math.max(0, Math.min(...prices) - 5), high = Math.max(...prices) + 5;
+        const points = prices.map((price, index) => `${55 + index * 525 / Math.max(1, prices.length - 1)},${175 - (price - low) * 150 / (high - low)}`);
+        document.querySelector("#chart-line").setAttribute("points", points.join(" "));
+        document.querySelector("#chart-area").setAttribute("d", `M55 175 L${points.join(" L")} L${prices.length === 1 ? 55 : 580} 175 Z`);
+        document.querySelector("#chart-high").textContent = high.toLocaleString("ja-JP");
+        document.querySelector("#chart-low").textContent = low.toLocaleString("ja-JP");
+        document.querySelector("#chart-description").textContent = `直近${prices.length}回の価格。現在${market.price}円、最低${Math.min(...prices)}円、最高${Math.max(...prices)}円。`;
+        document.querySelector("#chart-updated").textContent = "更新: " + new Intl.DateTimeFormat("ja-JP", { timeZone: "Asia/Tokyo", timeStyle: "medium" }).format(new Date(market.updatedAt)) + "（日本時間）";
+        renderInvestmentTotal();
+      };
+      const renderInvestmentTotal = () => {
+        const quantity = Number(document.querySelector("#investment-quantity").value);
+        const total = market && quantity * market.price;
+        document.querySelector("#investment-total").textContent = "合計: " + (isValidAmount(quantity) && Number.isSafeInteger(total) ? formatYen(total) : "—") + "（表示中の価格）";
+      };
+      const refreshMarket = async (advance = false) => {
+        if (marketLoading || !loggedIn) return;
+        marketLoading = true;
+        const version = sessionVersion, request = ++marketRequest;
+        try {
+          let data;
+          if (databaseMode) data = await api("investment");
+          else {
+            if (advance && !chartPaused) {
+              const change = Math.floor(Math.random() * 401) - 200;
+              const price = Math.max(1, Math.min(1000000, market.price + (Math.round(market.price * change / 10000) || (change < 0 ? -1 : 1))));
+              market = { price, prices: [...market.prices, price].slice(-40), updatedAt: Date.now() };
+            }
+            data = { market, holding };
+          }
+          if (!loggedIn || version !== sessionVersion || request !== marketRequest) return;
+          market = data.market; holding = data.holding; renderInvestment();
+          const notice = document.querySelector("#investment-notice");
+          if (notice.dataset.connectionError === "true") { notice.className = "notice"; notice.textContent = ""; delete notice.dataset.connectionError; }
+        } catch (error) {
+          if (version !== sessionVersion || !loggedIn) return;
+          const notice = document.querySelector("#investment-notice");
+          showNotice(notice, error.message, "error"); notice.dataset.connectionError = "true";
+        } finally { marketLoading = false; }
+      };
+      document.querySelector("#investment-quantity").addEventListener("input", renderInvestmentTotal);
+      document.querySelector("#chart-pause").addEventListener("click", () => {
+        chartPaused = !chartPaused;
+        document.querySelector("#chart-pause").textContent = chartPaused ? "チャートを再開" : "チャートを一時停止";
+        document.querySelector("#chart-pause").setAttribute("aria-pressed", String(chartPaused));
+        if (!chartPaused) refreshMarket();
+      });
+      document.querySelector("#investment-form").addEventListener("submit", event => {
+        event.preventDefault();
+        const kind = event.submitter?.value || "invest-buy";
+        const quantity = Number(document.querySelector("#investment-quantity").value), pin = document.querySelector("#investment-pin").value;
+        const notice = document.querySelector("#investment-notice");
+        if (!market) return showNotice(notice, "価格の読み込み後に操作してください。", "error");
+        const price = market.price, amount = price * quantity;
+        if (!isValidAmount(quantity) || !isValidAmount(amount)) return showNotice(notice, "数量と合計金額が取り扱える範囲の整数になるように入力してください。", "error");
+        featureAction(notice, async () => {
+          if (databaseMode) {
+            try {
+              const data = await api(kind, { quantity, pin, price });
+              marketRequest++;
+              applyAccount(data.account); holding = data.holding; market = data.market;
+              renderInvestment(); document.querySelector("#investment-pin").value = "";
+              showNotice(notice, `${data.receipt.kind}が完了しました。${quantity}口 / ${formatYen(amount)}`, "success");
+              const receipt = data.receipt; showReceipt(receipt.kind, receipt.amount, receipt.before, null, receipt);
+              await refreshHistory();
+            } catch (error) { await refreshMarket(); throw error; }
+          } else {
+            if (pin !== PIN) throw new Error("暗証番号が違います。");
+            const buy = kind === "invest-buy";
+            if (buy && amount > balance) throw new Error("残高が不足しています。");
+            if (!buy && quantity > holding.quantity) throw new Error("保有数量が不足しています。");
+            const nextBalance = balance + (buy ? -amount : amount), nextQuantity = holding.quantity + (buy ? quantity : -quantity);
+            const nextCost = buy ? holding.cost + amount : nextQuantity === 0 ? 0 : holding.cost - Math.floor(holding.cost * (quantity / holding.quantity));
+            if (![nextBalance, nextQuantity, nextCost].every(number => Number.isSafeInteger(number) && number >= 0)) throw new Error("取り扱い可能な上限を超えます。");
+            const before = balance;
+            if (!commitDemo({ balance: nextBalance, quantity: nextQuantity, cost: nextCost }, notice)) return;
+            renderInvestment(); document.querySelector("#investment-pin").value = "";
+            showNotice(notice, `${buy ? "購入" : "売却"}しました。${quantity}口 / ${formatYen(amount)}`, "success");
+            showReceipt(buy ? "投資購入" : "投資売却", amount, before);
+          }
+        });
+      });
+      setInterval(() => {
+        if (!loggedIn || document.hidden || transactionPending) return;
+        if (!document.querySelector("#panel-investment").hidden && !chartPaused) refreshMarket(true);
+        if (withdrawal && withdrawal.date !== todayJapan()) refreshWithdrawal();
+      }, 3000);
+
+      const sampleEntries = () => {
+        const month = todayJapan().slice(0, 7);
+        const previous = new Date(month + "-01T00:00:00Z"); previous.setUTCMonth(previous.getUTCMonth() - 1);
+        return [month, previous.toISOString().slice(0, 7)].flatMap(value => [
+          { date: value + "-01", cardType: "virtual-card", merchant: "まなびオンライン（サンプル）", amount: 1980, sample: true },
+          { date: value + "-01", cardType: "physical-card", merchant: "まなび書店（サンプル）", amount: 1320, sample: true },
+          { date: value + "-01", cardType: "physical-card", merchant: "まなびカフェ（サンプル）", amount: 680, sample: true }
+        ]);
+      };
+      const renderStatements = () => {
+        const type = document.querySelector("#statement-card").value, month = document.querySelector("#statement-month").value;
+        const samples = document.querySelector("#statement-samples").checked ? sampleEntries() : [];
+        const entries = [...cardEntries, ...samples].filter(entry => entry.cardType === type && entry.date.slice(0, 7) === month).sort((a, b) => b.date.localeCompare(a.date));
+        document.querySelector("#statement-caption").textContent = `${month || "月未選択"} / ${type === "virtual-card" ? "バーチャルカード" : "リアルカード"}`;
+        const ownTotal = entries.filter(entry => !entry.sample).reduce((total, entry) => total + BigInt(entry.amount), 0n);
+        const sampleTotal = entries.filter(entry => entry.sample).reduce((total, entry) => total + entry.amount, 0);
+        document.querySelector("#statement-total").textContent = formatYen(ownTotal);
+        document.querySelector("#statement-sample-total").textContent = formatYen(sampleTotal);
+        const rows = document.querySelector("#statement-rows"); rows.replaceChildren();
+        entries.forEach(entry => {
+          const row = document.createElement("tr");
+          [entry.date, entry.merchant, formatYen(entry.amount), entry.sample ? "サンプル" : "自分の記録"].forEach(value => { const cell = document.createElement("td"); cell.textContent = value; row.append(cell); });
+          rows.append(row);
+        });
+        if (!entries.length) { const row = document.createElement("tr"), cell = document.createElement("td"); cell.colSpan = 4; cell.textContent = "この月の利用明細はありません。"; row.append(cell); rows.append(row); }
+      };
+      const refreshStatements = async () => {
+        const version = sessionVersion, request = ++statementRequest;
+        try {
+          const entries = databaseMode ? (await api("statements")).entries : demo.entries;
+          if (!loggedIn || version !== sessionVersion || request !== statementRequest) return;
+          cardEntries = entries; renderStatements();
+        } catch (error) {
+          if (!loggedIn || version !== sessionVersion || request !== statementRequest) return;
+          showNotice(document.querySelector("#statements-notice"), error.message, "error");
+        }
+      };
+      document.querySelectorAll("#statement-card, #statement-month, #statement-samples").forEach(input => input.addEventListener("change", renderStatements));
+      document.querySelector("#statement-refresh").addEventListener("click", refreshStatements);
+      document.querySelector("#statement-month").value = todayJapan().slice(0, 7);
+      document.querySelector("#card-entry-date").value = todayJapan();
+      document.querySelector("#card-entry-date").max = todayJapan();
+      document.querySelector("#card-entry-form").addEventListener("submit", event => {
+        event.preventDefault();
+        const notice = document.querySelector("#statements-notice");
+        const input = { cardType: document.querySelector("#statement-card").value, date: document.querySelector("#card-entry-date").value,
+          merchant: document.querySelector("#card-entry-merchant").value.trim(), amount: Number(document.querySelector("#card-entry-amount").value) };
+        if (!input.date || input.date < "1900-01-01" || input.date > todayJapan() || !input.merchant || input.merchant.length > 100 || !isValidAmount(input.amount)) return showNotice(notice, "利用日・利用先・1円以上の整数の利用額を入力してください。", "error");
+        featureAction(notice, async () => {
+          if (databaseMode) {
+            const data = await api("card-entry", input); cardEntries.push(data.entry);
+            // Invalidate earlier reads so they cannot hide the new entry.
+            statementRequest++;
+          } else {
+            if (!commitDemo({ entries: [...cardEntries, { ...input, id: "demo-" + Date.now(), sample: false }] }, notice)) return;
+          }
+          document.querySelector("#statement-month").value = input.date.slice(0, 7);
+          renderStatements(); event.target.reset(); document.querySelector("#card-entry-date").value = todayJapan();
+          showNotice(notice, "利用記録を保存しました。口座残高は変わりません。", "success");
+        });
+      });
+
+      const backgroundKey = () => "manabi-background:" + (databaseMode ? account.id : "demo");
+      const backgroundPhotos = new Map([
+        ["sakura", "assets/backgrounds/sakura.jpg"],
+        ["forest", "assets/backgrounds/forest.jpg"],
+        ["sea", "assets/backgrounds/sea.jpg"]
+      ]);
+      const paintBackground = (target, value) => {
+        const photo = backgroundPhotos.get(value.kind);
+        const image = photo || (value.kind === "image" ? value.image : "");
+        target.style.backgroundColor = value.kind === "default" ? "" : value.color;
+        target.style.backgroundImage = value.kind === "default" ? "" : image ? `${photo ? "linear-gradient(#ffffff22, #ffffff22), " : ""}url("${image}")` : "none";
+        target.style.backgroundSize = image ? "cover" : "";
+        target.style.backgroundPosition = image ? "center" : "";
+        if (target === document.body) target.classList.toggle("has-photo-background", Boolean(image));
+      };
+      const renderBackgroundForm = () => {
+        document.querySelectorAll('[name="background-kind"]').forEach(input => input.checked = input.value === backgroundDraft.kind);
+        document.querySelector("#background-color").value = backgroundDraft.color;
+        paintBackground(document.querySelector("#background-preview"), backgroundDraft);
+      };
+      const loadBackground = () => {
+        background = { kind: "default", color: "#edf3ee", image: "" };
+        try {
+          const value = JSON.parse(localStorage.getItem(backgroundKey()));
+          if (value && (["default", "color", "image"].includes(value.kind) || backgroundPhotos.has(value.kind)) && /^#[0-9a-f]{6}$/i.test(value.color)
+            && typeof value.image === "string" && (!value.image || /^data:image\/(png|jpeg|webp);base64,[a-z0-9+/=]+$/i.test(value.image))) background = value;
+        } catch { /* The standard background remains usable when storage is unavailable. */ }
+        backgroundDraft = { ...background }; paintBackground(document.body, background); renderBackgroundForm();
+      };
+      document.querySelectorAll('[name="background-kind"]').forEach(input => input.addEventListener("change", () => {
+        imageRequest++; imageLoading = false; backgroundDraft.kind = input.value; renderBackgroundForm();
+        if (backgroundPhotos.has(input.value)) saveBackground(backgroundDraft);
+      }));
+      document.querySelector("#background-color").addEventListener("input", event => { imageRequest++; imageLoading = false; backgroundDraft.color = event.target.value; backgroundDraft.kind = "color"; renderBackgroundForm(); });
+      document.querySelector("#background-image").addEventListener("change", async event => {
+        const file = event.target.files[0], notice = document.querySelector("#background-notice"), request = ++imageRequest;
+        imageLoading = false;
+        if (!file) return;
+        if (!["image/png", "image/jpeg", "image/webp"].includes(file.type) || file.size > 2 * 1024 * 1024) return showNotice(notice, "2MB以下のPNG・JPEG・WebP画像を選んでください。", "error");
+        const version = sessionVersion; imageLoading = true;
+        try {
+          const data = await new Promise((resolve, reject) => { const reader = new FileReader(); reader.onload = () => resolve(reader.result); reader.onerror = () => reject(new Error("画像を読み込めません。")); reader.readAsDataURL(file); });
+          const picture = new Image(); picture.src = data; await picture.decode();
+          if (version !== sessionVersion || !loggedIn || request !== imageRequest) return;
+          backgroundDraft.image = data; backgroundDraft.kind = "image"; renderBackgroundForm();
+          showNotice(notice, "プレビューを確認し、背景を保存してください。", "success");
+        } catch { if (version === sessionVersion && request === imageRequest) showNotice(notice, "画像を読み込めません。別の画像を選んでください。", "error"); }
+        finally { if (request === imageRequest) imageLoading = false; }
+      });
+      const saveBackground = value => {
+        const notice = document.querySelector("#background-notice");
+        if (!loggedIn) return;
+        if (imageLoading) return showNotice(notice, "画像の読み込みが完了してから保存してください。", "error");
+        if (value.kind === "image" && !value.image) return showNotice(notice, "背景画像を選んでください。", "error");
+        const saved = { ...value, image: value.kind === "image" ? value.image : "" };
+        try { localStorage.setItem(backgroundKey(), JSON.stringify(saved)); }
+        catch { return showNotice(notice, "背景を保存できません。画像サイズやブラウザの保存容量を確認してください。", "error"); }
+        background = saved; backgroundDraft = { ...saved }; paintBackground(document.body, saved); renderBackgroundForm();
+        showNotice(notice, "背景を保存して適用しました。", "success");
+      };
+      document.querySelector("#background-form").addEventListener("submit", event => { event.preventDefault(); saveBackground(backgroundDraft); });
+      document.querySelector("#background-reset").addEventListener("click", () => { imageRequest++; imageLoading = false; saveBackground({ kind: "default", color: "#edf3ee", image: "" }); document.querySelector("#background-image").value = ""; });
+      const beginAccountFeatures = () => {
+        sessionVersion++; withdrawalRequest++; imageRequest++; imageLoading = false; withdrawal = null; cardEntries = []; holding = { quantity: 0, cost: 0 }; market = null;
+        marketRequest++; statementRequest++;
+        document.querySelectorAll("#investment-price, #investment-balance, #holding-value, #holding-profit, #investment-total").forEach(element => element.textContent = "—");
+        document.querySelector("#holding-quantity").textContent = "0 口";
+        document.querySelector("#chart-line").setAttribute("points", ""); document.querySelector("#chart-area").setAttribute("d", "");
+        document.querySelector("#chart-high").textContent = ""; document.querySelector("#chart-low").textContent = "";
+        document.querySelector("#chart-description").textContent = "価格を読み込んでいます。";
+        document.querySelector("#chart-updated").textContent = "価格を読み込んでいます。";
+        document.querySelector("#withdraw-limit-summary").textContent = "1日の引き出し上限を確認しています。";
+        document.querySelector("#settings-limit-summary").textContent = "読み込み中です。";
+        chartPaused = false;
+        document.querySelector("#chart-pause").textContent = "チャートを一時停止";
+        document.querySelector("#chart-pause").setAttribute("aria-pressed", "false");
+        document.querySelector("#statement-month").value = todayJapan().slice(0, 7);
+        loadBackground();
+      };
+      const refreshFeaturePanel = route => {
+        if (!loggedIn) return;
+        if (route === "withdraw" || route === "settings") refreshWithdrawal(route === "settings");
+        if (route === "investment") refreshMarket();
+        if (route === "statements") { renderStatements(); refreshStatements(); }
+      };
 
       const cardStates = {
         "virtual-card": { name: "MANABI TARO", tone: "forest", stage: "edit", created: "" },
@@ -1100,7 +1582,7 @@
       const panels = [...document.querySelectorAll(".panel")];
       const homeView = document.querySelector("#home-view");
       const transactionView = document.querySelector("#practice");
-      const routeNames = ["home", "balance", "deposit", "withdraw", "transfer", "virtual-card", "physical-card", "login"];
+      const routeNames = ["home", "balance", "deposit", "withdraw", "transfer", "investment", "statements", "settings", "virtual-card", "physical-card", "login"];
       let activeView = "home";
       const viewScroll = { home: 0, transaction: 0, cards: 0, login: 0 };
       const routeFromHash = () => {
@@ -1134,6 +1616,7 @@
             tab.setAttribute("aria-selected", String(selected));
             tab.tabIndex = selected ? 0 : -1;
           });
+          refreshFeaturePanel(route);
           panels.forEach((panel) => {
             const selected = panel.id === "panel-" + route;
             panel.classList.toggle("is-active", selected);
@@ -1160,6 +1643,7 @@
         link.addEventListener("click", (event) => {
           if (event.ctrlKey || event.metaKey || event.shiftKey || event.altKey || event.button > 0) return;
           event.preventDefault();
+          if (link.id === "card-statements-link") document.querySelector("#statement-card").value = currentCardRoute;
           navigate(link.hasAttribute("data-home-link") ? "home" : link.dataset.cardRoute || link.dataset.tabTarget, true);
         });
       });
@@ -1188,6 +1672,7 @@
               accountNumber: document.querySelector("#login-account").value.trim(), pin: input.value
             });
             applyAccount(data.account); loggedIn = true; input.value = "";
+            beginAccountFeatures();
             document.querySelector("#login-error").hidden = true;
             navigate(afterLoginRoute, true);
             await refreshHistory();
@@ -1203,6 +1688,8 @@
           error.hidden = false; input.setAttribute("aria-invalid", "true");
           input.value = ""; input.focus(); return;
         }
+        beginAccountFeatures();
+        if (!loadDemo()) return;
         loggedIn = true; input.value = "";
         document.querySelector("#login-error").hidden = true;
         input.removeAttribute("aria-invalid");
@@ -1221,6 +1708,9 @@
         logoutButton.disabled = false;
         transactionPending = false;
         account = null;
+        sessionVersion++; marketRequest++; statementRequest++;
+        withdrawal = null; market = null; cardEntries = []; holding = { quantity: 0, cost: 0 };
+        paintBackground(document.body, { kind: "default", color: "#edf3ee", image: "" });
         document.querySelector("#transaction-history").hidden = true;
         document.querySelector("#history-rows").replaceChildren();
         loggedIn = false; balance = 0; afterLoginRoute = "balance";
@@ -1298,7 +1788,7 @@
           return;
         }
         const before = balance;
-        balance += amount;
+        if (!commitDemo({ balance: balance + amount }, notice)) return;
         document.querySelector("#balance-value").textContent = formatYen(balance);
         showNotice(notice, `${formatYen(amount)}入金しました。現在の残高: ${formatYen(balance)}`, "success");
         showReceipt("入金", amount, before);
@@ -1320,12 +1810,20 @@
           showNotice(notice, "出金額は1円以上の整数で入力してください。", "error");
           return;
         }
+        resetDemoDay();
+        if (demo.limit !== null && amount > Math.max(0, demo.limit - demo.used)) {
+          showNotice(notice, `1日の引き出し上限を超えます。今日の残り: ${formatYen(Math.max(0, demo.limit - demo.used))}`, "error"); return;
+        }
+        if (!Number.isSafeInteger(demo.used + amount)) {
+          showNotice(notice, "今日の出金合計が取り扱い可能な上限を超えます。", "error"); return;
+        }
         if (amount > balance) {
           showNotice(notice, `残高が不足しています。現在の残高: ${formatYen(balance)}`, "error");
           return;
         }
         const before = balance;
-        balance -= amount;
+        if (!commitDemo({ balance: balance - amount, used: demo.used + amount }, notice)) return;
+        refreshWithdrawal();
         document.querySelector("#balance-value").textContent = formatYen(balance);
         showNotice(notice, `${formatYen(amount)}出金しました。現在の残高: ${formatYen(balance)}`, "success");
         showReceipt("出金", amount, before);
@@ -1359,7 +1857,7 @@
         }
 
         const before = balance;
-        balance -= amount;
+        if (!commitDemo({ balance: balance - amount }, notice)) return;
         document.querySelector("#balance-value").textContent = formatYen(balance);
         showNotice(notice,
           `${recipientName} 様へ ${formatYen(amount)}振り込みました。現在の残高: ${formatYen(balance)}`, "success");
@@ -1381,6 +1879,7 @@
           apiReady = true;
           if (data.account) {
             applyAccount(data.account); loggedIn = true;
+            beginAccountFeatures();
             navigate(routeFromHash() === "login" ? afterLoginRoute : routeFromHash(), true, false);
             await refreshHistory();
           }

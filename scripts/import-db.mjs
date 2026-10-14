@@ -1,6 +1,6 @@
 import mysql from 'mysql2/promise';
 import { readFile } from 'node:fs/promises';
-import { connectionOptions, sessionSchema } from '../lib/db.mjs';
+import { connectionOptions, sessionSchema, featureSchema } from '../lib/db.mjs';
 
 const source = process.argv[2];
 if (!source) {
@@ -44,6 +44,7 @@ try {
     console.log('Imported SQL data.');
   }
   await connection.query(sessionSchema);
+  for (const statement of featureSchema()) await connection.query(statement);
   for (const table of tables) {
     const [[row]] = await connection.query('SELECT COUNT(*) AS count FROM ??', [table]);
     console.log(`${table}: ${row.count} rows`);

@@ -6,7 +6,8 @@ import mysql from 'mysql2/promise';
 import pg from 'pg';
 import { readFile } from 'node:fs/promises';
 import handler from '../api/bank.mjs';
-import { connectionOptions, closePool, getPool, sessionSchema, usesPostgres, postgresOptions, table } from '../lib/db.mjs';
+import { connectionOptions, closePool, getPool, sessionSchema, featureSchema, usesPostgres, postgresOptions, table } from '../lib/db.mjs';
+import { japanDate } from '../lib/bank.mjs';
 
 test(`${usesPostgres() ? 'PostgreSQL' : 'MySQL'} account and transaction flow`, { skip: !process.env.DB_HOST && !process.env.DATABASE_URL }, async t => {
   const database = 'bank_web_test_' + randomBytes(6).toString('hex');
@@ -36,6 +37,7 @@ test(`${usesPostgres() ? 'PostgreSQL' : 'MySQL'} account and transaction flow`, 
     await pool.query(`CREATE TABLE torihiki_table (deal_id VARCHAR(20) PRIMARY KEY, bank_id VARCHAR(20), deal_date DATE, deal_code VARCHAR(255), price BIGINT, inbank_price BIGINT, comment VARCHAR(255)) ENGINE=InnoDB`);
     await pool.query(sessionSchema);
     }
+    for (const statement of featureSchema()) await pool.query(statement);
     if (postgres) {
       await pool.query(`INSERT INTO ${table('kokyaku_master')} VALUES ('test-a','テスト太郎','テストタロウ','男','000','000','テスト','テスト','2000-01-01'),('test-b','テスト花子','テストハナコ','女','000','000','テスト','テスト','2000-01-01')`);
     } else {
@@ -126,6 +128,72 @@ test(`${usesPostgres() ? 'PostgreSQL' : 'MySQL'} account and transaction flow`, 
       assert.equal((await request('logout', {})).status, 200);
       assert.equal((await request('session')).data.account, null);
       assert.equal((await request('deposit', { amount: 1 })).status, 401);
+    });
+    await t.test('feature endpoints require a session', async () => {
+      for (const action of ['settings', 'investment', 'statements']) assert.equal((await request(action)).status, 401);
+      assert.equal((await request('settings', { limit: 10, pin: credentials.pin })).status, 401);
+      const result = await request('login', credentials); cookie = result.cookie.split(';')[0];
+    });
+    await t.test('daily limits include earlier withdrawals and serialize concurrent requests', async () => {
+      for (const limit of [-1, 1.5, '100', Number.MAX_SAFE_INTEGER + 1]) assert.equal((await request('settings', { limit, pin: credentials.pin })).status, 400);
+      assert.equal((await request('settings', { limit: 430, pin: '0000' })).status, 401);
+      const saved = await request('settings', { limit: 430, pin: credentials.pin });
+      assert.deepEqual(saved.data.settings, { limit: 430, used: 410, remaining: 20, date: japanDate() });
+      const updates = await Promise.all([1, 2].map(() => request('withdraw', { amount: 15, pin: credentials.pin })));
+      assert.deepEqual(updates.map(result => result.status).sort(), [200, 409]);
+      assert.equal((await request('settings')).data.settings.remaining, 5);
+      // Yesterday's withdrawals must not consume today's allowance.
+      await pool.execute(`INSERT INTO ${table('torihiki_table')} (deal_id, bank_id, deal_date, deal_code, price, inbank_price, comment)
+        VALUES (?, ?, ?, ?, ?, ?, ?)`, ['old-withdrawal', 'account-a', japanDate(new Date(Date.now() - 86400000)), '2', 500, 0, 'test']);
+      assert.equal((await request('settings')).data.settings.used, 425);
+      assert.equal((await request('settings', { limit: 0, pin: credentials.pin })).status, 200);
+      assert.equal((await request('withdraw', { amount: 1, pin: credentials.pin })).status, 409);
+      assert.equal((await request('settings', { limit: null, pin: credentials.pin })).data.settings.remaining, null);
+      assert.equal((await request('session')).data.account.balance, 158);
+    });
+    await t.test('investment trades preserve balances, holdings and transaction history', async () => {
+      let quote = await request('investment');
+      assert.equal(quote.data.market.price, 1000);
+      assert.deepEqual(quote.data.holding, { quantity: 0, cost: 0 });
+      const trade = { quantity: 2, price: 1000, pin: credentials.pin };
+      assert.equal((await request('invest-buy', trade)).status, 409);
+      await request('deposit', { amount: 10000 });
+      for (const quantity of [0, -1, 1.5, '1']) assert.equal((await request('invest-buy', { ...trade, quantity })).status, 400);
+      assert.equal((await request('invest-buy', { ...trade, price: 1 })).status, 409);
+      assert.equal((await request('invest-buy', { ...trade, pin: '0000' })).status, 401);
+      const bought = await request('invest-buy', trade);
+      assert.equal(bought.status, 200); assert.equal(bought.data.account.balance, 8158);
+      assert.deepEqual(bought.data.holding, { quantity: 2, cost: 2000 });
+      assert.equal((await request('invest-sell', { ...trade, quantity: 3 })).status, 409);
+      const sold = await request('invest-sell', { ...trade, quantity: 1 });
+      assert.equal(sold.data.account.balance, 9158); assert.deepEqual(sold.data.holding, { quantity: 1, cost: 1000 });
+      const sales = await Promise.all([1, 2].map(() => request('invest-sell', { ...trade, quantity: 1 })));
+      assert.deepEqual(sales.map(result => result.status).sort(), [200, 409]);
+      assert.deepEqual((await request('investment')).data.holding, { quantity: 0, cost: 0 });
+      assert.equal((await request('session')).data.account.balance, 10158);
+      assert.equal((await request('settings')).data.settings.used, 425);
+      assert.ok((await request('history')).data.history.some(item => item.kind === '投資購入'));
+      // Make the next quote due without slowing the test down.
+      await pool.execute(`UPDATE ${table('bank_market')} SET updated_at=? WHERE market_id=?`, [Date.now() - 4000, 'manabi']);
+      quote = await request('investment');
+      assert.notEqual(quote.data.market.price, 1000); assert.equal(quote.data.market.prices.length, 2);
+      assert.equal((await request('invest-buy', trade)).status, 409);
+    });
+    await t.test('card entries validate dates and amounts, persist and keep the balance unchanged', async () => {
+      const entry = { cardType: 'virtual-card', date: japanDate(), merchant: 'まなび書店', amount: 1500 };
+      assert.deepEqual((await request('statements')).data.entries, []);
+      for (const change of [{ date: '2026-02-30' }, { date: '9999-01-01' }, { merchant: '' }, { cardType: 'other' }, { amount: -1 }, { amount: 1.5 }]) {
+        assert.equal((await request('card-entry', { ...entry, ...change })).status, 400);
+      }
+      assert.equal((await request('card-entry', entry)).status, 200);
+      const rows = (await request('statements')).data.entries;
+      assert.equal(rows.length, 1); assert.equal(rows[0].merchant, entry.merchant); assert.equal(rows[0].sample, false);
+      assert.equal((await request('session')).data.account.balance, 10158);
+      await request('logout', {});
+      const other = await request('login', { ...credentials, accountNumber: '9999999', pin: '4321' }); cookie = other.cookie.split(';')[0];
+      assert.deepEqual((await request('statements')).data.entries, []);
+      assert.deepEqual((await request('investment')).data.holding, { quantity: 0, cost: 0 });
+      assert.equal((await request('settings')).data.settings.limit, null);
     });
   } finally {
     if (server) await new Promise(resolve => server.close(resolve));

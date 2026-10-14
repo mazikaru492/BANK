@@ -7,6 +7,7 @@
     "build": "node scripts/build.mjs",
     "db:import": "node --env-file-if-exists=.env scripts/import-db.mjs",
     "db:supabase": "node --env-file-if-exists=.env.supabase.local scripts/import-supabase.mjs",
+    "db:upgrade": "node --env-file-if-exists=.env scripts/upgrade-db.mjs",
     "test": "node --env-file-if-exists=.env --test"
   },
   "dependencies": {

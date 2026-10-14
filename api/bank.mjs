@@ -1,5 +1,5 @@
 import { databaseConfigured } from '../lib/db.mjs';
-import { BankError, login, logout, sessionAccount, history, transact } from '../lib/bank.mjs';
+import { BankError, login, logout, sessionAccount, history, transact, withdrawalSettings, saveWithdrawalLimit, investment, tradeInvestment, cardStatements, addCardEntry } from '../lib/bank.mjs';
 
 const cookieName = 'bank_session';
 function sessionToken(req) {
@@ -60,6 +60,12 @@ export default async function handler(req, res) {
     if (req.method === 'GET' && action === 'session') return send(res, 200, { mode: 'database', account });
     if (!account) throw new BankError(401, 'ログインが必要です。');
     if (req.method === 'GET' && action === 'history') return send(res, 200, { history: await history(account.id) });
+    if (req.method === 'GET' && action === 'settings') return send(res, 200, { settings: await withdrawalSettings(account.id) });
+    if (req.method === 'POST' && action === 'settings') return send(res, 200, await saveWithdrawalLimit(account, await body(req), address));
+    if (req.method === 'GET' && action === 'investment') return send(res, 200, await investment(account));
+    if (req.method === 'POST' && ['invest-buy', 'invest-sell'].includes(action)) return send(res, 200, await tradeInvestment(account, action, await body(req), address));
+    if (req.method === 'GET' && action === 'statements') return send(res, 200, { entries: await cardStatements(account.id) });
+    if (req.method === 'POST' && action === 'card-entry') return send(res, 200, await addCardEntry(account.id, await body(req)));
     if (req.method === 'POST' && ['balance', 'deposit', 'withdraw', 'transfer'].includes(action)) {
       return send(res, 200, await transact(account, action, await body(req), address));
     }
